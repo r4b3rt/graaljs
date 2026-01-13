@@ -195,6 +195,7 @@ import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalPlainTime;
 import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalPlainYearMonth;
 import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalZonedDateTime;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssembly;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyException;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyGlobal;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyInstance;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyMemory;
@@ -203,6 +204,9 @@ import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyMemoryNotifyCall
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyMemoryWaitCallback;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyModule;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTable;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTag;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTagObject;
+import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyType;
 import com.oracle.truffle.js.runtime.interop.DynamicScopeWrapper;
 import com.oracle.truffle.js.runtime.interop.JSInteropUtil;
 import com.oracle.truffle.js.runtime.interop.TopScopeObject;
@@ -486,6 +490,12 @@ public class JSRealm {
     private final Object wasmEmbedderDataGet;
     private final Object wasmEmbedderDataSet;
     private final Object wasmRefNull;
+    // Exception handling proposal
+    private final Object wasmTagAlloc;
+    private final Object wasmTagType;
+    private final Object wasmExnAlloc;
+    private final Object wasmExnTag;
+    @CompilationFinal private JSWebAssemblyTagObject wasmJSTag;
 
     private final JSDynamicObject webAssemblyObject;
     private final JSFunctionObject webAssemblyGlobalConstructor;
@@ -498,6 +508,10 @@ public class JSRealm {
     private final JSDynamicObject webAssemblyModulePrototype;
     private final JSFunctionObject webAssemblyTableConstructor;
     private final JSDynamicObject webAssemblyTablePrototype;
+    private final JSFunctionObject webAssemblyTagConstructor;
+    private final JSDynamicObject webAssemblyTagPrototype;
+    private final JSFunctionObject webAssemblyExceptionConstructor;
+    private final JSDynamicObject webAssemblyExceptionPrototype;
 
     private final JSFunctionObject shadowRealmConstructor;
     private final JSDynamicObject shadowRealmPrototype;
@@ -966,6 +980,11 @@ public class JSRealm {
                 wasmEmbedderDataSet = wasmInterop.readMember(wasmObject, "embedder_data_set");
                 wasmMemAsByteBuffer = wasmInterop.readMember(wasmObject, "mem_as_byte_buffer");
                 wasmRefNull = wasmInterop.readMember(wasmObject, "ref_null");
+                // Exception handling proposal
+                wasmTagAlloc = wasmInterop.readMember(wasmObject, "tag_alloc");
+                wasmTagType = wasmInterop.readMember(wasmObject, "tag_type");
+                wasmExnAlloc = wasmInterop.readMember(wasmObject, "exn_alloc");
+                wasmExnTag = wasmInterop.readMember(wasmObject, "exn_tag");
 
                 InteropLibrary settersInterop = InteropLibrary.getUncached();
                 settersInterop.execute(wasmInterop.readMember(wasmObject, "mem_set_grow_callback"), new JSWebAssemblyMemoryGrowCallback(this));
@@ -991,6 +1010,12 @@ public class JSRealm {
             ctor = JSWebAssemblyGlobal.createConstructor(this);
             this.webAssemblyGlobalConstructor = ctor.getFunctionObject();
             this.webAssemblyGlobalPrototype = ctor.getPrototype();
+            ctor = JSWebAssemblyTag.createConstructor(this);
+            this.webAssemblyTagConstructor = ctor.getFunctionObject();
+            this.webAssemblyTagPrototype = ctor.getPrototype();
+            ctor = JSWebAssemblyException.createConstructor(this);
+            this.webAssemblyExceptionConstructor = ctor.getFunctionObject();
+            this.webAssemblyExceptionPrototype = ctor.getPrototype();
         } else {
             this.wasmTableAlloc = null;
             this.wasmTableGrow = null;
@@ -1015,6 +1040,10 @@ public class JSRealm {
             this.wasmEmbedderDataGet = null;
             this.wasmEmbedderDataSet = null;
             this.wasmRefNull = null;
+            this.wasmTagAlloc = null;
+            this.wasmTagType = null;
+            this.wasmExnAlloc = null;
+            this.wasmExnTag = null;
 
             this.webAssemblyObject = null;
             this.webAssemblyGlobalConstructor = null;
@@ -1027,6 +1056,10 @@ public class JSRealm {
             this.webAssemblyModulePrototype = null;
             this.webAssemblyTableConstructor = null;
             this.webAssemblyTablePrototype = null;
+            this.webAssemblyTagConstructor = null;
+            this.webAssemblyTagPrototype = null;
+            this.webAssemblyExceptionConstructor = null;
+            this.webAssemblyExceptionPrototype = null;
         }
 
         this.foreignIterablePrototype = createForeignIterablePrototype();
@@ -2041,6 +2074,8 @@ public class JSRealm {
             JSObjectUtil.putDataProperty(webAssemblyObject, JSFunction.getName(webAssemblyMemoryConstructor), webAssemblyMemoryConstructor, JSAttributes.getDefaultNotEnumerable());
             JSObjectUtil.putDataProperty(webAssemblyObject, JSFunction.getName(webAssemblyModuleConstructor), webAssemblyModuleConstructor, JSAttributes.getDefaultNotEnumerable());
             JSObjectUtil.putDataProperty(webAssemblyObject, JSFunction.getName(webAssemblyTableConstructor), webAssemblyTableConstructor, JSAttributes.getDefaultNotEnumerable());
+            JSObjectUtil.putDataProperty(webAssemblyObject, JSFunction.getName(webAssemblyTagConstructor), webAssemblyTagConstructor, JSAttributes.getDefaultNotEnumerable());
+            JSObjectUtil.putDataProperty(webAssemblyObject, JSFunction.getName(webAssemblyExceptionConstructor), webAssemblyExceptionConstructor, JSAttributes.getDefaultNotEnumerable());
         }
         if (getContextOptions().isOperatorOverloading()) {
             JSObjectUtil.putFunctionsFromContainer(this, global, OperatorsBuiltins.BUILTINS);
@@ -3254,6 +3289,48 @@ public class JSRealm {
         return wasmRefNull;
     }
 
+    public Object getWASMTagAlloc() {
+        return wasmTagAlloc;
+    }
+
+    public Object getWASMTagType() {
+        return wasmTagType;
+    }
+
+    public Object getWASMExnAlloc() {
+        return wasmExnAlloc;
+    }
+
+    public Object getWASMExnTag() {
+        return wasmExnTag;
+    }
+
+    public JSWebAssemblyTagObject getJSTagObj() {
+        JSWebAssemblyTagObject jsTag = wasmJSTag;
+        if (CompilerDirectives.injectBranchProbability(SLOWPATH_PROBABILITY, jsTag == null)) {
+            enterOncePerContextBranch();
+            jsTag = createWasmJSTag();
+        }
+        return jsTag;
+    }
+
+    public Object getJSTagAddr() {
+        return getJSTagObj().getWasmTag();
+    }
+
+    /**
+     * Creates this realm's WebAssembly.JSTag (a Tag with type (param externref)).
+     */
+    @TruffleBoundary
+    private JSWebAssemblyTagObject createWasmJSTag() {
+        try {
+            Object tag = InteropLibrary.getUncached().execute(getWASMTagAlloc(), "(externref)");
+            return wasmJSTag = JSWebAssemblyTag.create(context, this, tag, new WebAssemblyType[]{WebAssemblyType.externref});
+        } catch (InteropException e) {
+            throw CompilerDirectives.shouldNotReachHere("tag_alloc", e);
+        }
+    }
+
     public JSFunctionObject getWebAssemblyModuleConstructor() {
         return webAssemblyModuleConstructor;
     }
@@ -3276,6 +3353,14 @@ public class JSRealm {
 
     public JSDynamicObject getWebAssemblyGlobalPrototype() {
         return webAssemblyGlobalPrototype;
+    }
+
+    public JSDynamicObject getWebAssemblyTagPrototype() {
+        return webAssemblyTagPrototype;
+    }
+
+    public JSDynamicObject getWebAssemblyExceptionPrototype() {
+        return webAssemblyExceptionPrototype;
     }
 
     public JSDynamicObject getTextDecoderPrototype() {

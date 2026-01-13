@@ -40,8 +40,11 @@
  */
 package com.oracle.truffle.js.runtime.builtins.wasm;
 
+import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.dsl.Bind;
 import com.oracle.truffle.api.dsl.Cached;
+import com.oracle.truffle.api.exception.AbstractTruffleException;
+import com.oracle.truffle.api.interop.InteropException;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.library.CachedLibrary;
@@ -49,15 +52,17 @@ import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.profiles.InlinedBranchProfile;
-import com.oracle.truffle.js.lang.JavaScriptLanguage;
 import com.oracle.truffle.js.nodes.access.GetIteratorNode;
 import com.oracle.truffle.js.nodes.access.IterableToListNode;
+import com.oracle.truffle.js.nodes.control.TryCatchNode;
 import com.oracle.truffle.js.nodes.function.JSFunctionCallNode;
 import com.oracle.truffle.js.nodes.wasm.ToJSValueNode;
 import com.oracle.truffle.js.nodes.wasm.ToWebAssemblyValueNode;
 import com.oracle.truffle.js.runtime.Errors;
+import com.oracle.truffle.js.runtime.GraalJSException;
 import com.oracle.truffle.js.runtime.JSArguments;
 import com.oracle.truffle.js.runtime.JSContext;
+import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.interop.InteropArray;
 import com.oracle.truffle.js.runtime.objects.IteratorRecord;
@@ -92,8 +97,10 @@ public class WebAssemblyHostFunction implements TruffleObject {
                     @Cached InlinedBranchProfile errorBranch,
                     @Cached(inline = true) GetIteratorNode getIteratorNode,
                     @Cached IterableToListNode iterableToListNode,
-                    @CachedLibrary("this") InteropLibrary self) {
-        JSContext context = JavaScriptLanguage.get(self).getJSContext();
+                    @CachedLibrary("this") InteropLibrary self,
+                    @CachedLibrary(limit = "1") InteropLibrary exnAllocLib,
+                    @Cached TryCatchNode.GetErrorObjectNode getErrorObjectNode) {
+        JSContext context = JSContext.get(self);
         if ((!context.getLanguageOptions().wasmBigInt() && type.anyTypeIsI64()) || type.anyTypeIsV128()) {
             errorBranch.enter(node);
             throw Errors.createTypeError("wasm function signature contains illegal type");
@@ -103,7 +110,23 @@ public class WebAssemblyHostFunction implements TruffleObject {
             jsArgs[i] = toJSValueNode.execute(args[i]);
         }
 
-        Object result = callNode.executeCall(JSArguments.create(Undefined.instance, fn, jsArgs));
+        Object result;
+        try {
+            result = callNode.executeCall(JSArguments.create(Undefined.instance, fn, jsArgs));
+        } catch (GraalJSException e) {
+            // Convert JS exception to a WasmRuntimeException with this realm's WebAssembly.JSTag.
+            try {
+                Object value = getErrorObjectNode.execute(e);
+                if (value instanceof JSWebAssemblyExceptionObject wasmExnObj) {
+                    throw wasmExnObj.getWasmException();
+                }
+                JSRealm realm = JSRealm.get(self);
+                Object payload = toWebAssemblyValueNode.execute(value, WebAssemblyType.externref);
+                throw (AbstractTruffleException) exnAllocLib.execute(realm.getWASMExnAlloc(), realm.getJSTagAddr(), payload);
+            } catch (InteropException ex) {
+                throw CompilerDirectives.shouldNotReachHere(ex);
+            }
+        }
 
         WebAssemblyType[] resultTypes = type.resultTypes();
         if (resultTypes.length == 0) {

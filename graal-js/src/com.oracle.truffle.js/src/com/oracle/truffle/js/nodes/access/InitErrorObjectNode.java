@@ -124,10 +124,13 @@ public final class InitErrorObjectNode extends JavaScriptBaseNode {
         setFormattedStack.execute(errorObj, JSError.FORMATTED_STACK_NAME, null);
         defineStackProperty.execute(errorObj);
 
-        if (setLineNumber != null && exception.getJSStackTrace().length > 0) {
-            JSStackTraceElement topStackTraceElement = exception.getJSStackTrace()[0];
-            setLineNumber.executeVoid(errorObj, topStackTraceElement.getLineNumber());
-            setColumnNumber.executeVoid(errorObj, defaultColumnNumber ? JSError.DEFAULT_COLUMN_NUMBER : topStackTraceElement.getColumnNumber());
+        if (setLineNumber != null) {
+            JSStackTraceElement[] jsStackTrace = exception.getJSStackTrace();
+            if (jsStackTrace.length > 0) {
+                JSStackTraceElement topStackTraceElement = jsStackTrace[0];
+                setLineNumber.executeVoid(errorObj, topStackTraceElement.getLineNumber());
+                setColumnNumber.executeVoid(errorObj, defaultColumnNumber ? JSError.DEFAULT_COLUMN_NUMBER : topStackTraceElement.getColumnNumber());
+            }
         }
         return errorObj;
     }

@@ -153,12 +153,14 @@ import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalPlainMonthDay;
 import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalPlainTime;
 import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalPlainYearMonth;
 import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalZonedDateTime;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyException;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyExportedGC;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyGlobal;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyInstance;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyMemory;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyModule;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTable;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTag;
 import com.oracle.truffle.js.runtime.java.JavaImporter;
 import com.oracle.truffle.js.runtime.java.JavaPackage;
 import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
@@ -556,6 +558,8 @@ public class JSContext {
     private final JSObjectFactory webAssemblyTableFactory;
     private final JSObjectFactory webAssemblyGlobalFactory;
     private final JSObjectFactory webAssemblyExportedGCObjectFactory;
+    private final JSObjectFactory webAssemblyTagFactory;
+    private final JSObjectFactory webAssemblyExceptionFactory;
 
     private final JSObjectFactory shadowRealmFactory;
     private final JSObjectFactory workerFactory;
@@ -765,6 +769,8 @@ public class JSContext {
         this.webAssemblyTableFactory = builder.create(JSWebAssemblyTable.INSTANCE);
         this.webAssemblyGlobalFactory = builder.create(JSWebAssemblyGlobal.INSTANCE);
         this.webAssemblyExportedGCObjectFactory = builder.create(JSWebAssemblyExportedGC.INSTANCE);
+        this.webAssemblyTagFactory = builder.create(JSWebAssemblyTag.INSTANCE);
+        this.webAssemblyExceptionFactory = builder.create(JSWebAssemblyException.INSTANCE);
 
         this.shadowRealmFactory = builder.create(JSShadowRealm.INSTANCE);
         this.workerFactory = languageOptions.worker() ? builder.create(JSWorker.INSTANCE) : null;
@@ -1328,6 +1334,14 @@ public class JSContext {
 
     public JSObjectFactory getWebAssemblyExportedGCObjectFactory() {
         return webAssemblyExportedGCObjectFactory;
+    }
+
+    public JSObjectFactory getWebAssemblyTagFactory() {
+        return webAssemblyTagFactory;
+    }
+
+    public JSObjectFactory getWebAssemblyExceptionFactory() {
+        return webAssemblyExceptionFactory;
     }
 
     public final JSObjectFactory getShadowRealmFactory() {

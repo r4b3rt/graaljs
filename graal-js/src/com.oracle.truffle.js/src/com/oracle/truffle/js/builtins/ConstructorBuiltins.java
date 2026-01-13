@@ -171,6 +171,7 @@ import com.oracle.truffle.js.nodes.cast.JSToDoubleNode;
 import com.oracle.truffle.js.nodes.cast.JSToIndexNode;
 import com.oracle.truffle.js.nodes.cast.JSToIntegerWithTruncationNode;
 import com.oracle.truffle.js.nodes.cast.JSToIntegerWithoutRoundingNode;
+import com.oracle.truffle.js.nodes.cast.JSToLengthNode;
 import com.oracle.truffle.js.nodes.cast.JSToNumericNode;
 import com.oracle.truffle.js.nodes.cast.JSToObjectNode;
 import com.oracle.truffle.js.nodes.cast.JSToPrimitiveNode;
@@ -213,6 +214,7 @@ import com.oracle.truffle.js.runtime.PromiseHook;
 import com.oracle.truffle.js.runtime.SafeInteger;
 import com.oracle.truffle.js.runtime.Strings;
 import com.oracle.truffle.js.runtime.Symbol;
+import com.oracle.truffle.js.runtime.UserScriptException;
 import com.oracle.truffle.js.runtime.WorkerAgent;
 import com.oracle.truffle.js.runtime.array.ArrayAllocationSite;
 import com.oracle.truffle.js.runtime.array.DynamicArray;
@@ -288,12 +290,16 @@ import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalPlainMonthDay;
 import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalPlainTime;
 import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalPlainYearMonth;
 import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalZonedDateTime;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyException;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyExceptionObject;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyGlobal;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyInstance;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyMemory;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyModule;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyModuleObject;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTable;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTag;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTagObject;
 import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyType;
 import com.oracle.truffle.js.runtime.java.JavaImporter;
 import com.oracle.truffle.js.runtime.java.JavaPackage;
@@ -398,6 +404,8 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
         Memory(1),
         Module(1),
         Table(1),
+        Tag(1),
+        Exception(2),
 
         ShadowRealm(0),
 
@@ -744,6 +752,17 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
                 return construct
                                 ? ConstructWebAssemblyTableNodeGen.create(context, builtin, newTarget, args().functionOrNewTarget(newTarget).fixedArgs(1).varArgs().createArgumentNodes(context))
                                 : createCallRequiresNew(context, builtin);
+            case Tag:
+                return construct
+                                ? ConstructorBuiltinsFactory.ConstructWebAssemblyTagNodeGen.create(context, builtin, newTarget,
+                                                args().functionOrNewTarget(newTarget).fixedArgs(1).createArgumentNodes(context))
+                                : createCallRequiresNew(context, builtin);
+            case Exception:
+                return construct
+                                ? ConstructorBuiltinsFactory.ConstructWebAssemblyExceptionNodeGen.create(context, builtin, newTarget,
+                                                args().functionOrNewTarget(newTarget).fixedArgs(3).createArgumentNodes(context))
+                                : createCallRequiresNew(context, builtin);
+
             case Worker:
                 if (construct) {
                     return ConstructWorkerNodeGen.create(context, builtin, newTarget, args().functionOrNewTarget(newTarget).fixedArgs(2).createArgumentNodes(context));
@@ -3482,6 +3501,185 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
             return realm.getWebAssemblyGlobalPrototype();
         }
 
+    }
+
+    public abstract static class ConstructWebAssemblyTagNode extends ConstructWithNewTargetNode {
+        @Child PropertyGetNode getParameters;
+        @Child PropertyGetNode getLength;
+        @Child InteropLibrary tagAllocLib;
+
+        public ConstructWebAssemblyTagNode(JSContext context, JSBuiltin builtin, boolean newTargetCase) {
+            super(context, builtin, newTargetCase);
+            this.getParameters = PropertyGetNode.create(Strings.PARAMETERS, context);
+            this.getLength = PropertyGetNode.create(Strings.LENGTH, context);
+            this.tagAllocLib = InteropLibrary.getFactory().createDispatched(JSConfig.InteropLibraryLimit);
+        }
+
+        @Specialization
+        protected JSObject constructTag(JSDynamicObject newTarget, Object options,
+                        @Cached IsObjectNode isObjectNode,
+                        @Cached JSToLengthNode toLengthNode,
+                        @Cached(parameters = "getContext()") ReadElementNode readElementNode,
+                        @Cached JSToStringNode toStringNode,
+                        @Cached TruffleString.ToJavaStringNode toJavaString,
+                        @Cached InlinedBranchProfile errorBranch) {
+            if (!isObjectNode.executeBoolean(options)) {
+                errorBranch.enter(this);
+                throw Errors.createTypeError("WebAssembly.Tag(): Argument 0 must be a tag type", this);
+            }
+            Object parameters = getParameters.getValue(options);
+            if (!isObjectNode.executeBoolean(parameters)) {
+                errorBranch.enter(this);
+                throw Errors.createTypeError("WebAssembly.Tag(): Argument 0 must be a tag type with 'parameters'", this);
+            }
+            Object length = getLength.getValueOrDefault(parameters, null);
+            if (length == null) {
+                errorBranch.enter(this);
+                throw Errors.createTypeError("WebAssembly.Tag(): Argument 0 contains parameters without 'length'", this);
+            }
+            long lengthAsLong = toLengthNode.executeLong(length);
+            if (lengthAsLong > JSConfig.MaxWasmTagParams) {
+                throw Errors.createRangeError("WebAssembly.Tag(): Argument 0 contains too many parameters", this);
+            }
+            int size = (int) lengthAsLong;
+            String[] parameterTypesStr = new String[size];
+            WebAssemblyType[] parameterTypes = new WebAssemblyType[size];
+            for (int i = 0; i < size; i++) {
+                Object valueTypeRaw = readElementNode.executeWithTargetAndIndex(parameters, i);
+                String valueTypeStr = toJavaString.execute(toStringNode.executeString(valueTypeRaw));
+                WebAssemblyType valueType = WebAssemblyType.lookupValueType(valueTypeStr);
+                if (valueType == null) {
+                    errorBranch.enter(this);
+                    throw Errors.createTypeError("WebAssembly.Tag(): Parameter type must be a WebAssembly value type (i32, i64, f32, f64, v128, anyfunc, externref)", this);
+                }
+                parameterTypes[i] = valueType;
+                parameterTypesStr[i] = valueTypeStr;
+            }
+            final JSRealm realm = getRealm();
+            Object wasmTag;
+            try {
+                Object createTag = realm.getWASMTagAlloc();
+                wasmTag = tagAllocLib.execute(createTag, toTypeString(parameterTypesStr));
+            } catch (InteropException ex) {
+                throw Errors.shouldNotReachHere(ex);
+            }
+            JSDynamicObject proto = getPrototype(realm, newTarget);
+            return JSWebAssemblyTag.create(getContext(), realm, proto, wasmTag, parameterTypes);
+        }
+
+        @TruffleBoundary
+        private static String toTypeString(String[] parameterTypesStr) {
+            return "(" + String.join(" ", parameterTypesStr) + ")";
+        }
+
+        @Override
+        protected JSDynamicObject getIntrinsicDefaultProto(JSRealm realm) {
+            return realm.getWebAssemblyTagPrototype();
+        }
+    }
+
+    public abstract static class ConstructWebAssemblyExceptionNode extends ConstructWithNewTargetNode {
+        @Child PropertyGetNode getLength;
+        @Child PropertyGetNode getTraceStack;
+        @Child InteropLibrary exnAllocLib;
+
+        public ConstructWebAssemblyExceptionNode(JSContext context, JSBuiltin builtin, boolean newTargetCase) {
+            super(context, builtin, newTargetCase);
+            this.getLength = PropertyGetNode.create(Strings.LENGTH, context);
+            this.getTraceStack = PropertyGetNode.create(Strings.TRACE_STACK, context);
+            this.exnAllocLib = InteropLibrary.getFactory().createDispatched(JSConfig.InteropLibraryLimit);
+        }
+
+        @Specialization
+        protected JSObject constructException(JSDynamicObject newTarget, Object exceptionTag, Object payload, Object options,
+                        @Cached JSToLengthNode toLengthNode,
+                        @Cached(parameters = "getContext()") ReadElementNode readElementNode,
+                        @Cached IsObjectNode isObjectNode,
+                        @Cached(inline = true) JSToBooleanNode toBooleanNode,
+                        @Cached ErrorStackTraceLimitNode stackTraceLimitNode,
+                        @Cached ToWebAssemblyValueNode toWebAssemblyValueNode,
+                        @Cached InlinedBranchProfile errorBranch) {
+            if (!(exceptionTag instanceof JSWebAssemblyTagObject exnTagObj)) {
+                errorBranch.enter(this);
+                throw Errors.createTypeError("WebAssembly.Exception(): Argument 0 must be a WebAssembly tag", this);
+            }
+            final JSRealm realm = getRealm();
+            if (exceptionTag == realm.getJSTagObj()) {
+                errorBranch.enter(this);
+                throw Errors.createTypeError("WebAssembly.Exception(): Argument 0 cannot be WebAssembly.JSTag", this);
+            }
+            Object length = getLength.getValueOrDefault(payload, null);
+            if (length == null) {
+                errorBranch.enter(this);
+                throw Errors.createTypeError("WebAssembly.Exception(): Exception values argument has no length", this);
+            }
+            int size;
+            try {
+                size = Math.toIntExact(toLengthNode.executeLong(length));
+            } catch (ArithmeticException e) {
+                errorBranch.enter(this);
+                throw Errors.createRangeError("WebAssembly.Exception(): Too many exception values", this);
+            }
+            if (size != exnTagObj.parameterTypes().length) {
+                errorBranch.enter(this);
+                throw Errors.createTypeError("WebAssembly.Exception(): Number of exception values does not match signature length", this);
+            }
+            Object[] wasmPayload = new Object[size];
+            for (int i = 0; i < size; i++) {
+                WebAssemblyType type = exnTagObj.parameterTypes()[i];
+                if (type == WebAssemblyType.v128) {
+                    errorBranch.enter(this);
+                    throw Errors.createTypeError("WebAssembly.Exception(): Invalid type v128", this);
+                } else if (type == WebAssemblyType.exnref) {
+                    errorBranch.enter(this);
+                    throw Errors.createTypeError("WebAssembly.Exception(): Invalid type exnref", this);
+                }
+                wasmPayload[i] = toWebAssemblyValueNode.execute(readElementNode.executeWithTargetAndIndex(payload, i), type);
+            }
+            AbstractTruffleException wasmException = exnAlloc(realm, exnTagObj, wasmPayload);
+            JSDynamicObject proto = getPrototype(realm, newTarget);
+            JSWebAssemblyExceptionObject exnObj = JSWebAssemblyException.create(getContext(), realm, proto, wasmException, exnTagObj, wasmPayload);
+
+            if (options != Undefined.instance) {
+                if (!isObjectNode.executeBoolean(options)) {
+                    errorBranch.enter(this);
+                    throw Errors.createTypeError("WebAssembly.Exception(): Argument 2 is not an object", this);
+                }
+                Object traceStack = getTraceStack.getValue(options);
+                if (toBooleanNode.executeBoolean(this, traceStack)) {
+                    exnObj.setStack(captureStackTrace(exnObj, stackTraceLimitNode.executeInt(), newTarget, realm));
+                }
+            }
+            return exnObj;
+        }
+
+        @TruffleBoundary
+        private TruffleString captureStackTrace(JSWebAssemblyExceptionObject exnObj, int stackTraceLimit, JSDynamicObject newTarget, JSRealm realm) {
+            return JSError.formatStackTrace(UserScriptException.createCapture(exnObj, this, stackTraceLimit, newTarget, isNewTargetCase).getJSStackTrace(), exnObj, realm);
+        }
+
+        private AbstractTruffleException exnAlloc(JSRealm realm, JSWebAssemblyTagObject exnTagObj, Object[] wasmPayload) {
+            try {
+                Object createException = realm.getWASMExnAlloc();
+                int size = wasmPayload.length;
+                Object[] args = new Object[size + 1];
+                args[0] = exnTagObj.getWasmTag();
+                System.arraycopy(wasmPayload, 0, args, 1, size);
+                return (AbstractTruffleException) exnAllocLib.execute(createException, args);
+            } catch (InteropException ex) {
+                throw Errors.shouldNotReachHere(ex);
+            }
+        }
+
+        @Override
+        protected JSDynamicObject getIntrinsicDefaultProto(JSRealm realm) {
+            return realm.getWebAssemblyExceptionPrototype();
+        }
+
+        @Override
+        public boolean countsTowardsStackTraceLimit() {
+            return false;
+        }
     }
 
     public abstract static class ConstructWorkerNode extends ConstructWithNewTargetNode {
