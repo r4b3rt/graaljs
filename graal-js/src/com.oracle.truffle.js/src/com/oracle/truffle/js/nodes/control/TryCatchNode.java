@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -300,9 +300,8 @@ public class TryCatchNode extends StatementNode implements ResumableNode.WithObj
         private JSErrorObject createErrorFromJSException(JSException exception) {
             JSRealm errorRealm = exception.getRealm();
             String message = exception.getRawMessage();
-            assert message != null;
             JSErrorObject errorObj = newErrorObject(context, errorRealm, exception.getErrorType());
-            initErrorObjectNode.execute(errorObj, exception, Strings.fromJavaString(fromJavaStringNode, message));
+            initErrorObjectNode.execute(errorObj, exception, message == null ? null : Strings.fromJavaString(fromJavaStringNode, message));
             exception.setErrorObject(errorObj);
             return errorObj;
         }
