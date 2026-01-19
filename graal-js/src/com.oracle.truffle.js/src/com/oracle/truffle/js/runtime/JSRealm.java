@@ -60,6 +60,7 @@ import java.util.Random;
 import java.util.SplittableRandom;
 import java.util.WeakHashMap;
 
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyExportedGC;
 import org.graalvm.collections.Pair;
 import org.graalvm.home.HomeFinder;
 import org.graalvm.options.OptionValues;
@@ -469,6 +470,8 @@ public class JSRealm {
     private final Object wasmTableWrite;
     private final Object wasmTableLength;
     private final Object wasmFuncType;
+    private final Object wasmIsArray;
+    private final Object wasmIsStruct;
     private final Object wasmIsFunc;
     private final Object wasmMemAlloc;
     private final Object wasmMemGrow;
@@ -496,6 +499,7 @@ public class JSRealm {
     private final JSDynamicObject webAssemblyModulePrototype;
     private final JSFunctionObject webAssemblyTableConstructor;
     private final JSDynamicObject webAssemblyTablePrototype;
+    private final JSDynamicObject webAssemblyExportedGCObjectPrototype;
 
     private final JSFunctionObject shadowRealmConstructor;
     private final JSDynamicObject shadowRealmPrototype;
@@ -947,6 +951,8 @@ public class JSRealm {
                 wasmTableWrite = wasmInterop.readMember(wasmObject, "table_write");
                 wasmTableLength = wasmInterop.readMember(wasmObject, "table_size");
                 wasmFuncType = wasmInterop.readMember(wasmObject, "func_type");
+                wasmIsArray = wasmInterop.readMember(wasmObject, "is_array");
+                wasmIsStruct = wasmInterop.readMember(wasmObject, "is_struct");
                 wasmIsFunc = wasmInterop.readMember(wasmObject, "is_func");
                 wasmMemAlloc = wasmInterop.readMember(wasmObject, "mem_alloc");
                 wasmMemGrow = wasmInterop.readMember(wasmObject, "mem_grow");
@@ -987,6 +993,8 @@ public class JSRealm {
             ctor = JSWebAssemblyGlobal.createConstructor(this);
             this.webAssemblyGlobalConstructor = ctor.getFunctionObject();
             this.webAssemblyGlobalPrototype = ctor.getPrototype();
+            ctor = JSWebAssemblyExportedGC.createConstructor(this);
+            this.webAssemblyExportedGCObjectPrototype = ctor.getPrototype();
         } else {
             this.wasmTableAlloc = null;
             this.wasmTableGrow = null;
@@ -994,6 +1002,8 @@ public class JSRealm {
             this.wasmTableWrite = null;
             this.wasmTableLength = null;
             this.wasmFuncType = null;
+            this.wasmIsArray = null;
+            this.wasmIsStruct = null;
             this.wasmIsFunc = null;
             this.wasmMemAlloc = null;
             this.wasmMemGrow = null;
@@ -1021,6 +1031,7 @@ public class JSRealm {
             this.webAssemblyModulePrototype = null;
             this.webAssemblyTableConstructor = null;
             this.webAssemblyTablePrototype = null;
+            this.webAssemblyExportedGCObjectPrototype = null;
         }
 
         this.foreignIterablePrototype = createForeignIterablePrototype();
@@ -3196,6 +3207,14 @@ public class JSRealm {
         return wasmFuncType;
     }
 
+    public Object getWASMIsArray() {
+        return wasmIsArray;
+    }
+
+    public Object getWASMIsStruct() {
+        return wasmIsStruct;
+    }
+
     public Object getWASMIsFunc() {
         return wasmIsFunc;
     }
@@ -3262,6 +3281,10 @@ public class JSRealm {
 
     public JSDynamicObject getWebAssemblyGlobalPrototype() {
         return webAssemblyGlobalPrototype;
+    }
+
+    public JSDynamicObject getWebAssemblyExportedGCObjectPrototype() {
+        return webAssemblyExportedGCObjectPrototype;
     }
 
     public JSDynamicObject getTextDecoderPrototype() {

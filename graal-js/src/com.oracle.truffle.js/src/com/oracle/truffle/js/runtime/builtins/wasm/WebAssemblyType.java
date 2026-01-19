@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -38,59 +38,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.oracle.truffle.js.runtime.builtins.wasm;
 
-import com.oracle.truffle.js.runtime.Errors;
-import com.oracle.truffle.js.runtime.JSRealm;
-import com.oracle.truffle.js.runtime.objects.Undefined;
-
 /**
- * Represents the value types used in WebAssembly globals and tables. Corresponds to the {@code
- * ValueType} enum defined in the WebAssembly JS API spec.
- * 
- * See org.graalvm.wasm.api.ValueType.
+ * Represents the value types used in WebAssembly.
+ *
+ * See org.graalvm.wasm.types.ValueType. This enum is an abstract view of WebAssembly value types.
  */
-public enum WebAssemblyValueType {
-    i32(false),
-    i64(false),
-    f32(false),
-    f64(false),
-    v128(false),
-    anyfunc(true),
-    externref(true);
+public enum WebAssemblyType {
+    i32,
+    i64,
+    f32,
+    f64,
+    v128,
+    funcref,
+    externref,
+    exnref,
+    anyref;
 
-    private final boolean reference;
-
-    WebAssemblyValueType(boolean reference) {
-        this.reference = reference;
-    }
-
-    public boolean isReference() {
-        return reference;
-    }
-
-    public Object getDefaultValue(JSRealm realm) {
-        return switch (this) {
-            case i32 -> 0;
-            case i64 -> 0L;
-            case f32 -> 0f;
-            case f64 -> 0d;
-            case anyfunc -> realm.getWasmRefNull();
-            case externref -> Undefined.instance;
-            default -> throw Errors.shouldNotReachHereUnexpectedValue(this);
+    public static WebAssemblyType fromValueType(WebAssemblyValueType valueType) {
+        return switch (valueType) {
+            case i32 -> i32;
+            case i64 -> i64;
+            case f32 -> f32;
+            case f64 -> f64;
+            case v128 -> v128;
+            case anyfunc -> funcref;
+            case externref -> externref;
         };
     }
 
-    public static WebAssemblyValueType lookupType(String type) {
+    public static WebAssemblyType lookupType(String type) {
         return switch (type) {
             case "i32" -> i32;
             case "i64" -> i64;
             case "f32" -> f32;
             case "f64" -> f64;
             case "v128" -> v128;
-            case "anyfunc" -> anyfunc;
+            case "funcref" -> funcref;
             case "externref" -> externref;
+            case "exnref" -> exnref;
+            case "anyref" -> anyref;
             default -> null;
         };
     }

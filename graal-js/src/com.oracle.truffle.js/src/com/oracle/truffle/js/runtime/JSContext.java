@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -153,6 +153,7 @@ import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalPlainMonthDay;
 import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalPlainTime;
 import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalPlainYearMonth;
 import com.oracle.truffle.js.runtime.builtins.temporal.JSTemporalZonedDateTime;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyExportedGC;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyGlobal;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyInstance;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyMemory;
@@ -554,6 +555,7 @@ public class JSContext {
     private final JSObjectFactory webAssemblyMemoryFactory;
     private final JSObjectFactory webAssemblyTableFactory;
     private final JSObjectFactory webAssemblyGlobalFactory;
+    private final JSObjectFactory webAssemblyExportedGCObjectFactory;
 
     private final JSObjectFactory shadowRealmFactory;
     private final JSObjectFactory workerFactory;
@@ -762,6 +764,7 @@ public class JSContext {
         this.webAssemblyMemoryFactory = builder.create(JSWebAssemblyMemory.INSTANCE);
         this.webAssemblyTableFactory = builder.create(JSWebAssemblyTable.INSTANCE);
         this.webAssemblyGlobalFactory = builder.create(JSWebAssemblyGlobal.INSTANCE);
+        this.webAssemblyExportedGCObjectFactory = builder.create(JSWebAssemblyExportedGC.INSTANCE);
 
         this.shadowRealmFactory = builder.create(JSShadowRealm.INSTANCE);
         this.workerFactory = languageOptions.worker() ? builder.create(JSWorker.INSTANCE) : null;
@@ -1321,6 +1324,10 @@ public class JSContext {
 
     public JSObjectFactory getWebAssemblyGlobalFactory() {
         return webAssemblyGlobalFactory;
+    }
+
+    public JSObjectFactory getWebAssemblyExportedGCObjectFactory() {
+        return webAssemblyExportedGCObjectFactory;
     }
 
     public final JSObjectFactory getShadowRealmFactory() {

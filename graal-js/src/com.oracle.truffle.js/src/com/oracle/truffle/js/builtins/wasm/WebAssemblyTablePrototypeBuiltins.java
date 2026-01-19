@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -67,6 +67,7 @@ import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.BuiltinEnum;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTable;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTableObject;
+import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyType;
 import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyValueType;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -149,7 +150,7 @@ public class WebAssemblyTablePrototypeBuiltins extends JSBuiltinsContainer.Switc
             if (args.length == 0) {
                 wasmValue = elementKind.getDefaultValue(realm);
             } else {
-                wasmValue = toWebAssemblyValueNode.execute(args[0], elementKind);
+                wasmValue = toWebAssemblyValueNode.execute(args[0], WebAssemblyType.fromValueType(elementKind));
             }
             try {
                 Object growFn = realm.getWASMTableGrow();
@@ -226,7 +227,7 @@ public class WebAssemblyTablePrototypeBuiltins extends JSBuiltinsContainer.Switc
             if (args.length == 0) {
                 wasmValue = elementKind.getDefaultValue(realm);
             } else {
-                wasmValue = toWebAssemblyValueNode.execute(args[0], elementKind);
+                wasmValue = toWebAssemblyValueNode.execute(args[0], WebAssemblyType.fromValueType(elementKind));
             }
             try {
                 Object setFn = realm.getWASMTableWrite();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2024, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -46,8 +46,8 @@ import java.util.Objects;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 
 public record WasmFunctionTypeInfo(
-                @CompilationFinal(dimensions = 1) WebAssemblyValueType[] paramTypes,
-                @CompilationFinal(dimensions = 1) WebAssemblyValueType[] resultTypes,
+                @CompilationFinal(dimensions = 1) WebAssemblyType[] paramTypes,
+                @CompilationFinal(dimensions = 1) WebAssemblyType[] resultTypes,
                 boolean anyTypeIsI64,
                 boolean anyTypeIsV128) {
 
@@ -81,7 +81,7 @@ public record WasmFunctionTypeInfo(
         return "(" + String.join(" ", toString(paramTypes)) + ")" + String.join(" ", toString(resultTypes));
     }
 
-    private static String[] toString(WebAssemblyValueType[] types) {
+    private static String[] toString(WebAssemblyType[] types) {
         return Arrays.stream(types).map(Enum::name).toArray(String[]::new);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -294,6 +294,7 @@ import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyMemory;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyModule;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyModuleObject;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTable;
+import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyType;
 import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyValueType;
 import com.oracle.truffle.js.runtime.java.JavaImporter;
 import com.oracle.truffle.js.runtime.java.JavaPackage;
@@ -3403,7 +3404,7 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
             if (args.length == 0) {
                 wasmValue = elementKind.getDefaultValue(realm);
             } else {
-                wasmValue = toWebAssemblyValueNode.execute(args[0], elementKind);
+                wasmValue = toWebAssemblyValueNode.execute(args[0], WebAssemblyType.fromValueType(elementKind));
             }
             Object wasmTable;
             try {
@@ -3464,7 +3465,7 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
                 if (!getContext().getLanguageOptions().wasmBigInt() && valueType == WebAssemblyValueType.i64) {
                     throw Errors.createTypeError("WebAssembly.Global(): Can't set the value of i64 WebAssembly.Global", this);
                 }
-                webAssemblyValue = toWebAssemblyValueNode.execute(args[0], valueType);
+                webAssemblyValue = toWebAssemblyValueNode.execute(args[0], WebAssemblyType.fromValueType(valueType));
             }
             Object wasmGlobal;
             try {

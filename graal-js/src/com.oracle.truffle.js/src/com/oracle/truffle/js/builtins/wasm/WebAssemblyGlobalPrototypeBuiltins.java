@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -63,6 +63,7 @@ import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.builtins.BuiltinEnum;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyGlobal;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyGlobalObject;
+import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyType;
 import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyValueType;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -190,7 +191,7 @@ public class WebAssemblyGlobalPrototypeBuiltins extends JSBuiltinsContainer.Swit
                 } else {
                     value = args[0];
                 }
-                Object webAssemblyValue = toWebAssemblyValueNode.execute(value, global.getValueType());
+                Object webAssemblyValue = toWebAssemblyValueNode.execute(value, WebAssemblyType.fromValueType(global.getValueType()));
                 Object globalWrite = getRealm().getWASMGlobalWrite();
                 globalWriteLib.execute(globalWrite, wasmGlobal, webAssemblyValue);
                 return Undefined.instance;
