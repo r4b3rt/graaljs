@@ -68,17 +68,15 @@ public final class InitErrorObjectNode extends JavaScriptBaseNode {
     @Child private DynamicObject.PutNode setMessage;
     @Child private DynamicObject.PutNode setErrors;
     @Child private DefineStackPropertyNode defineStackProperty;
-    private final boolean defaultColumnNumber;
     @Child private CreateMethodPropertyNode setLineNumber;
     @Child private CreateMethodPropertyNode setColumnNumber;
     @Child private InstallErrorCauseNode installErrorCauseNode;
 
-    private InitErrorObjectNode(JSContext context, boolean defaultColumnNumber) {
+    private InitErrorObjectNode(JSContext context) {
         this.context = context;
         this.setFormattedStack = DynamicObject.PutNode.create();
         this.setMessage = DynamicObject.PutNode.create();
         this.defineStackProperty = DefineStackPropertyNode.create();
-        this.defaultColumnNumber = defaultColumnNumber;
         if (context.isOptionNashornCompatibilityMode()) {
             this.setLineNumber = CreateMethodPropertyNode.create(context, JSError.LINE_NUMBER_PROPERTY_NAME);
             this.setColumnNumber = CreateMethodPropertyNode.create(context, JSError.COLUMN_NUMBER_PROPERTY_NAME);
@@ -87,21 +85,20 @@ public final class InitErrorObjectNode extends JavaScriptBaseNode {
 
     @NeverDefault
     public static InitErrorObjectNode create(JSContext context) {
-        return new InitErrorObjectNode(context, false);
-    }
-
-    @NeverDefault
-    public static InitErrorObjectNode create(JSContext context, boolean defaultColumnNumber) {
-        return new InitErrorObjectNode(context, defaultColumnNumber);
+        return new InitErrorObjectNode(context);
     }
 
     @NeverDefault
     public static InitErrorObjectNode getUncached(JSContext context) {
-        return new InitErrorObjectNode(context, false);
+        return new InitErrorObjectNode(context);
     }
 
     public JSObject execute(JSObject errorObj, GraalJSException exception, TruffleString messageOpt) {
         return execute(errorObj, exception, messageOpt, null);
+    }
+
+    public JSObject execute(JSObject errorObj, GraalJSException exception, TruffleString messageOpt, boolean defaultColumnNumber) {
+        return execute(errorObj, exception, messageOpt, null, Undefined.instance, defaultColumnNumber);
     }
 
     public JSObject execute(JSObject errorObj, GraalJSException exception, TruffleString messageOpt, JSObject errorsOpt) {
@@ -109,6 +106,10 @@ public final class InitErrorObjectNode extends JavaScriptBaseNode {
     }
 
     public JSObject execute(JSObject errorObj, GraalJSException exception, TruffleString messageOpt, JSObject errorsOpt, Object options) {
+        return execute(errorObj, exception, messageOpt, errorsOpt, options, false);
+    }
+
+    public JSObject execute(JSObject errorObj, GraalJSException exception, TruffleString messageOpt, JSObject errorsOpt, Object options, boolean defaultColumnNumber) {
         if (messageOpt != null) {
             Properties.putWithFlags(setMessage, errorObj, JSError.MESSAGE, messageOpt, JSError.MESSAGE_ATTRIBUTES);
         }

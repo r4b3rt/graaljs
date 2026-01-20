@@ -191,7 +191,7 @@ public class TryCatchNode extends StatementNode implements ResumableNode.WithObj
                 CompilerDirectives.transferToInterpreterAndInvalidate();
                 getErrorObjectNode = insert(GetErrorObjectNode.create());
             }
-            Object exceptionObject = getErrorObjectNode.execute(ex);
+            Object exceptionObject = getErrorObjectNode.execute(ex, true);
             writeErrorVar.executeWrite(frame, exceptionObject);
 
             if (destructuring != null) {
@@ -264,57 +264,61 @@ public class TryCatchNode extends StatementNode implements ResumableNode.WithObj
             return GetErrorObjectNodeGen.getUncached();
         }
 
-        public abstract Object execute(Throwable ex);
+        public final Object execute(Throwable ex) {
+            return execute(ex, false);
+        }
+
+        public abstract Object execute(Throwable ex, boolean defaultColumnNumber);
 
         @Specialization
-        final Object doJSException(JSException ex,
+        final Object doJSException(JSException ex, boolean defaultColumnNumber,
                         @Shared @Cached(parameters = "getJSContext()") InitErrorObjectNode initErrorObjectNode,
                         @Shared @Cached TruffleString.FromJavaStringNode fromJavaStringNode) {
             // fill in any missing stack trace elements
             TruffleStackTrace.fillIn(ex);
 
-            return getOrCreateErrorFromJSException(ex, initErrorObjectNode, fromJavaStringNode);
+            return getOrCreateErrorFromJSException(ex, defaultColumnNumber, initErrorObjectNode, fromJavaStringNode);
         }
 
         @Specialization
-        static Object doUserScriptException(UserScriptException ex) {
+        static Object doUserScriptException(UserScriptException ex, @SuppressWarnings("unused") boolean defaultColumnNumber) {
             return ex.getErrorObject();
         }
 
         @Specialization
-        final Object doStackOverflowError(StackOverflowError ex,
+        final Object doStackOverflowError(StackOverflowError ex, boolean defaultColumnNumber,
                         @Shared @Cached(parameters = "getJSContext()") InitErrorObjectNode initErrorObjectNode,
                         @Shared @Cached TruffleString.FromJavaStringNode fromJavaStringNode) {
             JSException rangeError = Errors.createRangeErrorStackOverflow(ex, this);
-            return getOrCreateErrorFromJSException(rangeError, initErrorObjectNode, fromJavaStringNode);
+            return getOrCreateErrorFromJSException(rangeError, defaultColumnNumber, initErrorObjectNode, fromJavaStringNode);
         }
 
         @Fallback
-        static Object doOther(Throwable ex) {
+        static Object doOther(Throwable ex, @SuppressWarnings("unused") boolean defaultColumnNumber) {
             assert !(ex instanceof GraalJSException) && (ex instanceof AbstractTruffleException) : ex;
             // fill in any missing stack trace elements
             TruffleStackTrace.fillIn(ex);
             return ex;
         }
 
-        private Object getOrCreateErrorFromJSException(JSException exception,
+        private Object getOrCreateErrorFromJSException(JSException exception, boolean defaultColumnNumber,
                         InitErrorObjectNode initErrorObjectNode,
                         TruffleString.FromJavaStringNode fromJavaStringNode) {
             JSDynamicObject errorObj = exception.getErrorObjectLazy();
             // not thread safe, but should be alright in this case
             if (errorObj == null) {
-                errorObj = createErrorFromJSException(exception, initErrorObjectNode, fromJavaStringNode);
+                errorObj = createErrorFromJSException(exception, defaultColumnNumber, initErrorObjectNode, fromJavaStringNode);
             }
             return errorObj;
         }
 
-        private JSErrorObject createErrorFromJSException(JSException exception,
+        private JSErrorObject createErrorFromJSException(JSException exception, boolean defaultColumnNumber,
                         InitErrorObjectNode initErrorObjectNode,
                         TruffleString.FromJavaStringNode fromJavaStringNode) {
             JSRealm errorRealm = exception.getRealm();
             String message = exception.getRawMessage();
             JSErrorObject errorObj = newErrorObject(getJSContext(), errorRealm, exception.getErrorType());
-            initErrorObjectNode.execute(errorObj, exception, message == null ? null : Strings.fromJavaString(fromJavaStringNode, message));
+            initErrorObjectNode.execute(errorObj, exception, message == null ? null : Strings.fromJavaString(fromJavaStringNode, message), defaultColumnNumber);
             exception.setErrorObject(errorObj);
             return errorObj;
         }
