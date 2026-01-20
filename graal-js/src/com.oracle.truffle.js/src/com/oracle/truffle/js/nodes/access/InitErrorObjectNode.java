@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -42,6 +42,7 @@ package com.oracle.truffle.js.nodes.access;
 
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.dsl.Cached;
+import com.oracle.truffle.api.dsl.NeverDefault;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.strings.TruffleString;
@@ -84,12 +85,19 @@ public final class InitErrorObjectNode extends JavaScriptBaseNode {
         }
     }
 
+    @NeverDefault
     public static InitErrorObjectNode create(JSContext context) {
         return new InitErrorObjectNode(context, false);
     }
 
+    @NeverDefault
     public static InitErrorObjectNode create(JSContext context, boolean defaultColumnNumber) {
         return new InitErrorObjectNode(context, defaultColumnNumber);
+    }
+
+    @NeverDefault
+    public static InitErrorObjectNode getUncached(JSContext context) {
+        return new InitErrorObjectNode(context, false);
     }
 
     public JSObject execute(JSObject errorObj, GraalJSException exception, TruffleString messageOpt) {

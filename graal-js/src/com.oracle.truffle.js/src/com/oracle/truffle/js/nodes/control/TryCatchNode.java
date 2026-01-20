@@ -45,7 +45,11 @@ import java.util.Set;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.TruffleStackTrace;
+import com.oracle.truffle.api.dsl.Cached;
+import com.oracle.truffle.api.dsl.Cached.Shared;
 import com.oracle.truffle.api.dsl.Fallback;
+import com.oracle.truffle.api.dsl.GenerateUncached;
+import com.oracle.truffle.api.dsl.NeverDefault;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.exception.AbstractTruffleException;
 import com.oracle.truffle.api.frame.VirtualFrame;
@@ -185,7 +189,7 @@ public class TryCatchNode extends StatementNode implements ResumableNode.WithObj
         if (writeErrorVar != null) {
             if (getErrorObjectNode == null) {
                 CompilerDirectives.transferToInterpreterAndInvalidate();
-                getErrorObjectNode = insert(GetErrorObjectNode.create(context));
+                getErrorObjectNode = insert(GetErrorObjectNode.create());
             }
             Object exceptionObject = getErrorObjectNode.execute(ex);
             writeErrorVar.executeWrite(frame, exceptionObject);
@@ -244,29 +248,32 @@ public class TryCatchNode extends StatementNode implements ResumableNode.WithObj
         }
     }
 
+    @GenerateUncached
     public abstract static class GetErrorObjectNode extends JavaScriptBaseNode {
-        @Child private InitErrorObjectNode initErrorObjectNode;
-        @Child private TruffleString.FromJavaStringNode fromJavaStringNode;
-        private final JSContext context;
 
-        protected GetErrorObjectNode(JSContext context) {
-            this.context = context;
-            this.initErrorObjectNode = InitErrorObjectNode.create(context, context.isOptionNashornCompatibilityMode());
-            this.fromJavaStringNode = TruffleString.FromJavaStringNode.create();
+        protected GetErrorObjectNode() {
         }
 
-        public static GetErrorObjectNode create(JSContext context) {
-            return GetErrorObjectNodeGen.create(context);
+        @NeverDefault
+        public static GetErrorObjectNode create() {
+            return GetErrorObjectNodeGen.create();
+        }
+
+        @NeverDefault
+        public static GetErrorObjectNode getUncached() {
+            return GetErrorObjectNodeGen.getUncached();
         }
 
         public abstract Object execute(Throwable ex);
 
         @Specialization
-        final Object doJSException(JSException ex) {
+        final Object doJSException(JSException ex,
+                        @Shared @Cached(parameters = "getJSContext()") InitErrorObjectNode initErrorObjectNode,
+                        @Shared @Cached TruffleString.FromJavaStringNode fromJavaStringNode) {
             // fill in any missing stack trace elements
             TruffleStackTrace.fillIn(ex);
 
-            return getOrCreateErrorFromJSException(ex);
+            return getOrCreateErrorFromJSException(ex, initErrorObjectNode, fromJavaStringNode);
         }
 
         @Specialization
@@ -275,9 +282,11 @@ public class TryCatchNode extends StatementNode implements ResumableNode.WithObj
         }
 
         @Specialization
-        final Object doStackOverflowError(StackOverflowError ex) {
+        final Object doStackOverflowError(StackOverflowError ex,
+                        @Shared @Cached(parameters = "getJSContext()") InitErrorObjectNode initErrorObjectNode,
+                        @Shared @Cached TruffleString.FromJavaStringNode fromJavaStringNode) {
             JSException rangeError = Errors.createRangeErrorStackOverflow(ex, this);
-            return getOrCreateErrorFromJSException(rangeError);
+            return getOrCreateErrorFromJSException(rangeError, initErrorObjectNode, fromJavaStringNode);
         }
 
         @Fallback
@@ -288,19 +297,23 @@ public class TryCatchNode extends StatementNode implements ResumableNode.WithObj
             return ex;
         }
 
-        private Object getOrCreateErrorFromJSException(JSException exception) {
+        private Object getOrCreateErrorFromJSException(JSException exception,
+                        InitErrorObjectNode initErrorObjectNode,
+                        TruffleString.FromJavaStringNode fromJavaStringNode) {
             JSDynamicObject errorObj = exception.getErrorObjectLazy();
             // not thread safe, but should be alright in this case
             if (errorObj == null) {
-                errorObj = createErrorFromJSException(exception);
+                errorObj = createErrorFromJSException(exception, initErrorObjectNode, fromJavaStringNode);
             }
             return errorObj;
         }
 
-        private JSErrorObject createErrorFromJSException(JSException exception) {
+        private JSErrorObject createErrorFromJSException(JSException exception,
+                        InitErrorObjectNode initErrorObjectNode,
+                        TruffleString.FromJavaStringNode fromJavaStringNode) {
             JSRealm errorRealm = exception.getRealm();
             String message = exception.getRawMessage();
-            JSErrorObject errorObj = newErrorObject(context, errorRealm, exception.getErrorType());
+            JSErrorObject errorObj = newErrorObject(getJSContext(), errorRealm, exception.getErrorType());
             initErrorObjectNode.execute(errorObj, exception, message == null ? null : Strings.fromJavaString(fromJavaStringNode, message));
             exception.setErrorObject(errorObj);
             return errorObj;

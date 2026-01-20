@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2022, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -179,7 +179,7 @@ public class AsyncIteratorHelperPrototypeBuiltins extends JSBuiltinsContainer.Sw
             } catch (AbstractTruffleException ex) {
                 if (getErrorObjectNode == null) {
                     CompilerDirectives.transferToInterpreterAndInvalidate();
-                    getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create(getContext()));
+                    getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create());
                 }
                 Object error = getErrorObjectNode.execute(ex);
                 callNode.executeCall(JSArguments.createOneArg(Undefined.instance, promiseCapability.getReject(), error));

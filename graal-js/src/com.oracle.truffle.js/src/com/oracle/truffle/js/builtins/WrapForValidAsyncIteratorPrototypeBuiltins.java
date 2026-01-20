@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2022, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -135,7 +135,7 @@ public final class WrapForValidAsyncIteratorPrototypeBuiltins extends JSBuiltins
             } catch (AbstractTruffleException ex) {
                 if (getErrorObjectNode == null) {
                     CompilerDirectives.transferToInterpreterAndInvalidate();
-                    getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create(getContext()));
+                    getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create());
                 }
                 Object error = getErrorObjectNode.execute(ex);
                 PromiseCapabilityRecord promiseCapability = newPromiseCapabilityNode.executeDefault();
@@ -148,7 +148,7 @@ public final class WrapForValidAsyncIteratorPrototypeBuiltins extends JSBuiltins
         protected JSDynamicObject incompatible(Object thisObj) {
             if (getErrorObjectNode == null) {
                 CompilerDirectives.transferToInterpreterAndInvalidate();
-                getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create(getContext()));
+                getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create());
             }
             Object error = getErrorObjectNode.execute(Errors.createTypeErrorIncompatibleReceiver(getBuiltin().getName(), thisObj));
             PromiseCapabilityRecord promiseCapability = newPromiseCapabilityNode.executeDefault();
@@ -203,7 +203,7 @@ public final class WrapForValidAsyncIteratorPrototypeBuiltins extends JSBuiltins
             } catch (AbstractTruffleException ex) {
                 if (getErrorObjectNode == null) {
                     CompilerDirectives.transferToInterpreterAndInvalidate();
-                    getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create(getContext()));
+                    getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create());
                 }
                 Object error = getErrorObjectNode.execute(ex);
                 PromiseCapabilityRecord promiseCapability = newPromiseCapabilityNode.execute(realm.getPromiseConstructor());
@@ -216,7 +216,7 @@ public final class WrapForValidAsyncIteratorPrototypeBuiltins extends JSBuiltins
         protected JSDynamicObject incompatible(Object thisObj) {
             if (getErrorObjectNode == null) {
                 CompilerDirectives.transferToInterpreterAndInvalidate();
-                getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create(getContext()));
+                getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create());
             }
             Object error = getErrorObjectNode.execute(Errors.createTypeErrorIncompatibleReceiver(getBuiltin().getName(), thisObj));
             PromiseCapabilityRecord promiseCapability = newPromiseCapabilityNode.executeDefault();
