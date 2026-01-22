@@ -62,6 +62,7 @@ import com.oracle.truffle.js.runtime.Errors;
 import com.oracle.truffle.js.runtime.GraalJSException;
 import com.oracle.truffle.js.runtime.JSArguments;
 import com.oracle.truffle.js.runtime.JSContext;
+import com.oracle.truffle.js.runtime.JSException;
 import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.interop.InteropArray;
@@ -114,6 +115,15 @@ public class WebAssemblyHostFunction implements TruffleObject {
         try {
             result = callNode.executeCall(JSArguments.create(Undefined.instance, fn, jsArgs));
         } catch (GraalJSException e) {
+            /*
+             * If the JS exception represents a Wasm runtime error (i.e. a trap) that was caught and
+             * rethrown by JS, we must not let Wasm code catch and handle it; since Wasm exception
+             * handlers only catch WasmRuntimeException, we can simply rethrow the JSException to
+             * the JS caller.
+             */
+            if (e instanceof JSException jsException && jsException.isWasmUncatchableError()) {
+                throw e;
+            }
             // Convert JS exception to a WasmRuntimeException with this realm's WebAssembly.JSTag.
             try {
                 Object value = getErrorObjectNode.execute(e);

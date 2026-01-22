@@ -298,7 +298,7 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                     if (exceptionType == ExceptionType.RUNTIME_ERROR) {
                         handleWasmException(realm, exnAddr, exnAddrInterop);
                     }
-                    throw Errors.createRuntimeError(exnAddr, this);
+                    throw Errors.createRuntimeError(exnAddr, this, realm);
                 }
 
                 if (returnLength == 0) {
