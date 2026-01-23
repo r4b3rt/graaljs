@@ -102,6 +102,14 @@ Worker = (function() {
     };
 })();
 
+// Ignore `assertTrue(Number.isInteger(e_runtime_id));` in exceptions-utils.js
+Number.isInteger = (function() {
+    let originalIsInteger = Number.isInteger;
+    return function(argument) {
+        return argument === v8IgnoreResult ? v8IgnoreResult : originalIsInteger(argument);
+    };
+})();
+
 // Save `load` function in another binding so that tests that re-write ``load` binding can still
 // use d8.file.execute.
 let d8_file_execute_load = load;
@@ -113,7 +121,8 @@ var d8 = {
             // Ensures that assertTraps() checks just the error type
             // (WebAssembly.RuntimeError) and not the exact error message
             if (path.endsWith('wasm-module-builder.js')) {
-                kTrapMsgs = [];
+                kTrapMsgs.fill(undefined);
+                kTrapMsgs[kTrapDivByZero] = "integer divide by zero"; // used with assertEquals in mjsunit/wasm/exnref.js
             }
         }
     }
@@ -920,12 +929,24 @@ globalThis['%WasmGetNumberOfInstances'] = function() {
     return v8IgnoreResult;
 };
 
-globalThis['%GetWasmExceptionId'] = function() {
-    throw new Error("v8 internal method not implemented");
+globalThis['%GetWasmExceptionTagId'] = function(exception, instance) {
+    // Satisfy the tag index check in assertWasmThrows (mjsunit/wasm/exception-utils.js).
+    // Requires Number.isInteger to be patched to handle v8IgnoreResult like an integer.
+    return v8IgnoreResult;
 };
 
-globalThis['%GetWasmExceptionValues'] = function() {
-    throw new Error("v8 internal method not implemented");
+globalThis['%GetWasmExceptionValues'] = function(exception) {
+    let tag = TestV8.getWasmExceptionTag(exception);
+    let exceptionValues = [];
+    let i = 0;
+    while (true) {
+        try {
+            exceptionValues.push(exception.getArg(tag, i++));
+        } catch {
+            break;
+        }
+    }
+    return exceptionValues;
 };
 
 globalThis['%FreezeWasmLazyCompilation'] = function() {
@@ -1129,8 +1150,8 @@ globalThis['%IsAtomicsWaitAllowed'] = function() {
     return v8IgnoreResult;
 };
 
-globalThis['%ThrowStackOverflow'] = function() {
-    throw new RangeError("stack exceeded");
+globalThis['%ThrowStackOverflow'] = function throwStackOverflow() {
+    throwStackOverflow();
 };
 
 globalThis['%VerifyType'] = function() {
@@ -1185,10 +1206,6 @@ globalThis['%IsInternalizedString'] = function(obj) {
 };
 
 globalThis['%SharedGC'] = function() {
-};
-
-globalThis['%GetWasmExceptionTagId'] = function(exception, instance) {
-    throw new Error("v8 internal method not implemented");
 };
 
 globalThis['%IsTurboFanFunction'] = function(fun) {
