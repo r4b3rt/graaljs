@@ -165,7 +165,7 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                     TruffleString type = asTString(exportInterop.readMember(exportInfo, "type"));
                     int sepIndex = Strings.indexOf(type, ' ');
                     final TruffleString valueTypeStr = Strings.substring(context, type, 0, sepIndex);
-                    WebAssemblyValueType valueType = WebAssemblyValueType.valueOf(valueTypeStr.toJavaStringUncached());
+                    WebAssemblyType valueType = WebAssemblyType.lookupValueType(valueTypeStr.toJavaStringUncached());
                     final boolean mutable = Strings.regionEquals(type, sepIndex + 1, MUT, 0, 3);
                     value = JSWebAssemblyGlobal.create(context, realm, externval, valueType, mutable);
                 } else if (Strings.MEMORY.equals(externtype)) {
@@ -174,7 +174,7 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                     value = JSWebAssemblyMemory.create(context, realm, externval, shared);
                 } else if (Strings.TABLE.equals(externtype)) {
                     TruffleString typeStr = asTString(exportInterop.readMember(exportInfo, "type"));
-                    WebAssemblyValueType type = WebAssemblyValueType.valueOf(typeStr.toJavaStringUncached());
+                    WebAssemblyType type = WebAssemblyType.lookupElementKind(typeStr.toJavaStringUncached());
                     value = JSWebAssemblyTable.create(context, realm, externval, type);
                 } else {
                     assert Strings.TAG.equals(externtype);
@@ -226,7 +226,7 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
         TruffleString[] types = Strings.split(context, typeString, Strings.SPACE);
         WebAssemblyType[] result = new WebAssemblyType[types.length];
         for (int i = 0; i < result.length; i++) {
-            result[i] = WebAssemblyType.lookupType(types[i].toJavaStringUncached());
+            result[i] = WebAssemblyType.lookup(types[i].toJavaStringUncached());
         }
         return result;
     }
@@ -384,8 +384,8 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                         wasmValue = ((JSWebAssemblyGlobalObject) value).getWASMGlobal();
                     } else {
                         TruffleString valueTypeStr = asTString(descriptorInterop.readMember(descriptor, "type"));
-                        WebAssemblyValueType valueType = WebAssemblyValueType.lookupType(valueTypeStr.toJavaStringUncached());
-                        if (valueType == WebAssemblyValueType.i64) {
+                        WebAssemblyType valueType = WebAssemblyType.lookupValueType(valueTypeStr.toJavaStringUncached());
+                        if (valueType == WebAssemblyType.i64) {
                             if (!context.getLanguageOptions().wasmBigInt()) {
                                 throw createLinkErrorImport(i, module, name, "Can't import the value of i64 WebAssembly.Global");
                             }
@@ -393,13 +393,13 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                                 throw createLinkErrorImport(i, module, name, "Value of valtype i64 must be BigInt");
                             }
                         }
-                        if ((valueType == WebAssemblyValueType.i32 || valueType == WebAssemblyValueType.f32 || valueType == WebAssemblyValueType.f64) && !JSRuntime.isNumber(value)) {
+                        if ((valueType == WebAssemblyType.i32 || valueType == WebAssemblyType.f32 || valueType == WebAssemblyType.f64) && !JSRuntime.isNumber(value)) {
                             throw createLinkErrorImport(i, module, name, "Value of valtype i32, f32 and f64 must be Number");
                         }
-                        if (valueType == WebAssemblyValueType.v128) {
+                        if (valueType == WebAssemblyType.v128) {
                             throw createLinkErrorImport(i, module, name, "Values of valtype v128 cannot be imported from JS");
                         }
-                        Object webAssemblyValue = ToWebAssemblyValueNodeGen.getUncached().execute(value, WebAssemblyType.fromValueType(valueType));
+                        Object webAssemblyValue = ToWebAssemblyValueNodeGen.getUncached().execute(value, valueType);
                         try {
                             Object createGlobal = realm.getWASMGlobalAlloc();
                             wasmValue = InteropLibrary.getUncached(createGlobal).execute(createGlobal, valueTypeStr, false, webAssemblyValue);

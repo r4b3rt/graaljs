@@ -64,7 +64,6 @@ import com.oracle.truffle.js.runtime.builtins.BuiltinEnum;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyGlobal;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyGlobalObject;
 import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyType;
-import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyValueType;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 public class WebAssemblyGlobalPrototypeBuiltins extends JSBuiltinsContainer.SwitchEnum<WebAssemblyGlobalPrototypeBuiltins.WebAssemblyGlobalPrototype> {
@@ -137,7 +136,7 @@ public class WebAssemblyGlobalPrototypeBuiltins extends JSBuiltinsContainer.Swit
                         @Cached InlinedBranchProfile errorBranch,
                         @Cached ToJSValueNode toJSValueNode,
                         @CachedLibrary(limit = "InteropLibraryLimit") InteropLibrary globalReadLib) {
-            if (object.getValueType() == WebAssemblyValueType.v128) {
+            if (object.getValueType() == WebAssemblyType.v128) {
                 errorBranch.enter(this);
                 v128TypeError();
             }
@@ -178,7 +177,7 @@ public class WebAssemblyGlobalPrototypeBuiltins extends JSBuiltinsContainer.Swit
                 errorBranch.enter(this);
                 throw Errors.createTypeError("set WebAssembly.Global.value: Can't set the value of an immutable global");
             }
-            if (global.getValueType() == WebAssemblyValueType.v128) {
+            if (global.getValueType() == WebAssemblyType.v128) {
                 errorBranch.enter(this);
                 throw Errors.createTypeError("set WebAssembly.Global.value: cannot write value type v128", this);
             }
@@ -191,7 +190,7 @@ public class WebAssemblyGlobalPrototypeBuiltins extends JSBuiltinsContainer.Swit
                 } else {
                     value = args[0];
                 }
-                Object webAssemblyValue = toWebAssemblyValueNode.execute(value, WebAssemblyType.fromValueType(global.getValueType()));
+                Object webAssemblyValue = toWebAssemblyValueNode.execute(value, global.getValueType());
                 Object globalWrite = getRealm().getWASMGlobalWrite();
                 globalWriteLib.execute(globalWrite, wasmGlobal, webAssemblyValue);
                 return Undefined.instance;

@@ -40,10 +40,14 @@
  */
 package com.oracle.truffle.js.runtime.builtins.wasm;
 
+import com.oracle.truffle.js.runtime.Errors;
+import com.oracle.truffle.js.runtime.JSRealm;
+import com.oracle.truffle.js.runtime.objects.Undefined;
+
 /**
  * Represents the value types used in WebAssembly.
- *
- * See org.graalvm.wasm.types.ValueType. This enum is an abstract view of WebAssembly value types.
+ * <p>
+ * This enum is an abstract view of WebAssembly value types.
  */
 public enum WebAssemblyType {
     i32,
@@ -56,19 +60,7 @@ public enum WebAssemblyType {
     exnref,
     anyref;
 
-    public static WebAssemblyType fromValueType(WebAssemblyValueType valueType) {
-        return switch (valueType) {
-            case i32 -> i32;
-            case i64 -> i64;
-            case f32 -> f32;
-            case f64 -> f64;
-            case v128 -> v128;
-            case anyfunc -> funcref;
-            case externref -> externref;
-        };
-    }
-
-    public static WebAssemblyType lookupType(String type) {
+    public static WebAssemblyType lookup(String type) {
         return switch (type) {
             case "i32" -> i32;
             case "i64" -> i64;
@@ -80,6 +72,47 @@ public enum WebAssemblyType {
             case "exnref" -> exnref;
             case "anyref" -> anyref;
             default -> null;
+        };
+    }
+
+    /**
+     * Parses one of the values of the Wasm JS API {@code ValueType} enum as a
+     * {@link WebAssemblyType}.
+     */
+    public static WebAssemblyType lookupValueType(String valueType) {
+        return switch (valueType) {
+            case "i32" -> i32;
+            case "i64" -> i64;
+            case "f32" -> f32;
+            case "f64" -> f64;
+            case "v128" -> v128;
+            case "anyfunc" -> funcref;
+            case "externref" -> externref;
+            default -> null;
+        };
+    }
+
+    /**
+     * Parses one of the values of the Wasm JS API {@code ElementKind} enum as a
+     * {@link WebAssemblyType}.
+     */
+    public static WebAssemblyType lookupElementKind(String elementKind) {
+        return switch (elementKind) {
+            case "anyfunc" -> funcref;
+            case "externref" -> externref;
+            default -> null;
+        };
+    }
+
+    public Object getDefaultValue(JSRealm realm) {
+        return switch (this) {
+            case i32 -> 0;
+            case i64 -> 0L;
+            case f32 -> 0f;
+            case f64 -> 0d;
+            case funcref, exnref, anyref -> realm.getWasmRefNull();
+            case externref -> Undefined.instance;
+            case v128 -> throw Errors.shouldNotReachHereUnexpectedValue(this);
         };
     }
 }

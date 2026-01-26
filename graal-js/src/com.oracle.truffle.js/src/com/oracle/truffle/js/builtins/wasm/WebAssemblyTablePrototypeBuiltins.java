@@ -68,7 +68,6 @@ import com.oracle.truffle.js.runtime.builtins.BuiltinEnum;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTable;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTableObject;
 import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyType;
-import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyValueType;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 public class WebAssemblyTablePrototypeBuiltins extends JSBuiltinsContainer.SwitchEnum<WebAssemblyTablePrototypeBuiltins.WebAssemblyTablePrototype> {
@@ -143,14 +142,14 @@ public class WebAssemblyTablePrototypeBuiltins extends JSBuiltinsContainer.Switc
             JSWebAssemblyTableObject table = (JSWebAssemblyTableObject) thiz;
             int deltaInt = toDeltaNode.executeInt(delta);
             Object wasmTable = table.getWASMTable();
-            WebAssemblyValueType elementKind = table.getElementKind();
+            WebAssemblyType elementKind = table.getElementKind();
 
             final JSRealm realm = getRealm();
             final Object wasmValue;
             if (args.length == 0) {
                 wasmValue = elementKind.getDefaultValue(realm);
             } else {
-                wasmValue = toWebAssemblyValueNode.execute(args[0], WebAssemblyType.fromValueType(elementKind));
+                wasmValue = toWebAssemblyValueNode.execute(args[0], elementKind);
             }
             try {
                 Object growFn = realm.getWASMTableGrow();
@@ -220,14 +219,14 @@ public class WebAssemblyTablePrototypeBuiltins extends JSBuiltinsContainer.Switc
             JSWebAssemblyTableObject table = (JSWebAssemblyTableObject) thiz;
             int indexInt = toIndexNode.executeInt(index);
             Object wasmTable = table.getWASMTable();
-            WebAssemblyValueType elementKind = table.getElementKind();
+            WebAssemblyType elementKind = table.getElementKind();
             final JSRealm realm = getRealm();
 
             final Object wasmValue;
             if (args.length == 0) {
                 wasmValue = elementKind.getDefaultValue(realm);
             } else {
-                wasmValue = toWebAssemblyValueNode.execute(args[0], WebAssemblyType.fromValueType(elementKind));
+                wasmValue = toWebAssemblyValueNode.execute(args[0], elementKind);
             }
             try {
                 Object setFn = realm.getWASMTableWrite();

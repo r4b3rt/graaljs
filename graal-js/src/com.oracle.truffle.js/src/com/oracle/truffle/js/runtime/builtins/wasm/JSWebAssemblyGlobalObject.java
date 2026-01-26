@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -47,10 +47,10 @@ import com.oracle.truffle.js.runtime.objects.JSNonProxyObject;
 
 public final class JSWebAssemblyGlobalObject extends JSNonProxyObject {
     private final Object wasmGlobal;
-    private final WebAssemblyValueType valueType;
+    private final WebAssemblyType valueType;
     private final boolean mutable;
 
-    protected JSWebAssemblyGlobalObject(Shape shape, JSDynamicObject proto, Object wasmGlobal, WebAssemblyValueType valueType, boolean mutable) {
+    protected JSWebAssemblyGlobalObject(Shape shape, JSDynamicObject proto, Object wasmGlobal, WebAssemblyType valueType, boolean mutable) {
         super(shape, proto);
         this.wasmGlobal = wasmGlobal;
         this.valueType = valueType;
@@ -61,7 +61,7 @@ public final class JSWebAssemblyGlobalObject extends JSNonProxyObject {
         return wasmGlobal;
     }
 
-    public WebAssemblyValueType getValueType() {
+    public WebAssemblyType getValueType() {
         return valueType;
     }
 
