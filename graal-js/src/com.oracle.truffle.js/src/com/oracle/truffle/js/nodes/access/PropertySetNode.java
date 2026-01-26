@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -80,6 +80,7 @@ import com.oracle.truffle.js.runtime.builtins.JSArrayBufferView;
 import com.oracle.truffle.js.runtime.builtins.JSArrayObject;
 import com.oracle.truffle.js.runtime.builtins.JSGlobal;
 import com.oracle.truffle.js.runtime.builtins.JSProxy;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyExportedGC;
 import com.oracle.truffle.js.runtime.interop.JSInteropUtil;
 import com.oracle.truffle.js.runtime.objects.Accessor;
 import com.oracle.truffle.js.runtime.objects.Dead;
@@ -89,6 +90,7 @@ import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.JSObjectUtil;
 import com.oracle.truffle.js.runtime.objects.JSProperty;
 import com.oracle.truffle.js.runtime.objects.JSShape;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyExportedGCObject;
 import com.oracle.truffle.js.runtime.objects.Null;
 import com.oracle.truffle.js.runtime.objects.PropertyDescriptor;
 import com.oracle.truffle.js.runtime.objects.PropertyProxy;
@@ -715,7 +717,7 @@ public class PropertySetNode extends PropertyCacheNode<PropertySetNode.SetCacheN
 
         @Override
         protected boolean setValue(Object thisObj, Object value, Object receiver, PropertySetNode root, boolean guard) {
-            assert thisObj == Undefined.instance || thisObj == Null.instance;
+            assert thisObj == Undefined.instance || thisObj == Null.instance || thisObj instanceof JSWebAssemblyExportedGCObject;
             throw Errors.createTypeErrorCannotSetProperty(root.getKey(), thisObj, this);
         }
     }
@@ -1116,7 +1118,7 @@ public class PropertySetNode extends PropertyCacheNode<PropertySetNode.SetCacheN
             } else if (JSArrayBufferView.isJSArrayBufferView(store) && (key instanceof TruffleString indexStr) && JSRuntime.canonicalNumericIndexString(indexStr) != Undefined.instance) {
                 assert !JSArrayBufferView.isValidIntegerIndex((JSDynamicObject) store, (Number) JSRuntime.canonicalNumericIndexString(indexStr));
                 return new ReadOnlyPropertySetNode(createShapeCheckNode(cacheShape, thisJSObj, proto, depth, false, false), false);
-            } else if (!JSRuntime.isObject(thisJSObj)) {
+            } else if (!JSRuntime.isObject(thisJSObj) || JSWebAssemblyExportedGC.isJSWebAssemblyExportedGCObject(thisJSObj)) {
                 return new TypeErrorPropertySetNode(createShapeCheckNode(cacheShape, thisJSObj, proto, depth, false, true));
             } else if (superProperty) {
                 // define the property on the receiver; currently not handled, rewrite to generic

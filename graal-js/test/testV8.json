@@ -3996,7 +3996,7 @@
   }, {
     "filePath" : "mjsunit/wasm/gc-js-interop.js",
     "status" : "FAIL",
-    "comment" : "GC proposal."
+    "comment" : "Exotic object behavior of exported WasmGC objects (GR-72984)."
   }, {
     "filePath" : "mjsunit/wasm/gc-nominal.js",
     "status" : "FAIL",

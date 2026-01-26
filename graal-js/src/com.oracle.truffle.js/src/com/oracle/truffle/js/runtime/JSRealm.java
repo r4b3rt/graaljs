@@ -60,7 +60,6 @@ import java.util.Random;
 import java.util.SplittableRandom;
 import java.util.WeakHashMap;
 
-import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyExportedGC;
 import org.graalvm.collections.Pair;
 import org.graalvm.home.HomeFinder;
 import org.graalvm.options.OptionValues;
@@ -499,7 +498,6 @@ public class JSRealm {
     private final JSDynamicObject webAssemblyModulePrototype;
     private final JSFunctionObject webAssemblyTableConstructor;
     private final JSDynamicObject webAssemblyTablePrototype;
-    private final JSDynamicObject webAssemblyExportedGCObjectPrototype;
 
     private final JSFunctionObject shadowRealmConstructor;
     private final JSDynamicObject shadowRealmPrototype;
@@ -993,8 +991,6 @@ public class JSRealm {
             ctor = JSWebAssemblyGlobal.createConstructor(this);
             this.webAssemblyGlobalConstructor = ctor.getFunctionObject();
             this.webAssemblyGlobalPrototype = ctor.getPrototype();
-            ctor = JSWebAssemblyExportedGC.createConstructor(this);
-            this.webAssemblyExportedGCObjectPrototype = ctor.getPrototype();
         } else {
             this.wasmTableAlloc = null;
             this.wasmTableGrow = null;
@@ -1031,7 +1027,6 @@ public class JSRealm {
             this.webAssemblyModulePrototype = null;
             this.webAssemblyTableConstructor = null;
             this.webAssemblyTablePrototype = null;
-            this.webAssemblyExportedGCObjectPrototype = null;
         }
 
         this.foreignIterablePrototype = createForeignIterablePrototype();
@@ -3281,10 +3276,6 @@ public class JSRealm {
 
     public JSDynamicObject getWebAssemblyGlobalPrototype() {
         return webAssemblyGlobalPrototype;
-    }
-
-    public JSDynamicObject getWebAssemblyExportedGCObjectPrototype() {
-        return webAssemblyExportedGCObjectPrototype;
     }
 
     public JSDynamicObject getTextDecoderPrototype() {

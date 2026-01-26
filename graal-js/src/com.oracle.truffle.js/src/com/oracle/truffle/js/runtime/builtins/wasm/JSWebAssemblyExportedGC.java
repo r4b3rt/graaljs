@@ -43,76 +43,54 @@ package com.oracle.truffle.js.runtime.builtins.wasm;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.Shape;
-import com.oracle.truffle.api.strings.TruffleString;
 import com.oracle.truffle.js.runtime.Errors;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.JSRealm;
-import com.oracle.truffle.js.runtime.Strings;
-import com.oracle.truffle.js.runtime.builtins.JSClass;
-import com.oracle.truffle.js.runtime.builtins.JSConstructor;
-import com.oracle.truffle.js.runtime.builtins.JSConstructorFactory;
-import com.oracle.truffle.js.runtime.builtins.JSFunctionObject;
+import com.oracle.truffle.js.runtime.builtins.AbstractJSClass;
 import com.oracle.truffle.js.runtime.builtins.JSObjectFactory;
 import com.oracle.truffle.js.runtime.builtins.PrototypeSupplier;
 import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
-import com.oracle.truffle.js.runtime.objects.JSObjectUtil;
 import com.oracle.truffle.js.runtime.objects.Null;
 import com.oracle.truffle.js.runtime.objects.PropertyDescriptor;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import java.util.List;
 
-public class JSWebAssemblyExportedGC extends JSClass implements JSConstructorFactory.Default, PrototypeSupplier {
+public class JSWebAssemblyExportedGC extends AbstractJSClass implements PrototypeSupplier {
 
     public static final JSWebAssemblyExportedGC INSTANCE = new JSWebAssemblyExportedGC();
 
-    @Override
-    public TruffleString getClassName() {
-        return Strings.UC_OBJECT;
-    }
+    private static final JSDynamicObject PROTOTYPE = Null.instance;
 
     public static boolean isJSWebAssemblyExportedGCObject(Object object) {
         return object instanceof JSWebAssemblyExportedGCObject;
     }
 
     @Override
-    public JSDynamicObject createPrototype(JSRealm realm, JSFunctionObject constructor) {
-        return JSObjectUtil.createOrdinaryPrototypeObject(realm);
-    }
-
-    @Override
-    public JSDynamicObject getIntrinsicDefaultProto(JSRealm realm) {
-        return realm.getWebAssemblyExportedGCObjectPrototype();
-    }
-
-    @Override
-    public Shape makeInitialShape(JSContext ctx, JSDynamicObject prototype) {
-        return JSObjectUtil.getProtoChildShape(prototype, INSTANCE, ctx);
-    }
-
-    public static JSConstructor createConstructor(JSRealm realm) {
-        return INSTANCE.createConstructorAndPrototype(realm);
+    public Shape makeInitialShape(JSContext context, JSDynamicObject prototype) {
+        return context.makeEmptyShapeWithNullPrototype(INSTANCE);
     }
 
     public static JSWebAssemblyExportedGCObject create(JSContext context, JSRealm realm, Object wasmGCObject) {
-        return create(context, realm, INSTANCE.getIntrinsicDefaultProto(realm), wasmGCObject);
-    }
-
-    public static JSWebAssemblyExportedGCObject create(JSContext context, JSRealm realm, JSDynamicObject proto, Object wasmGCObject) {
         Object embedderData = JSWebAssembly.getEmbedderData(realm, wasmGCObject);
         if (embedderData instanceof JSWebAssemblyExportedGCObject) {
             return (JSWebAssemblyExportedGCObject) embedderData;
         }
         JSObjectFactory factory = context.getWebAssemblyExportedGCObjectFactory();
-        var shape = factory.getShape(realm, proto);
-        var object = factory.initProto(new JSWebAssemblyExportedGCObject(shape, proto, wasmGCObject), realm, proto);
+        var shape = factory.getShape(realm, PROTOTYPE);
+        var object = factory.initProto(new JSWebAssemblyExportedGCObject(shape, PROTOTYPE, wasmGCObject), realm, PROTOTYPE);
         JSWebAssembly.setEmbedderData(realm, wasmGCObject, object);
         return factory.trackAllocation(object);
     }
 
     @Override
+    public JSDynamicObject getIntrinsicDefaultProto(JSRealm realm) {
+        return PROTOTYPE;
+    }
+
+    @Override
     public JSDynamicObject getPrototypeOf(JSDynamicObject thisObj) {
-        return Null.instance;
+        return PROTOTYPE;
     }
 
     @Override

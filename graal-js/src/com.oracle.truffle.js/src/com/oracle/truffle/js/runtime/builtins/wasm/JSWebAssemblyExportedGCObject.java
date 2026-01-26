@@ -48,7 +48,7 @@ import com.oracle.truffle.js.runtime.ToDisplayStringFormat;
 import com.oracle.truffle.js.runtime.objects.JSClassObject;
 import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 
-public class JSWebAssemblyExportedGCObject extends JSClassObject {
+public final class JSWebAssemblyExportedGCObject extends JSClassObject {
 
     private final Object wasmGCObject;
 
