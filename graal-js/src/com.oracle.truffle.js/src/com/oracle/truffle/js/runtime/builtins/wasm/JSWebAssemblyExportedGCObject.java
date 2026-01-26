@@ -42,6 +42,7 @@ package com.oracle.truffle.js.runtime.builtins.wasm;
 
 import com.oracle.truffle.api.object.Shape;
 import com.oracle.truffle.api.strings.TruffleString;
+import com.oracle.truffle.js.runtime.Errors;
 import com.oracle.truffle.js.runtime.Strings;
 import com.oracle.truffle.js.runtime.ToDisplayStringFormat;
 import com.oracle.truffle.js.runtime.objects.JSClassObject;
@@ -67,6 +68,9 @@ public class JSWebAssemblyExportedGCObject extends JSClassObject {
 
     @Override
     public boolean preventExtensions(boolean doThrow) {
+        if (doThrow) {
+            throw Errors.createTypeError("operation not supported on WebAssembly GC objects");
+        }
         return false;
     }
 

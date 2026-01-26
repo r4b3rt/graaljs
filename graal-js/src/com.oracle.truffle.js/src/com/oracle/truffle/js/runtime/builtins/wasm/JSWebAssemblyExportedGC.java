@@ -127,6 +127,9 @@ public class JSWebAssemblyExportedGC extends JSClass implements JSConstructorFac
 
     @Override
     public boolean preventExtensions(JSDynamicObject thisObj, boolean doThrow) {
+        if (doThrow) {
+            throw Errors.createTypeError("operation not supported on WebAssembly GC objects");
+        }
         return false;
     }
 
@@ -137,6 +140,9 @@ public class JSWebAssemblyExportedGC extends JSClass implements JSConstructorFac
 
     @Override
     public boolean defineOwnProperty(JSDynamicObject thisObj, Object key, PropertyDescriptor value, boolean doThrow) {
+        if (doThrow) {
+            throw Errors.createTypeError("operation not supported on WebAssembly GC objects");
+        }
         return false;
     }
 
