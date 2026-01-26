@@ -482,7 +482,10 @@
     "comment" : "needs larger stack, at least 3m is needed"
   }, {
     "filePath" : "mjsunit/dump-counters-quit.js",
-    "status" : "FAIL",
+    "status" : "SKIP",
+    "statusOverrides" : {
+      "POLYGLOT" : "PASS"
+    },
     "comment" : "V8 test update 2022-08-10"
   }, {
     "filePath" : "mjsunit/duplicate-parameters.js",
@@ -2164,7 +2167,10 @@
     "comment" : "Exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-14356.js",
-    "status" : "FAIL",
+    "status" : "SKIP",
+    "statusOverrides" : {
+      "POLYGLOT" : "PASS"
+    },
     "comment" : "Relaxed SIMD proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1446221.js",
@@ -2224,7 +2230,10 @@
     "comment" : "GC proposal and exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1480117.js",
-    "status" : "FAIL",
+    "status" : "SKIP",
+    "statusOverrides" : {
+      "POLYGLOT" : "PASS"
+    },
     "comment" : "Relaxed SIMD proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1484393.js",
@@ -2232,7 +2241,10 @@
     "comment" : "Exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1484978.js",
-    "status" : "FAIL",
+    "status" : "SKIP",
+    "statusOverrides" : {
+      "POLYGLOT" : "PASS"
+    },
     "comment" : "Uses the i32x4.dot_i8x16_i7x16_add_s instruction (opcode 0xFD 0x113) from the Relaxed SIMD proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1485764.js",
@@ -2480,7 +2492,10 @@
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-341947685.js",
-    "status" : "FAIL",
+    "status" : "SKIP",
+    "statusOverrides" : {
+      "POLYGLOT" : "PASS"
+    },
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-342522151.js",
@@ -2524,7 +2539,10 @@
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-347914823.js",
-    "status" : "FAIL",
+    "status" : "SKIP",
+    "statusOverrides" : {
+      "POLYGLOT" : "PASS"
+    },
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-347914831.js",
@@ -2857,7 +2875,10 @@
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-crbug-1491815.js",
-    "status" : "FAIL",
+    "status" : "SKIP",
+    "statusOverrides" : {
+      "POLYGLOT" : "PASS"
+    },
     "comment" : "Relaxed SIMD."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-crbug-1502180.js",
@@ -3560,7 +3581,10 @@
     }
   }, {
     "filePath" : "mjsunit/wasm/atomic-wait-multi-memory.js",
-    "status" : "FAIL",
+    "status" : "SKIP",
+    "statusOverrides" : {
+      "POLYGLOT" : "PASS"
+    },
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/wasm/atomics-memory64.js",
@@ -4012,7 +4036,10 @@
     "comment" : "Memory instance size exceeded 2GB. GraalJS is limited to 2GB because of using signed 32-bit integers for indices."
   }, {
     "filePath" : "mjsunit/wasm/grow-shared-memory.js",
-    "status" : "FAIL",
+    "status" : "SKIP",
+    "statusOverrides" : {
+      "POLYGLOT" : "PASS"
+    },
     "comment" : "Expects byteLength of a buffer of a shared memory to change after grow(1)"
   }, {
     "filePath" : "mjsunit/wasm/growable-stacks.js",
@@ -4277,7 +4304,10 @@
     "comment" : "Memory instance size exceeded beyond 4GB. In the current spec, the JS WebAssembly API should not allow such large memory instances. Furhtermore, GraalJS is limited to 2GB because of using signed 32-bit integers for indices."
   }, {
     "filePath" : "mjsunit/wasm/simd-relaxed-lane-select.js",
-    "status" : "FAIL",
+    "status" : "SKIP",
+    "statusOverrides" : {
+      "POLYGLOT" : "PASS"
+    },
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/wasm/simd-wasm-interpreter.js",
