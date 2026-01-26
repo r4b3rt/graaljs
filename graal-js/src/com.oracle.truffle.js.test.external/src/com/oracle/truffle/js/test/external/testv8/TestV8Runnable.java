@@ -193,7 +193,7 @@ public class TestV8Runnable extends TestRunnable {
     }
 
     private static boolean isWasmTest(List<String> code) {
-        return code.stream().anyMatch(line -> line.contains("WebAssembly") || line.contains("WasmModuleBuilder"));
+        return code.stream().anyMatch(line -> line.contains("WebAssembly") || line.contains("WasmModuleBuilder") || line.contains("CreateWasmObjects"));
     }
 
     private TestFile.Result runInternal(int ecmaVersion, File file, boolean negative, boolean shouldThrow, boolean module, Map<String, String> extraOptions, List<String> setupFiles) {
