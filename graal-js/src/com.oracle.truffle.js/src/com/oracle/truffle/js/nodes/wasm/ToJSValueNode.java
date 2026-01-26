@@ -106,10 +106,10 @@ public abstract class ToJSValueNode extends JavaScriptBaseNode {
         } else {
             try {
                 if (isStructLib.execute(realm.getWASMIsStruct(), value) instanceof Boolean isStruct && isStruct) {
-                    return JSWebAssemblyExportedGC.create(realm.getContext(), realm, value);
+                    return JSWebAssemblyExportedGC.create(getJSContext(), realm, value);
                 }
                 if (isArrayLib.execute(realm.getWASMIsArray(), value) instanceof Boolean isArray && isArray) {
-                    return JSWebAssemblyExportedGC.create(realm.getContext(), realm, value);
+                    return JSWebAssemblyExportedGC.create(getJSContext(), realm, value);
                 }
                 if (isFuncLib.execute(realm.getWASMIsFunc(), value) instanceof Boolean isFunc && isFunc) {
                     TruffleString funcType = Strings.interopAsTruffleString(funcTypeLib.execute(realm.getWASMFuncType(), value), asTStringLib, switchEncoding);
