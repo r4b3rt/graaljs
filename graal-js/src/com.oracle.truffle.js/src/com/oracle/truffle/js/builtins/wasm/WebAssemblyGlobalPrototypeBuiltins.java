@@ -136,9 +136,9 @@ public class WebAssemblyGlobalPrototypeBuiltins extends JSBuiltinsContainer.Swit
                         @Cached InlinedBranchProfile errorBranch,
                         @Cached ToJSValueNode toJSValueNode,
                         @CachedLibrary(limit = "InteropLibraryLimit") InteropLibrary globalReadLib) {
-            if (object.getValueType() == WebAssemblyType.v128) {
+            if (object.getValueType() == WebAssemblyType.v128 || object.getValueType() == WebAssemblyType.exnref) {
                 errorBranch.enter(this);
-                v128TypeError();
+                valueTypeError(object.getValueType());
             }
             Object wasmGlobal = object.getWASMGlobal();
             Object globalRead = getRealm().getWASMGlobalRead();
@@ -156,8 +156,8 @@ public class WebAssemblyGlobalPrototypeBuiltins extends JSBuiltinsContainer.Swit
         }
 
         @TruffleBoundary
-        private void v128TypeError() {
-            throw Errors.createTypeError(getBuiltin().getFullName() + ": cannot read value type v128", this);
+        private void valueTypeError(WebAssemblyType type) {
+            throw Errors.createTypeError(getBuiltin().getFullName() + ": cannot read type " + type, this);
         }
     }
 
@@ -177,9 +177,9 @@ public class WebAssemblyGlobalPrototypeBuiltins extends JSBuiltinsContainer.Swit
                 errorBranch.enter(this);
                 throw Errors.createTypeError("set WebAssembly.Global.value: Can't set the value of an immutable global");
             }
-            if (global.getValueType() == WebAssemblyType.v128) {
+            if (global.getValueType() == WebAssemblyType.v128 || global.getValueType() == WebAssemblyType.exnref) {
                 errorBranch.enter(this);
-                throw Errors.createTypeError("set WebAssembly.Global.value: cannot write value type v128", this);
+                valueTypeError(global.getValueType());
             }
             Object wasmGlobal = global.getWASMGlobal();
             try {
@@ -206,6 +206,11 @@ public class WebAssemblyGlobalPrototypeBuiltins extends JSBuiltinsContainer.Swit
         @Fallback
         protected Object doIncompatibleReceiver(@SuppressWarnings("unused") Object thisObj, @SuppressWarnings("unused") Object args) {
             throw Errors.createTypeError("set WebAssembly.Global.value: Receiver is not a WebAssembly.Global", this);
+        }
+
+        @TruffleBoundary
+        private void valueTypeError(WebAssemblyType type) {
+            throw Errors.createTypeError(getBuiltin().getFullName() + ": cannot write type " + type, this);
         }
     }
 }
