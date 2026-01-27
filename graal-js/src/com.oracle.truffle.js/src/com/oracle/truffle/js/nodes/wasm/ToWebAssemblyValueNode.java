@@ -121,16 +121,7 @@ public abstract class ToWebAssemblyValueNode extends JavaScriptBaseNode {
         throw Errors.createTypeError("value is not an exported function");
     }
 
-    @Specialization(guards = "type == externref")
-    final Object externref(Object value, @SuppressWarnings("unused") WebAssemblyType type) {
-        if (value == Null.instance) {
-            return getRealm().getWasmRefNull();
-        } else {
-            return value;
-        }
-    }
-
-    @Specialization(guards = "type == anyref")
+    @Specialization(guards = "type == anyref || type == externref")
     final Object anyref(Object value, @SuppressWarnings("unused") WebAssemblyType type) {
         if (value == Null.instance) {
             return getRealm().getWasmRefNull();
@@ -144,6 +135,6 @@ public abstract class ToWebAssemblyValueNode extends JavaScriptBaseNode {
     @Fallback
     @TruffleBoundary
     final Object fallback(@SuppressWarnings("unused") Object value, WebAssemblyType type) {
-        throw Errors.createTypeError("Unknown type: " + type, this);
+        throw Errors.createTypeError("Unexpected type: " + type, this);
     }
 }
