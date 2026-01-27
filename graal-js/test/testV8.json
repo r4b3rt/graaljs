@@ -2044,11 +2044,11 @@
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-11472.js",
     "status" : "FAIL",
-    "comment" : "Uses the try instruction (opcode 0x06) from the exception handling proposal."
+    "comment" : "Uses the try instruction (opcode 0x06) from the legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1188825.js",
     "status" : "FAIL",
-    "comment" : "Uses a tag section (id 13) in the module. This is specific to the exception handling proposal."
+    "comment" : "Uses the try instruction (opcode 0x06) from the legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1196837.js",
     "status" : "FAIL",
@@ -2066,13 +2066,9 @@
     "status" : "FAIL",
     "comment" : "This test should only be run on configurations that don't support Wasm SIMD."
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-1347073.js",
-    "status" : "FAIL",
-    "comment" : "Uses WebAssembly.Tag and WebAssembly.Exception from the exception handling proposal."
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-1380646.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1403398.js",
     "status" : "FAIL",
@@ -2080,15 +2076,15 @@
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1416758.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1417516.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-14270.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-14356.js",
     "status" : "SKIP",
@@ -2099,15 +2095,11 @@
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1447367.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Uses legacy exception handling and tail call proposals."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1448663.js",
     "status" : "FAIL",
     "comment" : "Uses ref.as_non_null (opcode 0xd4) from the Function Type References proposal."
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-14689.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-14695.js",
     "status" : "FAIL",
@@ -2115,11 +2107,11 @@
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1478913.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1479926.js",
     "status" : "FAIL",
-    "comment" : "GC proposal and exception handling proposal."
+    "comment" : "GC proposal and legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1480117.js",
     "status" : "SKIP",
@@ -2130,7 +2122,7 @@
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1484393.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1484978.js",
     "status" : "SKIP",
@@ -2145,11 +2137,11 @@
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1490847-3.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1492772.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1500804.js",
     "status" : "SKIP",
@@ -2159,25 +2151,13 @@
     "status" : "FAIL",
     "comment" : "Different error message for out-of-bounds memory access."
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-1502837.js",
-    "status" : "FAIL",
-    "comment" : "Exception handling proposal."
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-1507743.js",
-    "status" : "FAIL",
-    "comment" : "GC proposal and Function Reference Types proposal."
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-1511849.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1512426.js",
     "status" : "FAIL",
     "comment" : "Uses missing d8.terminate function."
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-1514304.js",
-    "status" : "FAIL",
-    "comment" : "Exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1517559.js",
     "status" : "SKIP",
@@ -2239,10 +2219,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-326904344.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-327517308.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
@@ -2284,10 +2260,6 @@
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-336007398.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-336214779.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
@@ -2457,10 +2429,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-372993873.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-373684419.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
@@ -2538,17 +2506,13 @@
     "status" : "FAIL",
     "comment" : "Uses %SerializeWasmModule and %DeserializeWasmModule."
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-8094.js",
-    "status" : "FAIL",
-    "comment" : "Exception handling proposal."
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-8533.js",
     "status" : "SKIP",
     "comment" : "AssertionError during module instantiation."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-8896.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal and %SerializeWasmModule/%DeserializeWasmModule."
+    "comment" : "%SerializeWasmModule/%DeserializeWasmModule."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-956771.js",
     "status" : "FAIL",
@@ -2560,7 +2524,7 @@
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-9832.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-crbug-1002388.js",
     "status" : "FAIL",
@@ -2619,7 +2583,7 @@
   }, {
     "filePath" : "mjsunit/regress/wasm/regress1192313.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/serialize-deserialize-now.js",
     "status" : "FAIL",
@@ -3524,35 +3488,27 @@
   }, {
     "filePath" : "mjsunit/wasm/exceptions-api.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
-  }, {
-    "filePath" : "mjsunit/wasm/exceptions-export.js",
-    "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/wasm/exceptions-externref.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/wasm/exceptions-gc.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal and GC proposal."
-  }, {
-    "filePath" : "mjsunit/wasm/exceptions-import.js",
-    "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal and GC proposal."
   }, {
     "filePath" : "mjsunit/wasm/exceptions-rethrow.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/wasm/exceptions-shared.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/wasm/exceptions-simd.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/wasm/exceptions-type-reflection.js",
     "status" : "FAIL",
@@ -3560,23 +3516,7 @@
   }, {
     "filePath" : "mjsunit/wasm/exceptions.js",
     "status" : "FAIL",
-    "comment" : "Exception handling proposal."
-  }, {
-    "filePath" : "mjsunit/wasm/exnref-api.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/exnref-global.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/exnref-rethrow.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/exnref.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
+    "comment" : "Legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/wasm/externref-table.js",
     "status" : "FAIL",
@@ -3589,10 +3529,6 @@
     "filePath" : "mjsunit/wasm/futex.js",
     "status" : "FAIL",
     "comment" : "TODO: evaluate"
-  }, {
-    "filePath" : "mjsunit/wasm/gc-casts-exnref.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/wasm/gc-casts-from-any.js",
     "status" : "FAIL",
@@ -3718,10 +3654,6 @@
     "filePath" : "mjsunit/wasm/js-to-js.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/js-wrapper-typechecks.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2024-01-19"
   }, {
     "filePath" : "mjsunit/wasm/log-code-after-post-message.js",
     "status" : "SKIP",
@@ -4032,7 +3964,7 @@
   }, {
     "filePath" : "mjsunit/wasm/turboshaft/array-new-unreachable.js",
     "status" : "FAIL",
-    "comment" : "GC proposal, exception handling proposal."
+    "comment" : "GC proposal, legacy exception handling proposal."
   }, {
     "filePath" : "mjsunit/wasm/turboshaft/instruction-selection.js",
     "status" : "FAIL",
