@@ -53,6 +53,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.interop.ExceptionType;
 import com.oracle.truffle.api.interop.InteropException;
 import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.object.Shape;
@@ -302,6 +303,8 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                     }
                     return JSArray.createConstantObjectArray(context, getRealm(), values);
                 }
+            } catch (UnsupportedTypeException ex) {
+                throw Errors.createTypeError("incompatible type passed to WebAssembly function");
             } catch (InteropException ex) {
                 throw Errors.shouldNotReachHere(ex);
             }
