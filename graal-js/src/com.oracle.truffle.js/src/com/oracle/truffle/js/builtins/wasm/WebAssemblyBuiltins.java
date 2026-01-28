@@ -193,7 +193,7 @@ public class WebAssemblyBuiltins extends JSBuiltinsContainer.SwitchEnum<WebAssem
                     ExceptionType type = interop.getExceptionType(ex);
                     AbstractTruffleException exception = ex;
                     if (type == ExceptionType.PARSE_ERROR) {
-                        exception = Errors.createCompileError(ex, this);
+                        exception = Errors.createWasmCompileError(ex, this);
                     }
                     if (getErrorObjectNode == null) {
                         CompilerDirectives.transferToInterpreterAndInvalidate();
@@ -299,7 +299,7 @@ public class WebAssemblyBuiltins extends JSBuiltinsContainer.SwitchEnum<WebAssem
                     errorBranch.enter();
                     ExceptionType type = InteropLibrary.getUncached(ex).getExceptionType(ex);
                     if (type == ExceptionType.PARSE_ERROR) {
-                        throw Errors.createCompileError(ex, this);
+                        throw Errors.createWasmCompileError(ex, this);
                     } else {
                         throw ex;
                     }
@@ -318,7 +318,7 @@ public class WebAssemblyBuiltins extends JSBuiltinsContainer.SwitchEnum<WebAssem
             } catch (GraalJSException jsex) {
                 throw jsex;
             } catch (AbstractTruffleException ex) {
-                throw Errors.createLinkError(ex, null);
+                throw Errors.createWasmLinkError(ex, null);
             } catch (InteropException ex) {
                 throw Errors.shouldNotReachHere(ex);
             }

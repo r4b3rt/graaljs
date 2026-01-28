@@ -3216,7 +3216,7 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
                 try {
                     ExceptionType type = InteropLibrary.getUncached(tex).getExceptionType(tex);
                     if (type == ExceptionType.PARSE_ERROR) {
-                        throw Errors.createCompileError(tex, this);
+                        throw Errors.createWasmCompileError(tex, this);
                     }
                 } catch (UnsupportedMessageException ex) {
                     throw Errors.shouldNotReachHere(ex);
@@ -3261,7 +3261,7 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
                 } catch (GraalJSException jsex) {
                     throw jsex;
                 } catch (AbstractTruffleException tex) {
-                    throw Errors.createLinkError(tex, this);
+                    throw Errors.createWasmLinkError(tex, this);
                 }
             } catch (InteropException ex) {
                 throw Errors.shouldNotReachHere(ex);

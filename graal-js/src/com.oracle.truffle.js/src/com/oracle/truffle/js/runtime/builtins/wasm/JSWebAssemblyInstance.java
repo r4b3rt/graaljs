@@ -301,7 +301,7 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                     if (exceptionType == ExceptionType.RUNTIME_ERROR) {
                         handleWasmException(realm, exnAddr, exnAddrInterop);
                     }
-                    throw Errors.createRuntimeError(exnAddr, this, realm);
+                    throw Errors.createWasmRuntimeError(exnAddr, this, realm);
                 }
 
                 if (returnLength == 0) {
@@ -472,7 +472,7 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                             webAssemblyValue = ToWebAssemblyValueNodeGen.getUncached().execute(value, valueType);
                         } catch (JSException ex) {
                             if (ex.getErrorType() == JSErrorType.TypeError) {
-                                throw Errors.createLinkError(ex, null);
+                                throw Errors.createWasmLinkError(ex, null);
                             } else {
                                 throw ex;
                             }
@@ -523,7 +523,7 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
 
     @TruffleBoundary
     private static JSException createLinkErrorImport(long index, TruffleString module, TruffleString name, String message) {
-        return Errors.createLinkError("Import #" + index + " \"" + module + "\" \"" + name + "\": " + message);
+        return Errors.createWasmLinkError("Import #" + index + " \"" + module + "\" \"" + name + "\": " + message);
     }
 
     @TruffleBoundary

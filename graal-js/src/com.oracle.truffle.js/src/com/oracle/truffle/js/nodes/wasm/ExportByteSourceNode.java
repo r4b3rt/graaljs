@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -124,7 +124,7 @@ public abstract class ExportByteSourceNode extends JavaScriptBaseNode {
         JSArrayBufferObject buffer = arrayBuffer;
         if (emptyByteSourceMessage != null && length == 0) {
             errorBranch.enter(this);
-            throw Errors.createCompileError(emptyByteSourceMessage, this);
+            throw Errors.createWasmCompileError(emptyByteSourceMessage, this);
         }
         JSRealm realm = getRealm();
         if (!context.getTypedArrayNotDetachedAssumption().isValid() && JSArrayBuffer.isDetachedBuffer(arrayBuffer)) {

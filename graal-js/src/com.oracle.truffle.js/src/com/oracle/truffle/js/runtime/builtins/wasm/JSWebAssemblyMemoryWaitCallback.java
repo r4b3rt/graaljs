@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2023, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -40,6 +40,8 @@
  */
 package com.oracle.truffle.js.runtime.builtins.wasm;
 
+import java.lang.invoke.VarHandle;
+
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.library.ExportLibrary;
@@ -57,8 +59,6 @@ import com.oracle.truffle.js.runtime.array.TypedArray;
 import com.oracle.truffle.js.runtime.array.TypedArrayFactory;
 import com.oracle.truffle.js.runtime.builtins.JSArrayBufferObject;
 import com.oracle.truffle.js.runtime.builtins.JSSharedArrayBuffer;
-
-import java.lang.invoke.VarHandle;
 
 /**
  * Represents a callback that is invoked when the memory.atomic.waitN instruction executes in
@@ -108,7 +108,7 @@ public final class JSWebAssemblyMemoryWaitCallback implements TruffleObject {
     private TruffleString atomicsWait(JSArrayBufferObject buffer, int address, long expected, double timeout, boolean is64) {
         final JSAgent agent = realm.getAgent();
         if (!agent.canBlock()) {
-            throw Errors.createRuntimeError("wait instruction used by agent which cannot block", realm);
+            throw Errors.createWasmRuntimeError("wait instruction used by agent which cannot block", realm);
         }
         final JSAgentWaiterList waiterList = JSSharedArrayBuffer.getWaiterList(buffer);
         final JSAgentWaiterList.JSAgentWaiterListEntry wl;

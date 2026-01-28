@@ -1010,37 +1010,32 @@ public final class Errors {
     }
 
     @TruffleBoundary
-    public static JSException createCompileError(String message, Node originatingNode) {
+    public static JSException createWasmCompileError(String message, Node originatingNode) {
         return JSException.create(JSErrorType.CompileError, message, originatingNode);
     }
 
     @TruffleBoundary
-    public static JSException createCompileError(Throwable cause, Node originatingNode) {
+    public static JSException createWasmCompileError(Throwable cause, Node originatingNode) {
         return JSException.create(JSErrorType.CompileError, cause.getMessage(), cause, originatingNode);
     }
 
     @TruffleBoundary
-    public static JSException createLinkError(String message) {
+    public static JSException createWasmLinkError(String message) {
         return JSException.create(JSErrorType.LinkError, message);
     }
 
     @TruffleBoundary
-    public static JSException createLinkError(String message, Node originatingNode) {
-        return JSException.create(JSErrorType.LinkError, message, originatingNode);
-    }
-
-    @TruffleBoundary
-    public static JSException createLinkError(Throwable cause, Node originatingNode) {
+    public static JSException createWasmLinkError(Throwable cause, Node originatingNode) {
         return JSException.create(JSErrorType.LinkError, cause.getMessage(), cause, originatingNode);
     }
 
     @TruffleBoundary
-    public static JSException createRuntimeError(String message, JSRealm realm) {
+    public static JSException createWasmRuntimeError(String message, JSRealm realm) {
         return JSException.createWasmUncatchableError(JSErrorType.RuntimeError, message, null, null, realm);
     }
 
     @TruffleBoundary
-    public static JSException createRuntimeError(Throwable cause, Node originatingNode, JSRealm realm) {
+    public static JSException createWasmRuntimeError(Throwable cause, Node originatingNode, JSRealm realm) {
         return JSException.createWasmUncatchableError(JSErrorType.RuntimeError, cause.getMessage(), cause, originatingNode, realm);
     }
 
