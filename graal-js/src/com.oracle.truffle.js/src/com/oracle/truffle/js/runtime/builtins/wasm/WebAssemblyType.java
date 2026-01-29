@@ -72,7 +72,7 @@ public enum WebAssemblyType {
             case "externref" -> externref;
             case "exnref" -> exnref;
             case "anyref" -> anyref;
-            default -> null;
+            default -> throw Errors.shouldNotReachHere("unexpected value type");
         };
     }
 
