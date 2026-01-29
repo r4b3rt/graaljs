@@ -69,6 +69,7 @@ import com.oracle.truffle.js.runtime.GraalJSException;
 import com.oracle.truffle.js.runtime.JSArguments;
 import com.oracle.truffle.js.runtime.JSConfig;
 import com.oracle.truffle.js.runtime.JSContext;
+import com.oracle.truffle.js.runtime.JSErrorType;
 import com.oracle.truffle.js.runtime.JSException;
 import com.oracle.truffle.js.runtime.JSFrameUtil;
 import com.oracle.truffle.js.runtime.JSRealm;
@@ -402,7 +403,16 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                         if (valueType == WebAssemblyType.v128) {
                             throw createLinkErrorImport(i, module, name, "Values of valtype v128 cannot be imported from JS");
                         }
-                        Object webAssemblyValue = ToWebAssemblyValueNodeGen.getUncached().execute(value, valueType);
+                        Object webAssemblyValue;
+                        try {
+                            webAssemblyValue = ToWebAssemblyValueNodeGen.getUncached().execute(value, valueType);
+                        } catch (JSException ex) {
+                            if (ex.getErrorType() == JSErrorType.TypeError) {
+                                throw Errors.createLinkError(ex, null);
+                            } else {
+                                throw ex;
+                            }
+                        }
                         try {
                             Object createGlobal = realm.getWASMGlobalAlloc();
                             wasmValue = InteropLibrary.getUncached(createGlobal).execute(createGlobal, valueTypeStr, false, webAssemblyValue);
