@@ -47,7 +47,8 @@ import com.oracle.truffle.js.runtime.objects.Undefined;
 /**
  * Represents the value types used in WebAssembly.
  * <p>
- * This enum is an abstract view of WebAssembly value types.
+ * This enum is an abstract view of WebAssembly value types. It consists of the set of topmost
+ * disjoint types. Every other WebAssembly value type is a subtype of one of these types.
  */
 public enum WebAssemblyType {
     i32,

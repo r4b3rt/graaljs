@@ -165,7 +165,7 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                     TruffleString type = asTString(exportInterop.readMember(exportInfo, "type"));
                     int sepIndex = Strings.indexOf(type, ' ');
                     final TruffleString valueTypeStr = Strings.substring(context, type, 0, sepIndex);
-                    WebAssemblyType valueType = WebAssemblyType.lookupValueType(valueTypeStr.toJavaStringUncached());
+                    WebAssemblyType valueType = WebAssemblyType.lookup(valueTypeStr.toJavaStringUncached());
                     final boolean mutable = Strings.regionEquals(type, sepIndex + 1, MUT, 0, 3);
                     value = JSWebAssemblyGlobal.create(context, realm, externval, valueType, mutable);
                 } else if (Strings.MEMORY.equals(externtype)) {
@@ -174,7 +174,7 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                     value = JSWebAssemblyMemory.create(context, realm, externval, shared);
                 } else if (Strings.TABLE.equals(externtype)) {
                     TruffleString typeStr = asTString(exportInterop.readMember(exportInfo, "type"));
-                    WebAssemblyType type = WebAssemblyType.lookupElementKind(typeStr.toJavaStringUncached());
+                    WebAssemblyType type = WebAssemblyType.lookup(typeStr.toJavaStringUncached());
                     value = JSWebAssemblyTable.create(context, realm, externval, type);
                 } else {
                     assert Strings.TAG.equals(externtype);
@@ -384,7 +384,7 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                         wasmValue = ((JSWebAssemblyGlobalObject) value).getWASMGlobal();
                     } else {
                         TruffleString valueTypeStr = asTString(descriptorInterop.readMember(descriptor, "type"));
-                        WebAssemblyType valueType = WebAssemblyType.lookupValueType(valueTypeStr.toJavaStringUncached());
+                        WebAssemblyType valueType = WebAssemblyType.lookup(valueTypeStr.toJavaStringUncached());
                         if (valueType == WebAssemblyType.i64) {
                             if (!context.getLanguageOptions().wasmBigInt()) {
                                 throw createLinkErrorImport(i, module, name, "Can't import the value of i64 WebAssembly.Global");
