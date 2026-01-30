@@ -3408,7 +3408,7 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
             Object wasmTable;
             try {
                 Object createTable = realm.getWASMTableAlloc();
-                wasmTable = tableAllocLib.execute(createTable, initialInt, maximumInt, elementKind.toString(), wasmValue);
+                wasmTable = tableAllocLib.execute(createTable, initialInt, maximumInt, realm.getWASMIsArray() != null ? elementKind.toString() : elementKindStr, wasmValue);
             } catch (InteropException ex) {
                 throw Errors.shouldNotReachHere(ex);
             }
@@ -3469,7 +3469,7 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
             Object wasmGlobal;
             try {
                 Object createGlobal = realm.getWASMGlobalAlloc();
-                wasmGlobal = globalAllocLib.execute(createGlobal, valueType.toString(), mutable, webAssemblyValue);
+                wasmGlobal = globalAllocLib.execute(createGlobal, realm.getWASMIsArray() != null ? valueType.toString() : valueTypeStr, mutable, webAssemblyValue);
             } catch (InteropException ex) {
                 throw Errors.shouldNotReachHere(ex);
             }

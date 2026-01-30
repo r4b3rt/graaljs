@@ -68,7 +68,7 @@ public enum WebAssemblyType {
             case "f32" -> f32;
             case "f64" -> f64;
             case "v128" -> v128;
-            case "funcref" -> funcref;
+            case "anyfunc", "funcref" -> funcref;
             case "externref" -> externref;
             case "exnref" -> exnref;
             case "anyref" -> anyref;

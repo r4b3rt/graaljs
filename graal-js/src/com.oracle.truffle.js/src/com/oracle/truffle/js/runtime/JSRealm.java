@@ -949,8 +949,16 @@ public class JSRealm {
                 wasmTableWrite = wasmInterop.readMember(wasmObject, "table_write");
                 wasmTableLength = wasmInterop.readMember(wasmObject, "table_size");
                 wasmFuncType = wasmInterop.readMember(wasmObject, "func_type");
-                wasmIsArray = wasmInterop.readMember(wasmObject, "is_array");
-                wasmIsStruct = wasmInterop.readMember(wasmObject, "is_struct");
+                if (wasmInterop.isMemberReadable(wasmObject, "is_array")) {
+                    wasmIsArray = wasmInterop.readMember(wasmObject, "is_array");
+                } else {
+                    wasmIsArray = null;
+                }
+                if (wasmInterop.isMemberReadable(wasmObject, "is_struct")) {
+                    wasmIsStruct = wasmInterop.readMember(wasmObject, "is_struct");
+                } else {
+                    wasmIsStruct = null;
+                }
                 wasmIsFunc = wasmInterop.readMember(wasmObject, "is_func");
                 wasmMemAlloc = wasmInterop.readMember(wasmObject, "mem_alloc");
                 wasmMemGrow = wasmInterop.readMember(wasmObject, "mem_grow");
