@@ -105,10 +105,10 @@ public abstract class ToJSValueNode extends JavaScriptBaseNode {
             return Null.instance;
         } else {
             try {
-                if (realm.getWASMIsStruct() != null && isStructLib.execute(realm.getWASMIsStruct(), value) instanceof Boolean isStruct && isStruct) {
+                if (isStructLib.execute(realm.getWASMIsStruct(), value) instanceof Boolean isStruct && isStruct) {
                     return JSWebAssemblyExportedGC.create(getJSContext(), realm, value);
                 }
-                if (realm.getWASMIsArray() != null && isArrayLib.execute(realm.getWASMIsArray(), value) instanceof Boolean isArray && isArray) {
+                if (isArrayLib.execute(realm.getWASMIsArray(), value) instanceof Boolean isArray && isArray) {
                     return JSWebAssemblyExportedGC.create(getJSContext(), realm, value);
                 }
                 if (isFuncLib.execute(realm.getWASMIsFunc(), value) instanceof Boolean isFunc && isFunc) {
