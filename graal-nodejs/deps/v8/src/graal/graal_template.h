@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -55,11 +55,25 @@ public:
             v8::Local<v8::FunctionTemplate> getter,
             v8::Local<v8::FunctionTemplate> setter,
             v8::PropertyAttribute attribute);
+    void SetNativeDataProperty(
+            v8::Local<v8::Name> name,
+            v8::AccessorNameGetterCallback getter,
+            v8::AccessorNameSetterCallback setter,
+            v8::Local<v8::Value> data,
+            v8::PropertyAttribute attribute);
     void SetLazyDataProperty(
             v8::Local<v8::Name> name,
             v8::AccessorNameGetterCallback getter,
             v8::Local<v8::Value> data,
             v8::PropertyAttribute attribute);
+private:
+    void DefineDataProperty(
+            v8::Local<v8::Name> name,
+            v8::AccessorNameGetterCallback getter,
+            v8::AccessorNameSetterCallback setter,
+            v8::Local<v8::Value> data,
+            v8::PropertyAttribute attribute,
+            bool lazy);
 };
 
 #endif /* GRAAL_TEMPLATE_H_ */

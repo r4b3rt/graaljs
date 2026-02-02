@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -64,14 +64,34 @@ void GraalTemplate::SetAccessorProperty(
     JNI_CALL_VOID(Isolate(), GraalAccessMethod::template_set_accessor_property, GetJavaObject(), java_name, java_getter, java_setter, java_attributes);
 }
 
+void GraalTemplate::SetNativeDataProperty(
+        v8::Local<v8::Name> name,
+        v8::AccessorNameGetterCallback getter,
+        v8::AccessorNameSetterCallback setter,
+        v8::Local<v8::Value> data,
+        v8::PropertyAttribute attribute) {
+    DefineDataProperty(name, getter, setter, data, attribute, false);
+}
+
 void GraalTemplate::SetLazyDataProperty(
         v8::Local<v8::Name> name,
         v8::AccessorNameGetterCallback getter,
         v8::Local<v8::Value> data,
         v8::PropertyAttribute attribute) {
+    DefineDataProperty(name, getter, nullptr, data, attribute, true);
+}
+
+void GraalTemplate::DefineDataProperty(
+        v8::Local<v8::Name> name,
+        v8::AccessorNameGetterCallback getter,
+        v8::AccessorNameSetterCallback setter,
+        v8::Local<v8::Value> data,
+        v8::PropertyAttribute attribute,
+        bool lazy) {
     GraalIsolate* graal_isolate = Isolate();
     jobject java_key = reinterpret_cast<GraalValue*> (*name)->GetJavaObject();
     jlong java_getter = (jlong) getter;
+    jlong java_setter = (jlong) setter;
     jobject java_data;
     if (data.IsEmpty()) {
         java_data = graal_isolate->GetUndefined()->GetJavaObject();
@@ -79,5 +99,5 @@ void GraalTemplate::SetLazyDataProperty(
         java_data = reinterpret_cast<GraalValue*> (*data)->GetJavaObject();
     }
     jint java_attrs = attribute;
-    JNI_CALL_VOID(graal_isolate, GraalAccessMethod::template_set_lazy_data_property, GetJavaObject(), java_key, java_getter, java_data, java_attrs);
+    JNI_CALL_VOID(graal_isolate, GraalAccessMethod::template_define_data_property, GetJavaObject(), java_key, java_getter, java_setter, java_data, java_attrs, lazy);
 }

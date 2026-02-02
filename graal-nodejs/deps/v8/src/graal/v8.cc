@@ -853,7 +853,7 @@ namespace v8 {
             PropertyAttribute attributes,
             SideEffectType getter_side_effect_type,
             SideEffectType setter_side_effect_type) {
-        return reinterpret_cast<GraalObject*> (this)->SetLazyDataProperty(context, name, getter, data, attributes, getter_side_effect_type, setter_side_effect_type);
+        return reinterpret_cast<GraalObject*> (this)->SetLazyDataProperty(context, name, getter, data, attributes);
     }
 
     void* Object::SlowGetAlignedPointerFromInternalField(int index) {
@@ -3999,8 +3999,7 @@ namespace v8 {
             PropertyAttribute attribute,
             SideEffectType getter_side_effect_type,
             SideEffectType setter_side_effect_type) {
-        TRACE
-        reinterpret_cast<GraalObjectTemplate*> (this)->SetAccessor(name, getter, setter, data, attribute);
+        reinterpret_cast<GraalObjectTemplate*> (this)->SetNativeDataProperty(name, getter, setter, data, attribute);
     }
 
     bool String::StringEquals(Local<String> str) const {
@@ -4269,8 +4268,7 @@ namespace v8 {
             PropertyAttribute attributes,
             SideEffectType getter_side_effect_type,
             SideEffectType setter_side_effect_type) {
-        TRACE
-        return reinterpret_cast<GraalObject*> (this)->SetAccessor(name, getter, setter, data, attributes);
+        return reinterpret_cast<GraalObject*> (this)->SetNativeDataProperty(context, name, getter, setter, data, attributes);
     }
 
     void Isolate::Deinitialize() {
