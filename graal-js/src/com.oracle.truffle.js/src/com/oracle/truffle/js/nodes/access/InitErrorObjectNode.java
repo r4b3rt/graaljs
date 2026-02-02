@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -42,6 +42,7 @@ package com.oracle.truffle.js.nodes.access;
 
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.dsl.Cached;
+import com.oracle.truffle.api.dsl.NeverDefault;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.strings.TruffleString;
@@ -67,33 +68,37 @@ public final class InitErrorObjectNode extends JavaScriptBaseNode {
     @Child private DynamicObject.PutNode setMessage;
     @Child private DynamicObject.PutNode setErrors;
     @Child private DefineStackPropertyNode defineStackProperty;
-    private final boolean defaultColumnNumber;
     @Child private CreateMethodPropertyNode setLineNumber;
     @Child private CreateMethodPropertyNode setColumnNumber;
     @Child private InstallErrorCauseNode installErrorCauseNode;
 
-    private InitErrorObjectNode(JSContext context, boolean defaultColumnNumber) {
+    private InitErrorObjectNode(JSContext context) {
         this.context = context;
         this.setFormattedStack = DynamicObject.PutNode.create();
         this.setMessage = DynamicObject.PutNode.create();
         this.defineStackProperty = DefineStackPropertyNode.create();
-        this.defaultColumnNumber = defaultColumnNumber;
         if (context.isOptionNashornCompatibilityMode()) {
             this.setLineNumber = CreateMethodPropertyNode.create(context, JSError.LINE_NUMBER_PROPERTY_NAME);
             this.setColumnNumber = CreateMethodPropertyNode.create(context, JSError.COLUMN_NUMBER_PROPERTY_NAME);
         }
     }
 
+    @NeverDefault
     public static InitErrorObjectNode create(JSContext context) {
-        return new InitErrorObjectNode(context, false);
+        return new InitErrorObjectNode(context);
     }
 
-    public static InitErrorObjectNode create(JSContext context, boolean defaultColumnNumber) {
-        return new InitErrorObjectNode(context, defaultColumnNumber);
+    @NeverDefault
+    public static InitErrorObjectNode getUncached(JSContext context) {
+        return new InitErrorObjectNode(context);
     }
 
     public JSObject execute(JSObject errorObj, GraalJSException exception, TruffleString messageOpt) {
         return execute(errorObj, exception, messageOpt, null);
+    }
+
+    public JSObject execute(JSObject errorObj, GraalJSException exception, TruffleString messageOpt, boolean defaultColumnNumber) {
+        return execute(errorObj, exception, messageOpt, null, Undefined.instance, defaultColumnNumber);
     }
 
     public JSObject execute(JSObject errorObj, GraalJSException exception, TruffleString messageOpt, JSObject errorsOpt) {
@@ -101,6 +106,10 @@ public final class InitErrorObjectNode extends JavaScriptBaseNode {
     }
 
     public JSObject execute(JSObject errorObj, GraalJSException exception, TruffleString messageOpt, JSObject errorsOpt, Object options) {
+        return execute(errorObj, exception, messageOpt, errorsOpt, options, false);
+    }
+
+    public JSObject execute(JSObject errorObj, GraalJSException exception, TruffleString messageOpt, JSObject errorsOpt, Object options, boolean defaultColumnNumber) {
         if (messageOpt != null) {
             Properties.putWithFlags(setMessage, errorObj, JSError.MESSAGE, messageOpt, JSError.MESSAGE_ATTRIBUTES);
         }
@@ -116,10 +125,13 @@ public final class InitErrorObjectNode extends JavaScriptBaseNode {
         setFormattedStack.execute(errorObj, JSError.FORMATTED_STACK_NAME, null);
         defineStackProperty.execute(errorObj);
 
-        if (setLineNumber != null && exception.getJSStackTrace().length > 0) {
-            JSStackTraceElement topStackTraceElement = exception.getJSStackTrace()[0];
-            setLineNumber.executeVoid(errorObj, topStackTraceElement.getLineNumber());
-            setColumnNumber.executeVoid(errorObj, defaultColumnNumber ? JSError.DEFAULT_COLUMN_NUMBER : topStackTraceElement.getColumnNumber());
+        if (setLineNumber != null) {
+            JSStackTraceElement[] jsStackTrace = exception.getJSStackTrace();
+            if (jsStackTrace.length > 0) {
+                JSStackTraceElement topStackTraceElement = jsStackTrace[0];
+                setLineNumber.executeVoid(errorObj, topStackTraceElement.getLineNumber());
+                setColumnNumber.executeVoid(errorObj, defaultColumnNumber ? JSError.DEFAULT_COLUMN_NUMBER : topStackTraceElement.getColumnNumber());
+            }
         }
         return errorObj;
     }

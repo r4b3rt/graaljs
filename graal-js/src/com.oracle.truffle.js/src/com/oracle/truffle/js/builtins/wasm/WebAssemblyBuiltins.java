@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -58,6 +58,7 @@ import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.js.builtins.JSBuiltinsContainer;
 import com.oracle.truffle.js.builtins.wasm.WebAssemblyBuiltinsFactory.WebAssemblyCompileNodeGen;
 import com.oracle.truffle.js.builtins.wasm.WebAssemblyBuiltinsFactory.WebAssemblyInstantiateNodeGen;
+import com.oracle.truffle.js.builtins.wasm.WebAssemblyBuiltinsFactory.WebAssemblyJSTagNodeGen;
 import com.oracle.truffle.js.builtins.wasm.WebAssemblyBuiltinsFactory.WebAssemblyValidateNodeGen;
 import com.oracle.truffle.js.lang.JavaScriptLanguage;
 import com.oracle.truffle.js.nodes.access.IsObjectNode;
@@ -105,7 +106,8 @@ public class WebAssemblyBuiltins extends JSBuiltinsContainer.SwitchEnum<WebAssem
     public enum WebAssembly implements BuiltinEnum<WebAssembly> {
         compile(1),
         instantiate(1),
-        validate(1);
+        validate(1),
+        JSTag(0);
 
         private final int length;
 
@@ -123,6 +125,10 @@ public class WebAssemblyBuiltins extends JSBuiltinsContainer.SwitchEnum<WebAssem
             return true;
         }
 
+        @Override
+        public boolean isGetter() {
+            return this == JSTag;
+        }
     }
 
     @Override
@@ -134,6 +140,8 @@ public class WebAssemblyBuiltins extends JSBuiltinsContainer.SwitchEnum<WebAssem
                 return WebAssemblyInstantiateNodeGen.create(context, builtin, args().fixedArgs(2).createArgumentNodes(context));
             case validate:
                 return WebAssemblyValidateNodeGen.create(context, builtin, args().fixedArgs(1).createArgumentNodes(context));
+            case JSTag:
+                return WebAssemblyJSTagNodeGen.create(context, builtin, args().createArgumentNodes(context));
         }
         return null;
     }
@@ -185,11 +193,11 @@ public class WebAssemblyBuiltins extends JSBuiltinsContainer.SwitchEnum<WebAssem
                     ExceptionType type = interop.getExceptionType(ex);
                     AbstractTruffleException exception = ex;
                     if (type == ExceptionType.PARSE_ERROR) {
-                        exception = Errors.createCompileError(ex, this);
+                        exception = Errors.createWasmCompileError(ex, this);
                     }
                     if (getErrorObjectNode == null) {
                         CompilerDirectives.transferToInterpreterAndInvalidate();
-                        getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create(getContext()));
+                        getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create());
                     }
                     Object error = getErrorObjectNode.execute(exception);
                     promiseResolutionCallNode.executeCall(JSArguments.createOneArg(Undefined.instance, promiseCapability.getReject(), error));
@@ -291,7 +299,7 @@ public class WebAssemblyBuiltins extends JSBuiltinsContainer.SwitchEnum<WebAssem
                     errorBranch.enter();
                     ExceptionType type = InteropLibrary.getUncached(ex).getExceptionType(ex);
                     if (type == ExceptionType.PARSE_ERROR) {
-                        throw Errors.createCompileError(ex, this);
+                        throw Errors.createWasmCompileError(ex, this);
                     } else {
                         throw ex;
                     }
@@ -310,7 +318,7 @@ public class WebAssemblyBuiltins extends JSBuiltinsContainer.SwitchEnum<WebAssem
             } catch (GraalJSException jsex) {
                 throw jsex;
             } catch (AbstractTruffleException ex) {
-                throw Errors.createLinkError(ex, null);
+                throw Errors.createWasmLinkError(ex, null);
             } catch (InteropException ex) {
                 throw Errors.shouldNotReachHere(ex);
             }
@@ -372,4 +380,14 @@ public class WebAssemblyBuiltins extends JSBuiltinsContainer.SwitchEnum<WebAssem
     record InstantiatedSourceInfo(Object wasmModule, Object importObject, Source wasmSource) implements TruffleObject {
     }
 
+    public abstract static class WebAssemblyJSTagNode extends JSBuiltinNode {
+        protected WebAssemblyJSTagNode(JSContext context, JSBuiltin builtin) {
+            super(context, builtin);
+        }
+
+        @Specialization
+        protected Object getJSTag() {
+            return getRealm().getJSTagObj();
+        }
+    }
 }

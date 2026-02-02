@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -203,7 +203,7 @@ public final class PromiseFunctionBuiltins extends JSBuiltinsContainer.SwitchEnu
             if (callRejectNode == null || getErrorObjectNode == null) {
                 CompilerDirectives.transferToInterpreterAndInvalidate();
                 callRejectNode = insert(JSFunctionCallNode.createCall());
-                getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create(getContext()));
+                getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create());
             }
             Object error = getErrorObjectNode.execute(ex);
             callRejectNode.executeCall(JSArguments.createOneArg(Undefined.instance, promiseCapability.getReject(), error));
@@ -328,7 +328,7 @@ public final class PromiseFunctionBuiltins extends JSBuiltinsContainer.SwitchEnu
             if (callRejectNode == null || getErrorObjectNode == null) {
                 CompilerDirectives.transferToInterpreterAndInvalidate();
                 callRejectNode = insert(JSFunctionCallNode.createCall());
-                getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create(getContext()));
+                getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create());
             }
             Object error = getErrorObjectNode.execute(ex);
             callRejectNode.executeCall(JSArguments.createOneArg(Undefined.instance, promiseCapability.getReject(), error));

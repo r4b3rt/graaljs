@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -268,10 +268,13 @@ public final class JSError extends JSNonProxy {
         errorObj.setException(exception);
         defineStackProperty(errorObj);
         JSContext context = realm.getContext();
-        if (context.isOptionNashornCompatibilityMode() && exception.getJSStackTrace().length > 0) {
-            JSStackTraceElement topStackTraceElement = exception.getJSStackTrace()[0];
-            setLineNumber(context, errorObj, topStackTraceElement.getLineNumber());
-            setColumnNumber(context, errorObj, defaultColumnNumber ? DEFAULT_COLUMN_NUMBER : topStackTraceElement.getColumnNumber());
+        if (context.isOptionNashornCompatibilityMode()) {
+            JSStackTraceElement[] jsStackTrace = exception.getJSStackTrace();
+            if (jsStackTrace.length > 0) {
+                JSStackTraceElement topStackTraceElement = jsStackTrace[0];
+                setLineNumber(context, errorObj, topStackTraceElement.getLineNumber());
+                setColumnNumber(context, errorObj, defaultColumnNumber ? DEFAULT_COLUMN_NUMBER : topStackTraceElement.getColumnNumber());
+            }
         }
         return errorObj;
     }
@@ -371,7 +374,7 @@ public final class JSError extends JSNonProxy {
     }
 
     @TruffleBoundary
-    private static TruffleString formatStackTrace(JSStackTraceElement[] stackTrace, JSDynamicObject errObj, JSRealm realm) {
+    public static TruffleString formatStackTrace(JSStackTraceElement[] stackTrace, JSDynamicObject errObj, JSRealm realm) {
         var builder = Strings.builderCreate();
         if (!realm.getContext().isOptionNashornCompatibilityMode() || isInstanceOfJSError(errObj, realm)) {
             TruffleString name = getName(errObj);

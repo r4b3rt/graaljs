@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -142,6 +142,8 @@ public final class JSConfig {
     static final int MaxTypedArrayLength = SOFT_MAX_ARRAY_LENGTH;
     static final int MaxApplyArgumentLength = 10_000_000;
     static final int MaxPrototypeChainLength = 32766; // regress-578775.js
+
+    public static final int MaxWasmTagParams = 1000;
 
     // Shape check elision options
     public static final boolean SkipPrototypeShapeCheck = true;

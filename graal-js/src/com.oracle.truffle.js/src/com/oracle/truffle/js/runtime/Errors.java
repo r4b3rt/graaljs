@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -718,12 +718,12 @@ public final class Errors {
 
     @TruffleBoundary
     public static JSException createRangeErrorStackOverflow() {
-        return Errors.createRangeError("Maximum call stack size exceeded");
+        return createRangeErrorStackOverflow(null, null);
     }
 
     @TruffleBoundary
     public static JSException createRangeErrorStackOverflow(Throwable cause, Node originatingNode) {
-        return Errors.createRangeError("Maximum call stack size exceeded", cause, originatingNode);
+        return JSException.createWasmUncatchableError(JSErrorType.RangeError, "Maximum call stack size exceeded", cause, originatingNode, JSRealm.get(originatingNode));
     }
 
     @TruffleBoundary
@@ -1010,38 +1010,33 @@ public final class Errors {
     }
 
     @TruffleBoundary
-    public static JSException createCompileError(String message, Node originatingNode) {
+    public static JSException createWasmCompileError(String message, Node originatingNode) {
         return JSException.create(JSErrorType.CompileError, message, originatingNode);
     }
 
     @TruffleBoundary
-    public static JSException createCompileError(Throwable cause, Node originatingNode) {
+    public static JSException createWasmCompileError(Throwable cause, Node originatingNode) {
         return JSException.create(JSErrorType.CompileError, cause.getMessage(), cause, originatingNode);
     }
 
     @TruffleBoundary
-    public static JSException createLinkError(String message) {
+    public static JSException createWasmLinkError(String message) {
         return JSException.create(JSErrorType.LinkError, message);
     }
 
     @TruffleBoundary
-    public static JSException createLinkError(String message, Node originatingNode) {
-        return JSException.create(JSErrorType.LinkError, message, originatingNode);
-    }
-
-    @TruffleBoundary
-    public static JSException createLinkError(Throwable cause, Node originatingNode) {
+    public static JSException createWasmLinkError(Throwable cause, Node originatingNode) {
         return JSException.create(JSErrorType.LinkError, cause.getMessage(), cause, originatingNode);
     }
 
     @TruffleBoundary
-    public static JSException createRuntimeError(String message, JSRealm realm) {
-        return JSException.create(JSErrorType.RuntimeError, message, null, null, realm);
+    public static JSException createWasmRuntimeError(String message, JSRealm realm) {
+        return JSException.createWasmUncatchableError(JSErrorType.RuntimeError, message, null, null, realm);
     }
 
     @TruffleBoundary
-    public static JSException createRuntimeError(Throwable cause, Node originatingNode) {
-        return JSException.create(JSErrorType.RuntimeError, cause.getMessage(), cause, originatingNode);
+    public static JSException createWasmRuntimeError(Throwable cause, Node originatingNode, JSRealm realm) {
+        return JSException.createWasmUncatchableError(JSErrorType.RuntimeError, cause.getMessage(), cause, originatingNode, realm);
     }
 
     @TruffleBoundary

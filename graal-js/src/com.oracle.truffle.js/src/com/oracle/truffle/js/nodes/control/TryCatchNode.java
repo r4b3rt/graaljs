@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -45,7 +45,11 @@ import java.util.Set;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.TruffleStackTrace;
+import com.oracle.truffle.api.dsl.Cached;
+import com.oracle.truffle.api.dsl.Cached.Shared;
 import com.oracle.truffle.api.dsl.Fallback;
+import com.oracle.truffle.api.dsl.GenerateUncached;
+import com.oracle.truffle.api.dsl.NeverDefault;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.exception.AbstractTruffleException;
 import com.oracle.truffle.api.frame.VirtualFrame;
@@ -185,9 +189,9 @@ public class TryCatchNode extends StatementNode implements ResumableNode.WithObj
         if (writeErrorVar != null) {
             if (getErrorObjectNode == null) {
                 CompilerDirectives.transferToInterpreterAndInvalidate();
-                getErrorObjectNode = insert(GetErrorObjectNode.create(context));
+                getErrorObjectNode = insert(GetErrorObjectNode.create());
             }
-            Object exceptionObject = getErrorObjectNode.execute(ex);
+            Object exceptionObject = getErrorObjectNode.execute(ex, true);
             writeErrorVar.executeWrite(frame, exceptionObject);
 
             if (destructuring != null) {
@@ -244,65 +248,77 @@ public class TryCatchNode extends StatementNode implements ResumableNode.WithObj
         }
     }
 
+    @GenerateUncached
     public abstract static class GetErrorObjectNode extends JavaScriptBaseNode {
-        @Child private InitErrorObjectNode initErrorObjectNode;
-        @Child private TruffleString.FromJavaStringNode fromJavaStringNode;
-        private final JSContext context;
 
-        protected GetErrorObjectNode(JSContext context) {
-            this.context = context;
-            this.initErrorObjectNode = InitErrorObjectNode.create(context, context.isOptionNashornCompatibilityMode());
-            this.fromJavaStringNode = TruffleString.FromJavaStringNode.create();
+        protected GetErrorObjectNode() {
         }
 
-        public static GetErrorObjectNode create(JSContext context) {
-            return GetErrorObjectNodeGen.create(context);
+        @NeverDefault
+        public static GetErrorObjectNode create() {
+            return GetErrorObjectNodeGen.create();
         }
 
-        public abstract Object execute(Throwable ex);
+        @NeverDefault
+        public static GetErrorObjectNode getUncached() {
+            return GetErrorObjectNodeGen.getUncached();
+        }
+
+        public final Object execute(Throwable ex) {
+            return execute(ex, false);
+        }
+
+        public abstract Object execute(Throwable ex, boolean defaultColumnNumber);
 
         @Specialization
-        final Object doJSException(JSException ex) {
+        final Object doJSException(JSException ex, boolean defaultColumnNumber,
+                        @Shared @Cached(parameters = "getJSContext()") InitErrorObjectNode initErrorObjectNode,
+                        @Shared @Cached TruffleString.FromJavaStringNode fromJavaStringNode) {
             // fill in any missing stack trace elements
             TruffleStackTrace.fillIn(ex);
 
-            return getOrCreateErrorFromJSException(ex);
+            return getOrCreateErrorFromJSException(ex, defaultColumnNumber, initErrorObjectNode, fromJavaStringNode);
         }
 
         @Specialization
-        static Object doUserScriptException(UserScriptException ex) {
+        static Object doUserScriptException(UserScriptException ex, @SuppressWarnings("unused") boolean defaultColumnNumber) {
             return ex.getErrorObject();
         }
 
         @Specialization
-        final Object doStackOverflowError(StackOverflowError ex) {
+        final Object doStackOverflowError(StackOverflowError ex, boolean defaultColumnNumber,
+                        @Shared @Cached(parameters = "getJSContext()") InitErrorObjectNode initErrorObjectNode,
+                        @Shared @Cached TruffleString.FromJavaStringNode fromJavaStringNode) {
             JSException rangeError = Errors.createRangeErrorStackOverflow(ex, this);
-            return getOrCreateErrorFromJSException(rangeError);
+            return getOrCreateErrorFromJSException(rangeError, defaultColumnNumber, initErrorObjectNode, fromJavaStringNode);
         }
 
         @Fallback
-        static Object doOther(Throwable ex) {
+        static Object doOther(Throwable ex, @SuppressWarnings("unused") boolean defaultColumnNumber) {
             assert !(ex instanceof GraalJSException) && (ex instanceof AbstractTruffleException) : ex;
             // fill in any missing stack trace elements
             TruffleStackTrace.fillIn(ex);
             return ex;
         }
 
-        private Object getOrCreateErrorFromJSException(JSException exception) {
+        private Object getOrCreateErrorFromJSException(JSException exception, boolean defaultColumnNumber,
+                        InitErrorObjectNode initErrorObjectNode,
+                        TruffleString.FromJavaStringNode fromJavaStringNode) {
             JSDynamicObject errorObj = exception.getErrorObjectLazy();
             // not thread safe, but should be alright in this case
             if (errorObj == null) {
-                errorObj = createErrorFromJSException(exception);
+                errorObj = createErrorFromJSException(exception, defaultColumnNumber, initErrorObjectNode, fromJavaStringNode);
             }
             return errorObj;
         }
 
-        private JSErrorObject createErrorFromJSException(JSException exception) {
+        private JSErrorObject createErrorFromJSException(JSException exception, boolean defaultColumnNumber,
+                        InitErrorObjectNode initErrorObjectNode,
+                        TruffleString.FromJavaStringNode fromJavaStringNode) {
             JSRealm errorRealm = exception.getRealm();
             String message = exception.getRawMessage();
-            assert message != null;
-            JSErrorObject errorObj = newErrorObject(context, errorRealm, exception.getErrorType());
-            initErrorObjectNode.execute(errorObj, exception, Strings.fromJavaString(fromJavaStringNode, message));
+            JSErrorObject errorObj = newErrorObject(getJSContext(), errorRealm, exception.getErrorType());
+            initErrorObjectNode.execute(errorObj, exception, message == null ? null : Strings.fromJavaString(fromJavaStringNode, message), defaultColumnNumber);
             exception.setErrorObject(errorObj);
             return errorObj;
         }

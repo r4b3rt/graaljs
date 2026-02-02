@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2022, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -81,7 +81,7 @@ public class AsyncGeneratorAwaitReturnNode extends AsyncGeneratorCompleteStepNod
     public final Object getErrorObject(AbstractTruffleException ex) {
         if (getErrorObjectNode == null) {
             CompilerDirectives.transferToInterpreterAndInvalidate();
-            getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create(context));
+            getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create());
         }
         return getErrorObjectNode.execute(ex);
     }

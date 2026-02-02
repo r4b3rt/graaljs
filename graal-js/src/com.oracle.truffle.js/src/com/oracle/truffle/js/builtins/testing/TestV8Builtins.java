@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -45,6 +45,7 @@ import java.util.List;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.dsl.Cached;
+import com.oracle.truffle.api.dsl.Fallback;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.strings.TruffleString;
 import com.oracle.truffle.js.builtins.AtomicsBuiltins;
@@ -98,6 +99,9 @@ import com.oracle.truffle.js.runtime.builtins.JSFunctionObject;
 import com.oracle.truffle.js.runtime.builtins.JSSharedArrayBuffer;
 import com.oracle.truffle.js.runtime.builtins.JSTestV8;
 import com.oracle.truffle.js.runtime.builtins.JSTypedArrayObject;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyException;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyExceptionObject;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTagObject;
 import com.oracle.truffle.js.runtime.objects.IteratorRecord;
 import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
@@ -143,7 +147,9 @@ public final class TestV8Builtins extends JSBuiltinsContainer.SwitchEnum<TestV8B
         setAllowAtomicsWait(1),
 
         createPrivateSymbol(1),
-        symbolIsPrivate(1);
+        symbolIsPrivate(1),
+
+        getWasmExceptionTag(1);
 
         private final int length;
 
@@ -212,6 +218,8 @@ public final class TestV8Builtins extends JSBuiltinsContainer.SwitchEnum<TestV8B
                 return TestV8CreatePrivateSymbolNodeGen.create(context, builtin, args().fixedArgs(1).createArgumentNodes(context));
             case symbolIsPrivate:
                 return TestV8SymbolIsPrivateNodeGen.create(context, builtin, args().fixedArgs(1).createArgumentNodes(context));
+            case getWasmExceptionTag:
+                return TestV8BuiltinsFactory.TestV8GetWasmExceptionTagNodeGen.create(context, builtin, args().fixedArgs(1).createArgumentNodes(context));
         }
         return null;
     }
@@ -525,6 +533,24 @@ public final class TestV8Builtins extends JSBuiltinsContainer.SwitchEnum<TestV8B
             return JSRuntime.isPrivateSymbol(symbol);
         }
 
+    }
+
+    public abstract static class TestV8GetWasmExceptionTagNode extends JSBuiltinNode {
+
+        public TestV8GetWasmExceptionTagNode(JSContext context, JSBuiltin builtin) {
+            super(context, builtin);
+        }
+
+        @Specialization
+        static JSWebAssemblyTagObject doException(JSWebAssemblyExceptionObject exnObj) {
+            return exnObj.type();
+        }
+
+        @TruffleBoundary
+        @Fallback
+        static Object doIncompatibleReceiver(@SuppressWarnings("unused") Object arg) {
+            throw Errors.createTypeErrorTypeXExpected(JSWebAssemblyException.WEB_ASSEMBLY_EXCEPTION);
+        }
     }
 
 }

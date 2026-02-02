@@ -440,6 +440,8 @@ public final class Strings {
     public static final TruffleString MEMORY = constant("memory");
     public static final TruffleString TABLE = constant("table");
     public static final TruffleString TAG = constant("tag");
+    public static final TruffleString PARAMETERS = constant("parameters");
+    public static final TruffleString TRACE_STACK = constant("traceStack");
     public static final TruffleString STATUS = constant("status");
     public static final TruffleString REASON = constant("reason");
     public static final TruffleString DOT_PROTOTYPE = constant(".prototype");

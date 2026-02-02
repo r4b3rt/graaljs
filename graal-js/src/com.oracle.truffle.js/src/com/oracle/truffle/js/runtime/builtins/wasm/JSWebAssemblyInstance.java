@@ -57,7 +57,6 @@ import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.object.Shape;
-import com.oracle.truffle.api.profiles.BranchProfile;
 import com.oracle.truffle.api.strings.TruffleString;
 import com.oracle.truffle.js.builtins.wasm.WebAssemblyInstancePrototypeBuiltins;
 import com.oracle.truffle.js.nodes.wasm.ToJSValueNode;
@@ -76,6 +75,7 @@ import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.JavaScriptRootNode;
 import com.oracle.truffle.js.runtime.Strings;
+import com.oracle.truffle.js.runtime.UserScriptException;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSConstructor;
 import com.oracle.truffle.js.runtime.builtins.JSConstructorFactory;
@@ -178,9 +178,12 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                     TruffleString typeStr = asTString(exportInterop.readMember(exportInfo, "type"));
                     WebAssemblyType type = WebAssemblyType.lookup(typeStr.toJavaStringUncached());
                     value = JSWebAssemblyTable.create(context, realm, externval, type);
+                } else if (Strings.TAG.equals(externtype)) {
+                    TruffleString typeStr = asTString(exportInterop.readMember(exportInfo, "type"));
+                    WebAssemblyType[] tagType = parseWasmFunctionTypeInfo(context, typeStr).paramTypes();
+                    value = JSWebAssemblyTag.create(context, realm, externval, tagType);
                 } else {
-                    assert Strings.TAG.equals(externtype);
-                    value = Undefined.instance; // Not implemented yet
+                    throw Errors.shouldNotReachHereUnexpectedValue(externtype);
                 }
 
                 JSObject.set(exports, name, value);
@@ -252,10 +255,13 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
 
         @Child ToWebAssemblyValueNode toWebAssemblyValueNode = ToWebAssemblyValueNodeGen.create();
         @Child ToJSValueNode toJSValueNode = ToJSValueNodeGen.create();
-        private final BranchProfile errorBranch = BranchProfile.create();
-        @Child InteropLibrary exportFunctionLib = InteropLibrary.getFactory().createDispatched(JSConfig.InteropLibraryLimit);
+        @Child InteropLibrary exportedFunctionLib = InteropLibrary.getFactory().createDispatched(JSConfig.InteropLibraryLimit);
         @Child InteropLibrary readArrayElementLib = InteropLibrary.getFactory().createDispatched(JSConfig.InteropLibraryLimit);
         @Child DynamicObject.GetNode getExportedFunction = DynamicObject.GetNode.create();
+
+        @Child InteropLibrary exnAddrLib;
+        @Child InteropLibrary exnTagLib;
+        @Child InteropLibrary tagTypeLib;
 
         WasmToJSFunctionAdapterRootNode(JSContext context, WasmFunctionTypeInfo type) {
             super(context.getLanguage(), null, null);
@@ -266,7 +272,6 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
         @Override
         public Object execute(VirtualFrame frame) {
             if ((!context.getLanguageOptions().wasmBigInt() && type.anyTypeIsI64()) || type.anyTypeIsV128()) {
-                errorBranch.enter();
                 throw Errors.createTypeError("wasm function signature contains illegal type");
             }
             int argCount = type.paramLength();
@@ -277,20 +282,26 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
 
             Object export = getExportedFunction.execute(JSFrameUtil.getFunctionObject(frame), JSWebAssembly.FUNCTION_ADDRESS, null);
             try {
+                JSRealm realm = getRealm();
                 Object wasmResult;
                 try {
-                    wasmResult = exportFunctionLib.execute(export, wasmArgs);
+                    wasmResult = exportedFunctionLib.execute(export, wasmArgs);
                 } catch (GraalJSException jsex) {
-                    errorBranch.enter();
                     throw jsex;
-                } catch (AbstractTruffleException tex) {
-                    errorBranch.enter();
-                    ExceptionType exceptionType = InteropLibrary.getUncached(tex).getExceptionType(tex);
-                    if (exceptionType == ExceptionType.INTERRUPT || exceptionType == ExceptionType.EXIT) {
-                        throw tex;
-                    } else {
-                        throw Errors.createRuntimeError(tex, this);
+                } catch (AbstractTruffleException exnAddr) {
+                    InteropLibrary exnAddrInterop = this.exnAddrLib;
+                    if (exnAddrInterop == null) {
+                        CompilerDirectives.transferToInterpreterAndInvalidate();
+                        exnAddrInterop = this.exnAddrLib = insert(InteropLibrary.getFactory().createDispatched(JSConfig.InteropLibraryLimit));
                     }
+                    ExceptionType exceptionType = exnAddrInterop.getExceptionType(exnAddr);
+                    if (exceptionType == ExceptionType.INTERRUPT || exceptionType == ExceptionType.EXIT) {
+                        throw exnAddr;
+                    }
+                    if (exceptionType == ExceptionType.RUNTIME_ERROR) {
+                        handleWasmException(realm, exnAddr, exnAddrInterop);
+                    }
+                    throw Errors.createWasmRuntimeError(exnAddr, this, realm);
                 }
 
                 if (returnLength == 0) {
@@ -302,10 +313,62 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                     for (int i = 0; i < returnLength; i++) {
                         values[i] = toJSValueNode.execute(readArrayElementLib.readArrayElement(wasmResult, i));
                     }
-                    return JSArray.createConstantObjectArray(context, getRealm(), values);
+                    return JSArray.createConstantObjectArray(context, realm, values);
                 }
             } catch (UnsupportedTypeException ex) {
                 throw Errors.createTypeError("incompatible type passed to WebAssembly function");
+            } catch (InteropException ex) {
+                throw Errors.shouldNotReachHere(ex);
+            }
+        }
+
+        /**
+         * Rethrow a WasmRuntimeException as a WebAssembly.Exception or the original JS exception.
+         */
+        private void handleWasmException(JSRealm realm, AbstractTruffleException exnAddr, InteropLibrary exnAddrInterop) {
+            if (exnTagLib == null || tagTypeLib == null) {
+                CompilerDirectives.transferToInterpreterAndInvalidate();
+                exnTagLib = insert(InteropLibrary.getFactory().createDispatched(JSConfig.InteropLibraryLimit));
+                tagTypeLib = insert(InteropLibrary.getFactory().createDispatched(JSConfig.InteropLibraryLimit));
+            }
+            try {
+                Object tagAddr;
+                try {
+                    tagAddr = exnTagLib.execute(realm.getWASMExnTag(), exnAddr);
+                } catch (AbstractTruffleException ignored) {
+                    /*
+                     * If exn_tag fails, we know the exception is not a WasmRuntimeException in
+                     * which case ret is `error`, and we should throw a RuntimeError or, in case of
+                     * a stack overflow, RangeError.
+                     */
+                    if (exnAddrInterop.isMemberReadable(exnAddr, "failureType") &&
+                                    Strings.interopAsString(exnAddrInterop.readMember(exnAddr, "failureType")).equals("exhaustion")) {
+                        throw Errors.createRangeErrorStackOverflow(exnAddr, this);
+                    }
+                    return;
+                }
+                // ret is THROW ref.exn exnaddr
+                if (tagAddr == realm.getJSTagAddr()) {
+                    // Unwrap JS exception
+                    Object exnRef = exnAddrInterop.readArrayElement(exnAddr, 0);
+                    throw JSRuntime.getException(exnRef, this);
+                }
+                // Rethrow WasmRuntimeException as WebAssembly.Exception object
+                JSWebAssemblyExceptionObject exnObj;
+                Object embedderData = JSWebAssembly.getEmbedderData(realm, exnAddr);
+                if (embedderData instanceof JSWebAssemblyExceptionObject cached) {
+                    exnObj = cached;
+                } else {
+                    Object tagType = tagTypeLib.execute(realm.getWASMTagType(), tagAddr);
+                    WebAssemblyType[] parameterTypes = parseWasmFunctionTypeInfo(context, asTString(tagType)).paramTypes();
+                    var tagObj = JSWebAssemblyTag.create(context, realm, tagAddr, parameterTypes);
+                    Object[] payload = new Object[tagObj.parameterTypes().length];
+                    for (int i = 0; i < tagObj.parameterTypes().length; i++) {
+                        payload[i] = exnAddrInterop.readArrayElement(exnAddr, i);
+                    }
+                    exnObj = JSWebAssemblyException.create(context, realm, exnAddr, tagObj, payload);
+                }
+                throw UserScriptException.create(exnObj);
             } catch (InteropException ex) {
                 throw Errors.shouldNotReachHere(ex);
             }
@@ -399,16 +462,17 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                         }
                         if ((valueType == WebAssemblyType.i32 || valueType == WebAssemblyType.f32 || valueType == WebAssemblyType.f64) && !JSRuntime.isNumber(value)) {
                             throw createLinkErrorImport(i, module, name, "Value of valtype i32, f32 and f64 must be Number");
-                        }
-                        if (valueType == WebAssemblyType.v128) {
+                        } else if (valueType == WebAssemblyType.v128) {
                             throw createLinkErrorImport(i, module, name, "Values of valtype v128 cannot be imported from JS");
+                        } else if (valueType == WebAssemblyType.exnref) {
+                            throw createLinkErrorImport(i, module, name, "Values of valtype exnref cannot be imported from JS");
                         }
                         Object webAssemblyValue;
                         try {
                             webAssemblyValue = ToWebAssemblyValueNodeGen.getUncached().execute(value, valueType);
                         } catch (JSException ex) {
                             if (ex.getErrorType() == JSErrorType.TypeError) {
-                                throw Errors.createLinkError(ex, null);
+                                throw Errors.createWasmLinkError(ex, null);
                             } else {
                                 throw ex;
                             }
@@ -426,13 +490,20 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                     } else {
                         throw createLinkErrorImport(i, module, name, "Imported value is not a WebAssembly.Memory object");
                     }
-                } else {
-                    assert Strings.equals(Strings.TABLE, externType) : externType;
+                } else if (Strings.equals(Strings.TABLE, externType)) {
                     if (JSWebAssemblyTable.isJSWebAssemblyTable(value)) {
                         wasmValue = ((JSWebAssemblyTableObject) value).getWASMTable();
                     } else {
                         throw createLinkErrorImport(i, module, name, "Imported value is not a WebAssembly.Table object");
                     }
+                } else if (Strings.equals(Strings.TAG, externType)) {
+                    if (value instanceof JSWebAssemblyTagObject tag) {
+                        wasmValue = tag.getWasmTag();
+                    } else {
+                        throw createLinkErrorImport(i, module, name, "Imported value is not a WebAssembly.Tag object");
+                    }
+                } else {
+                    throw Errors.shouldNotReachHereUnexpectedValue(externType);
                 }
 
                 JSDynamicObject transformedModule;
@@ -452,7 +523,7 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
 
     @TruffleBoundary
     private static JSException createLinkErrorImport(long index, TruffleString module, TruffleString name, String message) {
-        return Errors.createLinkError("Import #" + index + " \"" + module + "\" \"" + name + "\": " + message);
+        return Errors.createWasmLinkError("Import #" + index + " \"" + module + "\" \"" + name + "\": " + message);
     }
 
     @TruffleBoundary

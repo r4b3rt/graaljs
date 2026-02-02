@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -266,7 +266,7 @@ public class ImportCallNode extends JavaScriptNode {
         if (callRejectNode == null || getErrorObjectNode == null) {
             CompilerDirectives.transferToInterpreterAndInvalidate();
             callRejectNode = insert(JSFunctionCallNode.createCall());
-            getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create(context));
+            getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create());
         }
         Object error = getErrorObjectNode.execute(ex);
         callRejectNode.executeCall(JSArguments.createOneArg(Undefined.instance, promiseCapability.getReject(), error));
@@ -441,7 +441,7 @@ public class ImportCallNode extends JavaScriptNode {
             private void rejectPromise(PromiseCapabilityRecord moduleLoadedCapability, AbstractTruffleException ex) {
                 if (getErrorObjectNode == null || callPromiseReject == null) {
                     CompilerDirectives.transferToInterpreterAndInvalidate();
-                    getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create(context));
+                    getErrorObjectNode = insert(TryCatchNode.GetErrorObjectNode.create());
                     callPromiseReject = insert(JSFunctionCallNode.createCall());
                 }
                 Object errorObject = getErrorObjectNode.execute(ex);
