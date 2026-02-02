@@ -77,9 +77,6 @@ test-fs-write: FAIL
 # (which is a foreign object when chromeinspector is used)
 test-process-get-builtin: SKIP
 
-# SetNativeDataProperty is not exactly SetAccessor()
-test-worker-unsupported-things: FAIL
-
 # Uses 'using' keyword
 test-filehandle-autoclose: FAIL
 test-fs-read-empty-buffer: FAIL
