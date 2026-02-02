@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -294,7 +294,7 @@ import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyMemory;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyModule;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyModuleObject;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyTable;
-import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyValueType;
+import com.oracle.truffle.js.runtime.builtins.wasm.WebAssemblyType;
 import com.oracle.truffle.js.runtime.java.JavaImporter;
 import com.oracle.truffle.js.runtime.java.JavaPackage;
 import com.oracle.truffle.js.runtime.objects.IteratorRecord;
@@ -3373,8 +3373,8 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
                 throw Errors.createTypeError("WebAssembly.Table(): Argument 0 must be a table descriptor", this);
             }
             String elementKindStr = toJavaString.execute(toStringNode.executeString(getElementNode.getValue(descriptor)));
-            WebAssemblyValueType elementKind = WebAssemblyValueType.lookupType(elementKindStr);
-            if (elementKind == null || !elementKind.isReference()) {
+            WebAssemblyType elementKind = WebAssemblyType.lookupElementKind(elementKindStr);
+            if (elementKind == null) {
                 throw Errors.createTypeError("WebAssembly.Table(): Descriptor property 'element' must be 'anyfunc' or 'externref'", this);
             }
             Object initial = getInitialNode.getValue(descriptor);
@@ -3408,7 +3408,7 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
             Object wasmTable;
             try {
                 Object createTable = realm.getWASMTableAlloc();
-                wasmTable = tableAllocLib.execute(createTable, initialInt, maximumInt, elementKindStr, wasmValue);
+                wasmTable = tableAllocLib.execute(createTable, initialInt, maximumInt, realm.getWASMIsArray() != null ? elementKind.toString() : elementKindStr, wasmValue);
             } catch (InteropException ex) {
                 throw Errors.shouldNotReachHere(ex);
             }
@@ -3447,11 +3447,11 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
             }
             boolean mutable = toBooleanNode.executeBoolean(this, getMutableNode.getValue(descriptor));
             String valueTypeStr = toJavaString.execute(toStringNode.executeString(getValueNode.getValue(descriptor)));
-            WebAssemblyValueType valueType = WebAssemblyValueType.lookupType(valueTypeStr);
+            WebAssemblyType valueType = WebAssemblyType.lookupValueType(valueTypeStr);
             if (valueType == null) {
                 throw Errors.createTypeError("WebAssembly.Global(): Descriptor property 'value' must be a WebAssembly type (i32, i64, f32, f64, anyfunc, externref)", this);
             }
-            if (valueType == WebAssemblyValueType.v128) {
+            if (valueType == WebAssemblyType.v128) {
                 throw Errors.createTypeError("WebAssembly.Global(): Descriptor property 'value' must not be v128", this);
             }
             final JSRealm realm = getRealm();
@@ -3461,7 +3461,7 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
             if (args.length == 0 || args[0] == Undefined.instance) {
                 webAssemblyValue = valueType.getDefaultValue(realm);
             } else {
-                if (!getContext().getLanguageOptions().wasmBigInt() && valueType == WebAssemblyValueType.i64) {
+                if (!getContext().getLanguageOptions().wasmBigInt() && valueType == WebAssemblyType.i64) {
                     throw Errors.createTypeError("WebAssembly.Global(): Can't set the value of i64 WebAssembly.Global", this);
                 }
                 webAssemblyValue = toWebAssemblyValueNode.execute(args[0], valueType);
@@ -3469,7 +3469,7 @@ public final class ConstructorBuiltins extends JSBuiltinsContainer.SwitchEnum<Co
             Object wasmGlobal;
             try {
                 Object createGlobal = realm.getWASMGlobalAlloc();
-                wasmGlobal = globalAllocLib.execute(createGlobal, valueTypeStr, mutable, webAssemblyValue);
+                wasmGlobal = globalAllocLib.execute(createGlobal, realm.getWASMIsArray() != null ? valueType.toString() : valueTypeStr, mutable, webAssemblyValue);
             } catch (InteropException ex) {
                 throw Errors.shouldNotReachHere(ex);
             }

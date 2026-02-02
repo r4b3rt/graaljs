@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, 2023, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -55,6 +55,7 @@ import com.oracle.truffle.js.runtime.Errors;
 import com.oracle.truffle.js.runtime.JSConfig;
 import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.Strings;
+import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyExportedGC;
 import com.oracle.truffle.js.runtime.builtins.wasm.JSWebAssemblyInstance;
 import com.oracle.truffle.js.runtime.objects.Null;
 
@@ -93,25 +94,28 @@ public abstract class ToJSValueNode extends JavaScriptBaseNode {
 
     @Fallback
     final Object convert(Object value,
+                    @CachedLibrary(limit = "InteropLibraryLimit") InteropLibrary isStructLib,
+                    @CachedLibrary(limit = "InteropLibraryLimit") InteropLibrary isArrayLib,
                     @CachedLibrary(limit = "InteropLibraryLimit") InteropLibrary isFuncLib,
                     @CachedLibrary(limit = "InteropLibraryLimit") InteropLibrary funcTypeLib,
                     @CachedLibrary(limit = "InteropLibraryLimit") InteropLibrary asTStringLib,
                     @Cached TruffleString.SwitchEncodingNode switchEncoding) {
         JSRealm realm = getRealm();
-        final Object refNull = realm.getWasmRefNull();
-        if (value == refNull) {
+        if (value == realm.getWasmRefNull()) {
             return Null.instance;
         } else {
-            Object isFuncFn = realm.getWASMIsFunc();
             try {
-                Object isFunc = isFuncLib.execute(isFuncFn, value);
-                if (isFunc instanceof Boolean && (boolean) isFunc) {
-                    Object funcTypeFn = realm.getWASMFuncType();
-                    TruffleString funcType = Strings.interopAsTruffleString(funcTypeLib.execute(funcTypeFn, value), asTStringLib, switchEncoding);
-                    return JSWebAssemblyInstance.exportFunction(realm.getContext(), realm, value, funcType);
-                } else {
-                    return value;
+                if (realm.getWASMIsStruct() != null && isStructLib.execute(realm.getWASMIsStruct(), value) instanceof Boolean isStruct && isStruct) {
+                    return JSWebAssemblyExportedGC.create(getJSContext(), realm, value);
                 }
+                if (realm.getWASMIsArray() != null && isArrayLib.execute(realm.getWASMIsArray(), value) instanceof Boolean isArray && isArray) {
+                    return JSWebAssemblyExportedGC.create(getJSContext(), realm, value);
+                }
+                if (isFuncLib.execute(realm.getWASMIsFunc(), value) instanceof Boolean isFunc && isFunc) {
+                    TruffleString funcType = Strings.interopAsTruffleString(funcTypeLib.execute(realm.getWASMFuncType(), value), asTStringLib, switchEncoding);
+                    return JSWebAssemblyInstance.exportFunction(realm.getContext(), realm, value, funcType);
+                }
+                return value;
             } catch (InteropException ex) {
                 throw Errors.shouldNotReachHere(ex);
             }
