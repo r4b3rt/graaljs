@@ -57,7 +57,6 @@ import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.object.Shape;
-import com.oracle.truffle.api.profiles.BranchProfile;
 import com.oracle.truffle.api.strings.TruffleString;
 import com.oracle.truffle.js.builtins.wasm.WebAssemblyInstancePrototypeBuiltins;
 import com.oracle.truffle.js.nodes.wasm.ToJSValueNode;
@@ -256,10 +255,13 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
 
         @Child ToWebAssemblyValueNode toWebAssemblyValueNode = ToWebAssemblyValueNodeGen.create();
         @Child ToJSValueNode toJSValueNode = ToJSValueNodeGen.create();
-        private final BranchProfile errorBranch = BranchProfile.create();
         @Child InteropLibrary exportedFunctionLib = InteropLibrary.getFactory().createDispatched(JSConfig.InteropLibraryLimit);
         @Child InteropLibrary readArrayElementLib = InteropLibrary.getFactory().createDispatched(JSConfig.InteropLibraryLimit);
         @Child DynamicObject.GetNode getExportedFunction = DynamicObject.GetNode.create();
+
+        @Child InteropLibrary exnAddrLib;
+        @Child InteropLibrary exnTagLib;
+        @Child InteropLibrary tagTypeLib;
 
         WasmToJSFunctionAdapterRootNode(JSContext context, WasmFunctionTypeInfo type) {
             super(context.getLanguage(), null, null);
@@ -270,7 +272,6 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
         @Override
         public Object execute(VirtualFrame frame) {
             if ((!context.getLanguageOptions().wasmBigInt() && type.anyTypeIsI64()) || type.anyTypeIsV128()) {
-                errorBranch.enter();
                 throw Errors.createTypeError("wasm function signature contains illegal type");
             }
             int argCount = type.paramLength();
@@ -286,11 +287,13 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                 try {
                     wasmResult = exportedFunctionLib.execute(export, wasmArgs);
                 } catch (GraalJSException jsex) {
-                    errorBranch.enter();
                     throw jsex;
                 } catch (AbstractTruffleException exnAddr) {
-                    errorBranch.enter();
-                    InteropLibrary exnAddrInterop = InteropLibrary.getUncached(exnAddr);
+                    InteropLibrary exnAddrInterop = this.exnAddrLib;
+                    if (exnAddrInterop == null) {
+                        CompilerDirectives.transferToInterpreterAndInvalidate();
+                        exnAddrInterop = this.exnAddrLib = insert(InteropLibrary.getFactory().createDispatched(JSConfig.InteropLibraryLimit));
+                    }
                     ExceptionType exceptionType = exnAddrInterop.getExceptionType(exnAddr);
                     if (exceptionType == ExceptionType.INTERRUPT || exceptionType == ExceptionType.EXIT) {
                         throw exnAddr;
@@ -323,15 +326,25 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
          * Rethrow a WasmRuntimeException as a WebAssembly.Exception or the original JS exception.
          */
         private void handleWasmException(JSRealm realm, AbstractTruffleException exnAddr, InteropLibrary exnAddrInterop) {
+            if (exnTagLib == null || tagTypeLib == null) {
+                CompilerDirectives.transferToInterpreterAndInvalidate();
+                exnTagLib = insert(InteropLibrary.getFactory().createDispatched(JSConfig.InteropLibraryLimit));
+                tagTypeLib = insert(InteropLibrary.getFactory().createDispatched(JSConfig.InteropLibraryLimit));
+            }
             try {
                 Object tagAddr;
                 try {
-                    tagAddr = InteropLibrary.getUncached().execute(realm.getWASMExnTag(), exnAddr);
+                    tagAddr = exnTagLib.execute(realm.getWASMExnTag(), exnAddr);
                 } catch (AbstractTruffleException ignored) {
                     /*
                      * If exn_tag fails, we know the exception is not a WasmRuntimeException in
-                     * which case ret is `error`, and we should throw a RuntimeError.
+                     * which case ret is `error`, and we should throw a RuntimeError or, in case of
+                     * a stack overflow, RangeError.
                      */
+                    if (exnAddrInterop.isMemberReadable(exnAddr, "failureType") &&
+                                    Strings.interopAsString(exnAddrInterop.readMember(exnAddr, "failureType")).equals("exhaustion")) {
+                        throw Errors.createRangeErrorStackOverflow(exnAddr, this);
+                    }
                     return;
                 }
                 // ret is THROW ref.exn exnaddr
@@ -346,7 +359,7 @@ public final class JSWebAssemblyInstance extends JSNonProxy implements JSConstru
                 if (embedderData instanceof JSWebAssemblyExceptionObject cached) {
                     exnObj = cached;
                 } else {
-                    Object tagType = InteropLibrary.getUncached().execute(realm.getWASMTagType(), tagAddr);
+                    Object tagType = tagTypeLib.execute(realm.getWASMTagType(), tagAddr);
                     WebAssemblyType[] parameterTypes = parseWasmFunctionTypeInfo(context, asTString(tagType)).paramTypes();
                     var tagObj = JSWebAssemblyTag.create(context, realm, tagAddr, parameterTypes);
                     Object[] payload = new Object[tagObj.parameterTypes().length];
