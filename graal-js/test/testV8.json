@@ -949,10 +949,6 @@
     "status" : "FAIL",
     "comment" : "Uses d8.dom.Div"
   }, {
-    "filePath" : "mjsunit/maglev/regress-355256380.js",
-    "status" : "FAIL",
-    "comment" : "Structs (GC proposal)"
-  }, {
     "filePath" : "mjsunit/maglev/typed-array-length-abs.js",
     "status" : "FAIL",
     "comment" : "Allocates typed array of length 8589934592"
@@ -2030,10 +2026,6 @@
     "status" : "FAIL",
     "comment" : "Obsolete test, does not reflect normative change https://github.com/tc39/ecma262/pull/3009"
   }, {
-    "filePath" : "mjsunit/regress/wasm/export-wrapper-canonical-types.js",
-    "status" : "FAIL",
-    "comment" : "Uses WasmGC proposal"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-1010272.js",
     "status" : "SKIP",
     "comment" : "Problematic allocation of direct memory in UnsafeWasmMemory.grow()"
@@ -2058,10 +2050,6 @@
     "status" : "FAIL",
     "comment" : "Uses a tag section (id 13) in the module. This is specific to the exception handling proposal."
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-1189454.js",
-    "status" : "FAIL",
-    "comment" : "Structs (GC proposal)."
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-1196837.js",
     "status" : "FAIL",
     "comment" : "Uses return_call instruction (opcode 0x12) from the tail call proposal."
@@ -2077,14 +2065,6 @@
     "filePath" : "mjsunit/regress/wasm/regress-1254675.js",
     "status" : "FAIL",
     "comment" : "This test should only be run on configurations that don't support Wasm SIMD."
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-12789.js",
-    "status" : "FAIL",
-    "comment" : "Structs (GC proposal)."
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-12874.js",
-    "status" : "FAIL",
-    "comment" : "Recursive groups of composite type definitions (GC proposal)."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1347073.js",
     "status" : "FAIL",
@@ -2105,10 +2085,6 @@
     "filePath" : "mjsunit/regress/wasm/regress-1417516.js",
     "status" : "FAIL",
     "comment" : "Exception handling proposal."
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-1417908.js",
-    "status" : "FAIL",
-    "comment" : "GC proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-14270.js",
     "status" : "FAIL",
@@ -2231,10 +2207,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-324596281.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-324690505.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
@@ -2342,10 +2314,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-342602616.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-343633071.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
@@ -2354,19 +2322,7 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-343917751.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-344014332.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-346197738.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-346505953.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
@@ -2409,19 +2365,7 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-350779988.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-352720899-2.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-353582136.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-353913485.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
@@ -2473,10 +2417,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-364312793.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-364667545.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
@@ -2498,14 +2438,6 @@
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-366635354.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-368241691.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-368512282.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
@@ -2537,10 +2469,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-375959770.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-377620832.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
@@ -2553,10 +2481,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-379009132.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-381458039.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
@@ -2566,10 +2490,6 @@
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-382816108.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-383356864.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
@@ -2689,10 +2609,6 @@
     "status" : "SKIP",
     "comment" : "This v8 test seems to be wrong. It's motivated by an out-of-bounds memory access bug caused by TypedArray.of and TypedArray.from factory methods. In v8's implementation, these factory methods assumed that the newly constructed TypedArray was backed by a live ArrayBuffer. However, changing the constructor to a function that returns an existing TypedArray and then having one of the inputs detach the ArrayBuffer backing that TypedArray as a side-effect of its valueOf method, led v8 to write to invalid memory. As this was a security issue, this was promptly fixed by adding an isDetached check and throwing a TypeError if the ArrayBuffer backing the TypedArray is detached at the time of writing the value. This fixes the out-of-bounds memory access security issue, but it does not align with ECMAScript semantics, since the spec mandates that setting an element of a TypedArray that's backed by a detached ArrayBuffer is just a no-op (https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-typedarraysetelement)."
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-struct-set-into-unreachable.js",
-    "status" : "FAIL",
-    "comment" : "GC proposal."
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-v8-14471.js",
     "status" : "FAIL",
     "comment" : "Uses the Type Reflection proposal for WebAssembly JS API (via the ToPromising function)."
@@ -2704,10 +2620,6 @@
     "filePath" : "mjsunit/regress/wasm/regress1192313.js",
     "status" : "FAIL",
     "comment" : "Exception handling proposal."
-  }, {
-    "filePath" : "mjsunit/regress/wasm/typecheck-null-undefined.js",
-    "status" : "FAIL",
-    "comment" : "GC proposal."
   }, {
     "filePath" : "mjsunit/serialize-deserialize-now.js",
     "status" : "FAIL",
@@ -3180,10 +3092,6 @@
     "status" : "FAIL",
     "comment" : "Test of V8-specific functionality (d8.getExtrasBindingObject)"
   }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/has-in-prototype-chain-wasm.js",
-    "status" : "FAIL",
-    "comment" : "GC proposal"
-  }, {
     "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-as-number-large.js",
     "status" : "FAIL",
     "comment" : "Allocates typed array of length 8589934592"
@@ -3332,14 +3240,6 @@
     "status" : "FAIL",
     "comment" : "GC proposal."
   }, {
-    "filePath" : "mjsunit/wasm/array-copy-benchmark.js",
-    "status" : "FAIL",
-    "comment" : "GC proposal."
-  }, {
-    "filePath" : "mjsunit/wasm/array-fill-gc.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/wasm/asm-wasm-exception-in-tonumber.js",
     "status" : "FAIL",
     "comment" : "Different file path in error message."
@@ -3420,10 +3320,6 @@
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/wasm/deopt/deopt-call-indirect.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/deopt/deopt-debugging.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
@@ -3542,10 +3438,6 @@
     "filePath" : "mjsunit/wasm/disallow-codegen.js",
     "status" : "FAIL",
     "comment" : "Tests that wasm module compilation can be disabled using implementation-specific switch."
-  }, {
-    "filePath" : "mjsunit/wasm/element-segments-with-reftypes.js",
-    "status" : "FAIL",
-    "comment" : "Typed function references proposal."
   }, {
     "filePath" : "mjsunit/wasm/embenchen/box2d.js",
     "status" : "SKIP",
@@ -3698,10 +3590,6 @@
     "status" : "FAIL",
     "comment" : "TODO: evaluate"
   }, {
-    "filePath" : "mjsunit/wasm/gc-cast-type-inference.js",
-    "status" : "FAIL",
-    "comment" : "GC proposal."
-  }, {
     "filePath" : "mjsunit/wasm/gc-casts-exnref.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
@@ -3722,31 +3610,15 @@
     "status" : "FAIL",
     "comment" : "GC proposal."
   }, {
-    "filePath" : "mjsunit/wasm/gc-js-interop-async.js",
-    "status" : "FAIL",
-    "comment" : "GC proposal."
-  }, {
-    "filePath" : "mjsunit/wasm/gc-js-interop-collections.js",
-    "status" : "FAIL",
-    "comment" : "GC proposal."
-  }, {
     "filePath" : "mjsunit/wasm/gc-js-interop-export.mjs",
     "status" : "SKIP",
     "comment" : "Meant to be imported (not tested standalone) according to mjsunit.status"
-  }, {
-    "filePath" : "mjsunit/wasm/gc-js-interop-global-constructors.js",
-    "status" : "FAIL",
-    "comment" : "GC proposal."
   }, {
     "filePath" : "mjsunit/wasm/gc-js-interop-helpers.js",
     "status" : "SKIP",
     "comment" : "Meant to be imported (not tested standalone) according to mjsunit.status"
   }, {
     "filePath" : "mjsunit/wasm/gc-js-interop-import.mjs",
-    "status" : "FAIL",
-    "comment" : "GC proposal."
-  }, {
-    "filePath" : "mjsunit/wasm/gc-js-interop-numeric.js",
     "status" : "FAIL",
     "comment" : "GC proposal."
   }, {
@@ -3759,14 +3631,6 @@
     "comment" : "Exotic object behavior of exported WasmGC objects (GR-72984)."
   }, {
     "filePath" : "mjsunit/wasm/gc-null-traps.js",
-    "status" : "FAIL",
-    "comment" : "GC proposal."
-  }, {
-    "filePath" : "mjsunit/wasm/gc-optimization-array-get.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/gc-optimizations.js",
     "status" : "FAIL",
     "comment" : "GC proposal."
   }, {
@@ -3804,19 +3668,11 @@
     "runInIsolation" : true,
     "comment" : "Memory instance size exceeded 2GB. GraalJS is limited to 2GB because of using signed 32-bit integers for indices."
   }, {
-    "filePath" : "mjsunit/wasm/i31ref.js",
-    "status" : "FAIL",
-    "comment" : "GC proposal."
-  }, {
     "filePath" : "mjsunit/wasm/imported-dataview-bytelength.js",
     "status" : "FAIL",
     "comment" : "new failures 2024-01-19"
   }, {
     "filePath" : "mjsunit/wasm/imported-dataview.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2024-01-19"
-  }, {
-    "filePath" : "mjsunit/wasm/imported-function-types.js",
     "status" : "FAIL",
     "comment" : "new failures 2024-01-19"
   }, {
@@ -3864,10 +3720,6 @@
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/wasm/js-wrapper-typechecks.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2024-01-19"
-  }, {
-    "filePath" : "mjsunit/wasm/large-struct.js",
     "status" : "FAIL",
     "comment" : "new failures 2024-01-19"
   }, {
@@ -3949,10 +3801,6 @@
     "status" : "SKIP",
     "comment" : "Based on v8WasmNumCodeSpaces(), a concept unknown to graal.js"
   }, {
-    "filePath" : "mjsunit/wasm/nan-constant.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/wasm/origin-trial-flags.js",
     "status" : "FAIL",
     "comment" : "new failures 2023-10-09"
@@ -3984,10 +3832,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2024-01-19"
   }, {
-    "filePath" : "mjsunit/wasm/regress-367818758.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/wasm/return-calls-eh.js",
     "status" : "FAIL",
     "comment" : "new failures 2024-01-19"
@@ -3999,10 +3843,6 @@
     "filePath" : "mjsunit/wasm/runtime-gc-objects.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/runtime-type-canonicalization.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2024-01-19"
   }, {
     "filePath" : "mjsunit/wasm/serialization-with-compilation-hints.js",
     "status" : "FAIL",
@@ -4187,10 +4027,6 @@
     "status" : "FAIL",
     "comment" : "V8 test update 2022-08-10"
   }, {
-    "filePath" : "mjsunit/wasm/test-wasm-module-builder.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2024-01-19"
-  }, {
     "filePath" : "mjsunit/wasm/trap-location.js",
     "status" : "FAIL"
   }, {
@@ -4206,15 +4042,7 @@
     "status" : "FAIL",
     "comment" : "new failures 2023-10-09"
   }, {
-    "filePath" : "mjsunit/wasm/turboshaft/load-elimination-revisits.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2024-01-19"
-  }, {
     "filePath" : "mjsunit/wasm/turboshaft/regress-crbug-1513580.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2024-01-19"
-  }, {
-    "filePath" : "mjsunit/wasm/type-based-optimizations.js",
     "status" : "FAIL",
     "comment" : "new failures 2024-01-19"
   }, {
@@ -4255,14 +4083,6 @@
     "comment" : "new failures 2024-01-19"
   }, {
     "filePath" : "mjsunit/wasm/wasm-gc-inlining.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2024-01-19"
-  }, {
-    "filePath" : "mjsunit/wasm/wasm-gc-js-ref.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2024-01-19"
-  }, {
-    "filePath" : "mjsunit/wasm/wasm-gc-js-roundtrip.js",
     "status" : "FAIL",
     "comment" : "new failures 2024-01-19"
   }, {
