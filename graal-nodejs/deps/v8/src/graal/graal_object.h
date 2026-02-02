@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -53,7 +53,19 @@ public:
     static v8::Local<v8::Object> New(v8::Isolate* isolate);
     bool Set(v8::Local<v8::Value> key, v8::Local<v8::Value> value);
     bool Set(uint32_t index, v8::Local<v8::Value> value);
-    v8::Maybe<bool> SetLazyDataProperty(v8::Local<v8::Context> context, v8::Local<v8::Name> name, v8::AccessorNameGetterCallback getter, v8::Local<v8::Value> data, v8::PropertyAttribute attributes, v8::SideEffectType getter_side_effect_type, v8::SideEffectType setter_side_effect_type);
+    v8::Maybe<bool> SetLazyDataProperty(
+            v8::Local<v8::Context> context,
+            v8::Local<v8::Name> name,
+            v8::AccessorNameGetterCallback getter,
+            v8::Local<v8::Value> data,
+            v8::PropertyAttribute attributes);
+    v8::Maybe<bool> SetNativeDataProperty(
+            v8::Local<v8::Context> context,
+            v8::Local<v8::Name> name,
+            v8::AccessorNameGetterCallback getter,
+            v8::AccessorNameSetterCallback setter,
+            v8::Local<v8::Value> data,
+            v8::PropertyAttribute attributes);
     bool ForceSet(v8::Local<v8::Value> key, v8::Local<v8::Value> value, v8::PropertyAttribute attribs);
     v8::Local<v8::Value> Get(v8::Local<v8::Value> key);
     v8::Local<v8::Value> Get(uint32_t index);
@@ -101,6 +113,14 @@ protected:
 private:
     int internal_field_count_cache_;
     void SetInternalFieldImpl(int index, GraalHandleContent* handle);
+    v8::Maybe<bool> DefineDataProperty(
+            v8::Local<v8::Context> context,
+            v8::Local<v8::Name> name,
+            v8::AccessorNameGetterCallback getter,
+            v8::AccessorNameSetterCallback setter,
+            v8::Local<v8::Value> data,
+            v8::PropertyAttribute attributes,
+            bool lazy);
 };
 
 #endif /* GRAAL_OBJECT_H_ */

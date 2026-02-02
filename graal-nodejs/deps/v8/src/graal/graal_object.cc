@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -389,12 +389,32 @@ v8::Maybe<bool> GraalObject::SetLazyDataProperty(
         v8::Local<v8::Name> name,
         v8::AccessorNameGetterCallback getter,
         v8::Local<v8::Value> data,
+        v8::PropertyAttribute attributes) {
+    return DefineDataProperty(context, name, getter, nullptr, data, attributes, true);
+}
+
+v8::Maybe<bool> GraalObject::SetNativeDataProperty(
+        v8::Local<v8::Context> context,
+        v8::Local<v8::Name> name,
+        v8::AccessorNameGetterCallback getter,
+        v8::AccessorNameSetterCallback setter,
+        v8::Local<v8::Value> data,
+        v8::PropertyAttribute attributes) {
+    return DefineDataProperty(context, name, getter, setter, data, attributes, false);
+}
+
+v8::Maybe<bool> GraalObject::DefineDataProperty(
+        v8::Local<v8::Context> context,
+        v8::Local<v8::Name> name,
+        v8::AccessorNameGetterCallback getter,
+        v8::AccessorNameSetterCallback setter,
+        v8::Local<v8::Value> data,
         v8::PropertyAttribute attributes,
-        v8::SideEffectType getter_side_effect_type,
-        v8::SideEffectType setter_side_effect_type) {
+        bool lazy) {
     GraalIsolate* graal_isolate = Isolate();
     jobject java_key = reinterpret_cast<GraalValue*> (*name)->GetJavaObject();
     jlong java_getter = (jlong) getter;
+    jlong java_setter = (jlong) setter;
     jobject java_data;
     if (data.IsEmpty()) {
         java_data = graal_isolate->GetUndefined()->GetJavaObject();
@@ -402,6 +422,6 @@ v8::Maybe<bool> GraalObject::SetLazyDataProperty(
         java_data = reinterpret_cast<GraalValue*> (*data)->GetJavaObject();
     }
     jint java_attribs = attributes;
-    JNI_CALL(jboolean, result, graal_isolate, GraalAccessMethod::object_set_lazy_data_property, Boolean, GetJavaObject(), java_key, java_getter, java_data, java_attribs);
+    JNI_CALL(jboolean, result, graal_isolate, GraalAccessMethod::object_define_data_property, Boolean, GetJavaObject(), java_key, java_getter, java_setter, java_data, java_attribs, lazy);
     return v8::Just((bool) result);
 }

@@ -1036,42 +1036,56 @@ public final class GraalJSAccess {
         return true;
     }
 
-    public boolean objectSetLazyDataProperty(Object object, Object key, long getterPtr, Object data, int attributes) {
+    public boolean objectDefineDataProperty(Object object, Object key, long getterPtr, long setterPtr, Object data, int attributes, boolean lazy) {
         int flags = propertyAttributes(attributes);
-        PropertyProxy proxy = new LazyDataProperty(key, getterPtr, data, flags);
+        PropertyProxy proxy = new NativeDataProperty(key, getterPtr, setterPtr, data, flags, lazy);
         JSObjectUtil.defineProxyProperty((JSDynamicObject) object, key, proxy, flags);
         return true;
     }
 
-    public void templateSetLazyDataProperty(Object template, Object key, long getterPtr, Object data, int attributes) {
+    public void templateDefineDataProperty(Object template, Object key, long getterPtr, long setterPtr, Object data, int attributes, boolean lazy) {
         int flags = propertyAttributes(attributes);
-        getObjectTemplate(template).addValue(new Value(key, new LazyDataProperty(key, getterPtr, data, flags), flags));
+        getObjectTemplate(template).addValue(new Value(key, new NativeDataProperty(key, getterPtr, setterPtr, data, flags, lazy), flags));
     }
 
-    static class LazyDataProperty extends PropertyProxy {
+    static class NativeDataProperty extends PropertyProxy {
         private final Object key;
         private final long getterPtr;
+        private final long setterPtr;
         private final Object data;
         private final int flags;
+        private final boolean replaceOnAccess;
 
-        LazyDataProperty(Object key, long getterPtr, Object data, int flags) {
+        NativeDataProperty(Object key, long getterPtr, long setterPtr, Object data, int flags, boolean replaceOnAccess) {
             this.key = key;
             this.getterPtr = getterPtr;
+            this.setterPtr = setterPtr;
             this.data = data;
             this.flags = flags;
+            this.replaceOnAccess = replaceOnAccess;
         }
 
         @Override
         @TruffleBoundary
         public Object get(JSDynamicObject store) {
             Object result = NativeAccess.executeAccessorGetter(getterPtr, store, key, new Object[]{store}, data);
-            set(store, result);
+            result = GraalJSAccess.get().correctReturnValue(result);
+            if (replaceOnAccess) {
+                assert (setterPtr == 0);
+                set(store, result);
+            }
             return result;
         }
 
         @Override
+        @TruffleBoundary
         public boolean set(JSDynamicObject store, Object value) {
-            JSObjectUtil.defineDataProperty(store, key, value, flags);
+            if (setterPtr != 0) {
+                Object[] arguments = JSArguments.create(store, Undefined.instance, value);
+                NativeAccess.executeAccessorSetter(setterPtr, store, key, arguments, data);
+            } else {
+                JSObjectUtil.defineDataProperty(store, key, value, flags);
+            }
             return true;
         }
 
