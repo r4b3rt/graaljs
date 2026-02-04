@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -52,7 +52,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -200,14 +199,6 @@ public class CommonJSRequireTest {
             pathStr = pathStr.replace("\\", "/");
         }
         return pathStr;
-    }
-
-    private static String getTestRootFolderUrl() {
-        try {
-            return getTestRootFolder().toUri().toURL().toString();
-        } catch (MalformedURLException e) {
-            throw new AssertionError(e);
-        }
     }
 
     // ##### CommonJs Modules
@@ -909,9 +900,9 @@ public class CommonJSRequireTest {
         runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "index\n", options);
     }
 
-    private Source subpathPatternTestBuildSrc(String name) {
+    private static Source subpathPatternTestBuildSrc(String name) {
         try {
-            String src = "import {name} from 'exports-subpath-pattern" + (name == "" ? "" : "/" + name) + "'; console.log(name)";
+            String src = "import {name} from 'exports-subpath-pattern" + (name.isEmpty() ? "" : "/" + name) + "'; console.log(name)";
             return Source.newBuilder(ID, src, "test.mjs").build();
         } catch (IOException e) {
             throw new AssertionError("Unexpected exception " + e);
@@ -921,13 +912,13 @@ public class CommonJSRequireTest {
     @Test
     public void importModuleSubpathPattern() throws IOException {
         var options = getDefaultOptions();
-        runAndExpectOutput(this.subpathPatternTestBuildSrc("src/main.js"), "dest-main\n", options);
+        runAndExpectOutput(subpathPatternTestBuildSrc("src/main.js"), "dest-main\n", options);
     }
 
     @Test
     public void importModuleSubpathPatternWithConditional() throws IOException {
         var options = getDefaultOptions();
-        runAndExpectOutput(this.subpathPatternTestBuildSrc("src-feature/feature.js"), "dest-feature-graaljs\n", options);
+        runAndExpectOutput(subpathPatternTestBuildSrc("src-feature/feature.js"), "dest-feature-graaljs\n", options);
     }
 
     @Test
@@ -935,7 +926,7 @@ public class CommonJSRequireTest {
         var options = getDefaultOptions();
         final String expectedMessage = "TypeError: Module not found: 'exports-subpath-pattern/src-feature/nonexistence.js'";
         try {
-            runAndExpectOutput(this.subpathPatternTestBuildSrc("src-feature/nonexistence.js"), "", options);
+            runAndExpectOutput(subpathPatternTestBuildSrc("src-feature/nonexistence.js"), "", options);
             assert false;
         } catch (Throwable t) {
             if (!t.getClass().isAssignableFrom(PolyglotException.class)) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -323,7 +323,9 @@ public final class JSContextOptions {
     public static final OptionKey<String> COMMONJS_REQUIRE_CWD = new OptionKey<>("");
 
     public static final String COMMONJS_REQUIRE_USER_CONDITIONS_NAME = JS_OPTION_PREFIX + "commonjs-require-user-conditions";
-    @Option(name = COMMONJS_REQUIRE_USER_CONDITIONS_NAME, category = OptionCategory.USER, usageSyntax = "<condition1>,<condition2>,...", help = "Custom user conditions when resolving package exports and imports, in addition to graaljs, import, require, default") public static final OptionKey<List<String>> COMMONJS_REQUIRE_USER_CONDITIONS = new OptionKey<>(
+    @Option(name = COMMONJS_REQUIRE_USER_CONDITIONS_NAME, category = OptionCategory.USER, usageSyntax = "<condition1>,<condition2>,...", //
+                    help = "Custom user conditions when resolving package exports and imports, in addition to graaljs, import, require, default") //
+    public static final OptionKey<List<String>> COMMONJS_REQUIRE_USER_CONDITIONS = new OptionKey<>(
                     Collections.emptyList(),
                     new OptionType<>("commonjs-require-condition", new Function<String, List<String>>() {
                         @Override

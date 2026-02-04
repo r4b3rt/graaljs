@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -428,7 +428,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
     }
 
     /**
-     * PACKAGE_EXPORTS_RESOLVE(packageURL, subpath, exports, conditions)
+     * PACKAGE_EXPORTS_RESOLVE(packageURL, subpath, exports, conditions).
      */
     private URI packageExportsResolve(URI packageURL, String subpath, Object exports, List<String> conditions, TruffleLanguage.Env env) {
         URI resolved = null;
@@ -500,7 +500,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
     }
 
     /**
-     * PATTERN_KEY_COMPARE(keyA, keyB)
+     * PATTERN_KEY_COMPARE(keyA, keyB).
      */
     private static int patternKeyCompare(String keyA, String keyB, URI packageURL) {
         // 1. Assert: keyA contains only a single "*".
@@ -533,7 +533,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
     }
 
     /**
-     * PACKAGE_IMPORTS_EXPORTS_RESOLVE(matchKey, matchObj, packageURL, isImports, conditions)
+     * PACKAGE_IMPORTS_EXPORTS_RESOLVE(matchKey, matchObj, packageURL, isImports, conditions).
      */
     private URI packageImportsExportsResolve(String matchKey, JSDynamicObject matchObj, URI packageURL, boolean isImports, List<String> conditions, TruffleLanguage.Env env) {
         // 1. If matchKey ends in "/", then
@@ -549,13 +549,12 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
             // conditions).
             return packageTargetResolve(packageURL, target, null, isImports, conditions, env);
         }
-        var expansionKeys = JSObject.enumerableOwnNames(matchObj).stream().map(key -> key.toString())
-                        // 3. Let expansionKeys be the list of keys of matchObj containing only a
-                        // single "*"
-                        .filter(key -> containsOnlyOne(key, PACKAGE_EXPORT_WILDCARD))
-                        // 3. sorted by the sorting function PATTERN_KEY_COMPARE which orders in
-                        // descending order of specificity
-                        .sorted((keyA, keyB) -> patternKeyCompare(keyA, keyB, packageURL)).toList();
+        // 3. Let expansionKeys be the list of keys of matchObj containing only a
+        // single "*", sorted by the sorting function PATTERN_KEY_COMPARE which orders in
+        // descending order of specificity
+        var expansionKeys = JSObject.enumerableOwnNames(matchObj).stream().map(key -> key.toString()).//
+                        filter(key -> containsOnlyOne(key, PACKAGE_EXPORT_WILDCARD)).//
+                        sorted((keyA, keyB) -> patternKeyCompare(keyA, keyB, packageURL)).toList();
         for (var expansionKey : expansionKeys) {
             // 4. For each key expansionKey in expansionKeys, do
             // 4.1 Let patternBase be the substring of expansionKey up to but excluding the first
@@ -588,7 +587,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
     }
 
     /**
-     * PACKAGE_TARGET_RESOLVE(packageURL, target, patternMatch, isImports, conditions)
+     * PACKAGE_TARGET_RESOLVE(packageURL, target, patternMatch, isImports, conditions).
      */
     private URI packageTargetResolve(URI packageURL, Object target, String patternMatch, boolean isImports, List<String> conditions, TruffleLanguage.Env env) {
         // 1. If target is a String, then
@@ -679,14 +678,14 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
             return null;
         } else if (target instanceof JSDynamicObject targetObj && JSObject.hasArray(targetObj)) {
             // 3. Otherwise, if target is an Array, then
-            ScriptArray _target = JSObject.getArray(targetObj);
+            ScriptArray targetArray = JSObject.getArray(targetObj);
             // 3.1 If _target.length is zero, return null.
-            if (_target.length(targetObj) == 0) {
+            if (targetArray.length(targetObj) == 0) {
                 return null;
             }
             // 3.2 For each item targetValue in target, do
-            for (int i = 0; i < _target.length(targetObj); i++) {
-                var targetValue = _target.getElement(targetObj, i);
+            for (int i = 0; i < targetArray.length(targetObj); i++) {
+                var targetValue = targetArray.getElement(targetObj, i);
                 // 3.2.1 Let resolved be the result of PACKAGE_TARGET_RESOLVE( packageURL,
                 // targetValue, patternMatch, isImports, conditions), continuing the loop on any
                 // Invalid Package Target error.
