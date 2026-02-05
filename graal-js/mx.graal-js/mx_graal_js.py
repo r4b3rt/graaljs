@@ -528,7 +528,7 @@ def run_javascript_basictests(js_binary):
 
 def mx_register_dynamic_suite_constituents(register_project, register_distribution):
     if register_project and register_distribution:
-        isolate_build_options = ['-H:+AuxiliaryEngineCache', '-H:ReservedAuxiliaryImageBytes=2145482548'] if not mx.is_windows() else []
+        isolate_build_options = libjsvm_build_args()
         meta_pom = [p for p in _suite.dists if p.name == 'JS_POM'][0]
         additional_artifacts = ['wasm:WASM_POM'] if is_wasm_available() else []
         additional_language_ids = ['wasm'] if additional_artifacts else []
