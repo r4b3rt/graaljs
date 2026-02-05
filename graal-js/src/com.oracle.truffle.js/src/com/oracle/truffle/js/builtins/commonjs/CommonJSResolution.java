@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -63,7 +63,6 @@ import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.Strings;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.builtins.JSFunctionObject;
-import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -260,8 +259,8 @@ public final class CommonJSResolution {
     private static TruffleFile loadAsDirectory(JSRealm realm, TruffleFile modulePath) {
         TruffleFile packageJson = joinPaths(modulePath, PACKAGE_JSON);
         if (fileExists(packageJson)) {
-            JSDynamicObject jsonObj = loadJsonObject(packageJson, realm);
-            if (JSDynamicObject.isJSDynamicObject(jsonObj)) {
+            JSObject jsonObj = loadJsonObject(packageJson, realm);
+            if (jsonObj != null) {
                 Object main = JSObject.get(jsonObj, Strings.PACKAGE_JSON_MAIN_PROPERTY_NAME);
                 if (!(main instanceof TruffleString mainStr)) {
                     return loadIndex(modulePath);
@@ -280,7 +279,7 @@ public final class CommonJSResolution {
         return null;
     }
 
-    public static JSDynamicObject loadJsonObject(TruffleFile jsonFile, JSRealm realm) {
+    public static JSObject loadJsonObject(TruffleFile jsonFile, JSRealm realm) {
         try {
             if (fileExists(jsonFile)) {
                 Source source = null;
@@ -294,8 +293,8 @@ public final class CommonJSResolution {
                 JSFunctionObject parse = (JSFunctionObject) realm.getJsonParseFunctionObject();
                 TruffleString jsonString = Strings.fromJavaString(source.getCharacters().toString());
                 Object jsonObj = JSFunction.call(JSArguments.create(Undefined.instance, parse, jsonString));
-                if (JSDynamicObject.isJSDynamicObject(jsonObj)) {
-                    return (JSDynamicObject) jsonObj;
+                if (jsonObj instanceof JSObject) {
+                    return (JSObject) jsonObj;
                 }
             }
             return null;

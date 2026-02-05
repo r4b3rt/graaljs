@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -52,7 +52,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -169,8 +168,8 @@ public class CommonJSRequireTest {
             cx.eval(src);
             out.flush();
             err.flush();
-            String outPrint = new String(out.toByteArray());
-            String errPrint = new String(err.toByteArray());
+            String outPrint = out.toString();
+            String errPrint = err.toString();
             Assert.assertEquals(expectedOutput, outPrint);
             Assert.assertEquals(expectedErr, errPrint);
         }
@@ -195,19 +194,11 @@ public class CommonJSRequireTest {
             // On Windows we support logical Unix-like paths
             Path root = path.getRoot();
             if (root != null) {
-                pathStr = pathStr.replaceFirst(root.toString() + "\\", "/");
+                pathStr = pathStr.replaceFirst(root + "\\", "/");
             }
             pathStr = pathStr.replace("\\", "/");
         }
         return pathStr;
-    }
-
-    private static String getTestRootFolderUrl() {
-        try {
-            return getTestRootFolder().toUri().toURL().toString();
-        } catch (MalformedURLException e) {
-            throw new AssertionError(e);
-        }
     }
 
     // ##### CommonJs Modules
@@ -278,8 +269,9 @@ public class CommonJSRequireTest {
 
     @Test
     public void cyclicRequireFromMain() throws IOException {
-        Path root = getTestRootFolder();
-        Path testCase = Paths.get(root.normalize().toString(), "cycle_main.js");
+        Path root = getTestRootFolder().toRealPath();
+        String rootStr = root.toString();
+        Path testCase = Paths.get(rootStr, "cycle_main.js");
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final ByteArrayOutputStream err = new ByteArrayOutputStream();
         try (Context cx = testContext(root, out, err)) {
@@ -287,10 +279,10 @@ public class CommonJSRequireTest {
 
             out.flush();
             err.flush();
-            String outPrint = new String(out.toByteArray());
-            String errPrint = new String(err.toByteArray());
+            String outPrint = out.toString();
+            String errPrint = err.toString();
 
-            String dirName = getTestRootFolder().toString() + testCase.getFileSystem().getSeparator();
+            String dirName = rootStr + testCase.getFileSystem().getSeparator();
 
             Assert.assertEquals("main starting at " + dirName + "cycle_main.js\n" +
                             "other starting at " + dirName + "cycle_other.js\n" +
@@ -316,8 +308,8 @@ public class CommonJSRequireTest {
                             "42;");
             out.flush();
             err.flush();
-            String outPrint = new String(out.toByteArray());
-            String errPrint = new String(err.toByteArray());
+            String outPrint = out.toString();
+            String errPrint = err.toString();
 
             Assert.assertEquals("main starting\n" +
                             "a starting\n" +
@@ -403,10 +395,11 @@ public class CommonJSRequireTest {
 
     @Test
     public void testGlobalDirnameFilename() throws IOException {
-        Path root = getTestRootFolder();
-        Path dirFile = Paths.get(root.toAbsolutePath().toString(), "foo", "bar", "dirName.js");
-        Path dirName = Paths.get(root.toAbsolutePath().toString(), "foo", "bar");
-        Path fileName = Paths.get(root.toAbsolutePath().toString(), "foo", "bar", "fileName.js");
+        Path root = getTestRootFolder().toRealPath();
+        String rootStr = root.toString();
+        Path dirFile = Paths.get(rootStr, "foo", "bar", "dirName.js");
+        Path dirName = Paths.get(rootStr, "foo", "bar");
+        Path fileName = Paths.get(rootStr, "foo", "bar", "fileName.js");
         try (Context cx = testContext(root)) {
             Value dir = cx.eval(getSourceFor(dirFile));
             Assert.assertEquals(dirName.toAbsolutePath().toString(), dir.asString());
@@ -453,9 +446,10 @@ public class CommonJSRequireTest {
 
     @Test
     public void testResolve() throws IOException {
-        Path root = getTestRootFolder();
-        Path testCase = Paths.get(root.normalize().toString(), "foo", "bar", "foo.js");
-        Path expected = Paths.get(root.normalize().toString(), "index.js");
+        Path root = getTestRootFolder().toRealPath();
+        String rootStr = root.toString();
+        Path testCase = Paths.get(rootStr, "foo", "bar", "foo.js");
+        Path expected = Paths.get(rootStr, "index.js");
         try (Context cx = testContext(root)) {
             Value js = cx.eval(getSourceFor(testCase));
             Assert.assertEquals(expected.toAbsolutePath().toString(), js.asString());
@@ -695,10 +689,9 @@ public class CommonJSRequireTest {
     }
 
     @Test
-    public void dontImportCommonJs() throws IOException {
-        final String src = "import('with-package').then(x => {throw 'unexpected'}).catch(console.log);";
-        final String out = "TypeError: Unsupported file extension: '" + getTestRootFolderUrl() + "node_modules/with-package/alternative-index.js'\n";
-        runAndExpectOutput(src, out);
+    public void dynamicImportCommonJs() throws IOException {
+        final String src = "import('with-package').then(x => {console.log(x.foo)}).catch(console.log);";
+        runAndExpectOutput(src, "42\n");
     }
 
     @Test
@@ -769,7 +762,7 @@ public class CommonJSRequireTest {
         final String src = "import assert from 'assert'; assert.equal(42, 42); console.log('OK!');";
         Map<String, String> options = getDefaultOptions();
         Path path = getTestRootFolder().resolve("builtin-assert-mockup.mjs");
-        options.put(COMMONJS_CORE_MODULES_REPLACEMENTS_NAME, "assert:" + path.toUri().toString());
+        options.put(COMMONJS_CORE_MODULES_REPLACEMENTS_NAME, "assert:" + path.toUri());
         runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "OK!\n", options);
     }
 
@@ -803,5 +796,174 @@ public class CommonJSRequireTest {
             }
             assertEquals(expectedMessage, t.getMessage());
         }
+    }
+
+    @Test
+    public void importModuleFromExportsFieldSimple() throws IOException {
+        final String src = "import {name} from 'exports-in-package-json-simple'; console.log(name)";
+        Map<String, String> options = getDefaultOptions();
+        runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "index\n", options);
+    }
+
+    @Test
+    public void importModuleFromExportsFieldSimpleThrow() {
+        final String src = "import {name} from 'exports-in-package-json-simple/index.js'; console.log('should throw')";
+        final String expectedMessage = "TypeError: Package subpath is not defined by \"exports\" field: './index.js'";
+        Map<String, String> options = getDefaultOptions();
+        try {
+            runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "index\n", options);
+            assert false;
+        } catch (Throwable t) {
+            if (!t.getClass().isAssignableFrom(PolyglotException.class)) {
+                throw new AssertionError("Unexpected exception " + t);
+            }
+            assertEquals(expectedMessage, t.getMessage());
+        }
+    }
+
+    @Test
+    public void subpathImports() throws IOException {
+        final String src = "import {name} from 'subpath-imports'; console.log(name)";
+        Map<String, String> options = getDefaultOptions();
+        runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "dep\n", options);
+    }
+
+    @Test
+    public void subpathImportsExternal() throws IOException {
+        final String src = "import {name} from 'subpath-imports/external'; console.log(name)";
+        Map<String, String> options = getDefaultOptions();
+        runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "dep-external\n", options);
+    }
+
+    @Test
+    public void importModuleFromExportsField() throws IOException {
+        final String src = "import {name} from 'exports-in-package-json'; console.log(name)";
+        Map<String, String> options = getDefaultOptions();
+        runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "index\n", options);
+    }
+
+    @Test
+    public void importModuleFromExportsField2() throws IOException {
+        final String src = "import {name} from 'exports-in-package-json/feature.js'; console.log(name)";
+        Map<String, String> options = getDefaultOptions();
+        runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "graaljs\n", options);
+    }
+
+    @Test
+    public void importModuleCustomCondition() throws IOException {
+        final String src = "import {name} from 'exports-in-package-json/feature.js'; console.log(name)";
+        Map<String, String> options = getDefaultOptions();
+        options.put("js.commonjs-require-user-conditions", "browser,node");
+        runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "node\n", options);
+    }
+
+    @Test
+    public void importModuleFromExportsPriorityThrow() {
+        final String src = "import {name} from 'exports-in-package-json/feature-noncompatible.js'; console.log('should throw')";
+        final String expectedMessage = "TypeError: Package subpath is not defined by \"exports\" field: './feature-noncompatible.js'";
+        Map<String, String> options = getDefaultOptions();
+        try {
+            runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "", options);
+            assert false;
+        } catch (Throwable t) {
+            if (!t.getClass().isAssignableFrom(PolyglotException.class)) {
+                throw new AssertionError("Unexpected exception " + t);
+            }
+            assertEquals(expectedMessage, t.getMessage());
+        }
+    }
+
+    @Test
+    public void importModuleFromExportsNotExported() {
+        final String src = "import {name} from 'exports-in-package-json/not-exported.js'; console.log('should throw')";
+        final String expectedMessage = "TypeError: Package subpath is not defined by \"exports\" field: './not-exported.js'";
+        Map<String, String> options = getDefaultOptions();
+        try {
+            runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "", options);
+            assert false;
+        } catch (Throwable t) {
+            if (!t.getClass().isAssignableFrom(PolyglotException.class)) {
+                throw new AssertionError("Unexpected exception " + t);
+            }
+            assertEquals(expectedMessage, t.getMessage());
+        }
+    }
+
+    @Test
+    public void importModulePatternWithoutExtension() throws IOException {
+        final String src = "import {name} from 'exports-subpath-extensions/lib/index'; console.log(name)";
+        Map<String, String> options = getDefaultOptions();
+        runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "index\n", options);
+    }
+
+    @Test
+    public void importModulePatternWithExtension() throws IOException {
+        final String src = "import {name} from 'exports-subpath-extensions/lib/index.js'; console.log(name)";
+        Map<String, String> options = getDefaultOptions();
+        runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "index\n", options);
+    }
+
+    private static Source subpathPatternTestBuildSrc(String name) {
+        try {
+            String src = "import {name} from 'exports-subpath-pattern" + (name.isEmpty() ? "" : "/" + name) + "'; console.log(name)";
+            return Source.newBuilder(ID, src, "test.mjs").build();
+        } catch (IOException e) {
+            throw new AssertionError("Unexpected exception " + e);
+        }
+    }
+
+    @Test
+    public void importModuleSubpathPattern() throws IOException {
+        var options = getDefaultOptions();
+        runAndExpectOutput(subpathPatternTestBuildSrc("src/main.js"), "dest-main\n", options);
+    }
+
+    @Test
+    public void importModuleSubpathPatternWithConditional() throws IOException {
+        var options = getDefaultOptions();
+        runAndExpectOutput(subpathPatternTestBuildSrc("src-feature/feature.js"), "dest-feature-graaljs\n", options);
+    }
+
+    @Test
+    public void importModuleSubpathPatternThrow() {
+        var options = getDefaultOptions();
+        final String expectedMessage = "TypeError: Module not found: 'exports-subpath-pattern/src-feature/nonexistence.js'";
+        try {
+            runAndExpectOutput(subpathPatternTestBuildSrc("src-feature/nonexistence.js"), "", options);
+            assert false;
+        } catch (Throwable t) {
+            if (!t.getClass().isAssignableFrom(PolyglotException.class)) {
+                throw new AssertionError("Unexpected exception " + t);
+            }
+            assertEquals(expectedMessage, t.getMessage());
+        }
+    }
+
+    @Test
+    public void importModuleNestExports() throws IOException {
+        final String src = "import {name} from 'exports-nested/feature.js'; console.log(name)";
+        Map<String, String> options = getDefaultOptions();
+        runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "esm-graaljs\n", options);
+    }
+
+    @Test
+    public void importModuleFromExportsArray() throws IOException {
+        final String src = "import {name} from 'exports-nested/exports-array'; console.log(name)";
+        Map<String, String> options = getDefaultOptions();
+        runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "esm-node\n", options);
+    }
+
+    @Test
+    public void importModuleNestExportsShouldDefault() throws IOException {
+        final String src = "import {name} from 'exports-nested/should-default.js'; console.log(name)";
+        Map<String, String> options = getDefaultOptions();
+        runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "esm-default\n", options);
+    }
+
+    @Test
+    public void importModuleExportsDefaultToCjs() throws IOException {
+        final String src = "import {name} from 'exports-nested/should-default-cjs'; console.log(name)";
+        Map<String, String> options = getDefaultOptions();
+        runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "cjs-default\n", options);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -321,6 +321,28 @@ public final class JSContextOptions {
     public static final String COMMONJS_REQUIRE_CWD_NAME = JS_OPTION_PREFIX + "commonjs-require-cwd";
     @Option(name = COMMONJS_REQUIRE_CWD_NAME, category = OptionCategory.USER, usageSyntax = "<path>", help = "CommonJS default current working directory.") //
     public static final OptionKey<String> COMMONJS_REQUIRE_CWD = new OptionKey<>("");
+
+    public static final String COMMONJS_REQUIRE_USER_CONDITIONS_NAME = JS_OPTION_PREFIX + "commonjs-require-user-conditions";
+    @Option(name = COMMONJS_REQUIRE_USER_CONDITIONS_NAME, category = OptionCategory.USER, usageSyntax = "<condition1>,<condition2>,...", //
+                    help = "Custom user conditions when resolving package exports and imports, in addition to graaljs, import, require, default") //
+    public static final OptionKey<List<String>> COMMONJS_REQUIRE_USER_CONDITIONS = new OptionKey<>(
+                    Collections.emptyList(),
+                    new OptionType<>("commonjs-require-condition", new Function<String, List<String>>() {
+                        @Override
+                        public List<String> apply(String value) {
+                            if (value.isEmpty()) {
+                                return Collections.emptyList();
+                            }
+                            List<String> conditions = new ArrayList<>();
+                            for (String condition : value.split(",")) {
+                                if (condition.isEmpty() || condition.startsWith(".") || condition.matches("\\d+")) {
+                                    throw new IllegalArgumentException("Unexpected condition: " + condition);
+                                }
+                                conditions.add(condition);
+                            }
+                            return conditions;
+                        }
+                    }));
 
     public static final String COMMONJS_CORE_MODULES_REPLACEMENTS_NAME = JS_OPTION_PREFIX + "commonjs-core-modules-replacements";
     @Option(name = COMMONJS_CORE_MODULES_REPLACEMENTS_NAME, category = OptionCategory.USER, usageSyntax = "<name>:<module>,...", help = "Npm packages used to replace global Node.js builtins.") //
@@ -1059,13 +1081,18 @@ public final class JSContextOptions {
     }
 
     public Map<String, String> getCommonJSRequireBuiltins() {
-        CompilerAsserts.neverPartOfCompilation("Context patchable option load was assumed not to be accessed in compiled code.");
+        CompilerAsserts.neverPartOfCompilation("Context patchable option commonjs-core-modules-replacements was assumed not to be accessed in compiled code.");
         return COMMONJS_CORE_MODULES_REPLACEMENTS.getValue(optionValues);
     }
 
     public String getRequireCwd() {
-        CompilerAsserts.neverPartOfCompilation("Context patchable option load was assumed not to be accessed in compiled code.");
+        CompilerAsserts.neverPartOfCompilation("Context patchable option commonjs-require-cwd was assumed not to be accessed in compiled code.");
         return COMMONJS_REQUIRE_CWD.getValue(optionValues);
+    }
+
+    public List<String> getUserConditions() {
+        CompilerAsserts.neverPartOfCompilation("Context patchable option commonjs-require-user-conditions was assumed not to be accessed in compiled code.");
+        return COMMONJS_REQUIRE_USER_CONDITIONS.getValue(optionValues);
     }
 
     public boolean isCrypto() {
