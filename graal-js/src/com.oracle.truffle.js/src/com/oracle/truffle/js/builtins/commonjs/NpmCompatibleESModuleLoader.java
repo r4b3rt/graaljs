@@ -87,7 +87,6 @@ import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.builtins.JSFunctionObject;
 import com.oracle.truffle.js.runtime.objects.AbstractModuleRecord;
 import com.oracle.truffle.js.runtime.objects.DefaultESModuleLoader;
-import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.JSModuleData;
 import com.oracle.truffle.js.runtime.objects.JSModuleRecord;
 import com.oracle.truffle.js.runtime.objects.JSObject;
@@ -253,10 +252,10 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
         JSFunctionObject require = (JSFunctionObject) realm.getCommonJSRequireFunctionObject();
         // Any exception thrown during module loading will be propagated
         Object maybeModule = JSFunction.call(JSArguments.create(Undefined.instance, require, Strings.fromJavaString(specifier)));
-        if (maybeModule == Undefined.instance || !JSDynamicObject.isJSDynamicObject(maybeModule)) {
+        if (!(maybeModule instanceof JSObject)) {
             throw fail(FAILED_BUILTIN, specifier);
         }
-        JSDynamicObject module = (JSDynamicObject) maybeModule;
+        JSObject module = (JSObject) maybeModule;
         // Wrap any exported symbol in an ES module.
         List<TruffleString> exportedNames = JSObject.enumerableOwnNames(module);
         var moduleBody = new StringBuilder(64);
@@ -360,7 +359,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
             PackageJson pjson = readPackageJson(packageURL, env);
             // 4.2 If pjson.imports is a non-null Object, then
             if (pjson != null && pjson.hasImportsProperty()) {
-                JSDynamicObject imports = pjson.getImportsProperty();
+                JSObject imports = pjson.getImportsProperty();
                 // 4.2.1 Let resolved be the result of
                 // PACKAGE_IMPORTS_EXPORTS_RESOLVE(specifier, pjson.imports, packageURL, true,
                 // conditions).
@@ -442,7 +441,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
         // ".",
         // throw an Invalid Package Configuration error.
         boolean hasStartingWithDot = false;
-        if (exports instanceof JSDynamicObject exportsObj) {
+        if (exports instanceof JSObject exportsObj) {
             List<Object> keys = JSObject.ownPropertyKeys(exportsObj);
             for (int i = 0; i < keys.size(); i++) {
                 var keyTStr = keys.get(i);
@@ -462,10 +461,10 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
             Object mainExport = null;
             // 2.2 If exports is a String or Array,
             // or an Object containing no keys starting with ".", then
-            if (exports instanceof TruffleString || (exports instanceof JSDynamicObject && !hasStartingWithDot) || JSObject.hasArray(exports)) {
+            if (exports instanceof TruffleString || (exports instanceof JSObject && !hasStartingWithDot) || JSObject.hasArray(exports)) {
                 mainExport = exports;
                 // 2.3 Otherwise if exports is an Object containing a "." property, then
-            } else if (exports instanceof JSDynamicObject exportsObj &&
+            } else if (exports instanceof JSObject exportsObj &&
                             exportsObj.hasOwnProperty(Strings.DOT)) {
                 // 2.3.1 Set mainExport to exports["."].
                 mainExport = JSObject.get(exportsObj, Strings.DOT);
@@ -482,7 +481,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
             }
         } else {
             // 3. Otherwise, if exports is an Object and all keys of exports start with ".", then
-            if (exports instanceof JSDynamicObject exportsObj && hasStartingWithDot) {
+            if (exports instanceof JSObject exportsObj && hasStartingWithDot) {
                 // 3.1 Assert: subpath begins with "./".
                 if (!subpath.startsWith("./")) {
                     throw fail(INVALID_MODULE_SPECIFIER, subpath);
@@ -541,7 +540,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
     /**
      * PACKAGE_IMPORTS_EXPORTS_RESOLVE(matchKey, matchObj, packageURL, isImports, conditions).
      */
-    private URI packageImportsExportsResolve(String matchKey, JSDynamicObject matchObj, URI packageURL, boolean isImports, List<String> conditions, TruffleLanguage.Env env) {
+    private URI packageImportsExportsResolve(String matchKey, JSObject matchObj, URI packageURL, boolean isImports, List<String> conditions, TruffleLanguage.Env env) {
         // 1. If matchKey ends in "/", then
         if (matchKey.endsWith("/")) {
             // 1.1 Throw an Invalid Module Specifier error.
@@ -651,7 +650,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
                 // replaced with patternMatch.
                 return asURI(resolvedTarget.toString().replaceAll(Pattern.quote(String.valueOf(PACKAGE_EXPORT_WILDCARD)), patternMatch));
             }
-        } else if (target instanceof JSDynamicObject targetObj && !JSArray.isJSArray(targetObj)) {
+        } else if (target instanceof JSObject targetObj && !JSArray.isJSArray(targetObj)) {
             // 2 Otherwise, if target is a non-null Object, then
 
             // 2.1 If target contains any index property keys, as defined in ECMA-262 6.1.7 Array
@@ -881,11 +880,10 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
 
     private static class PackageJson {
 
-        private final JSDynamicObject jsonObj;
+        private final JSObject jsonObj;
 
-        PackageJson(JSDynamicObject jsonObj) {
+        PackageJson(JSObject jsonObj) {
             assert jsonObj != null;
-            assert JSObject.isJSObject(jsonObj);
             this.jsonObj = jsonObj;
         }
 
@@ -909,7 +907,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
             return null;
         }
 
-        private static boolean hasNonNullProperty(JSDynamicObject object, TruffleString keyName) {
+        private static boolean hasNonNullProperty(JSObject object, TruffleString keyName) {
             if (JSObject.hasProperty(object, keyName)) {
                 Object value = JSObject.get(object, keyName);
                 return value != Null.instance && value != Undefined.instance;
@@ -927,12 +925,12 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
         }
 
         public boolean hasImportsProperty() {
-            return (JSObject.get(jsonObj, IMPORTS_PROPERTY_NAME) instanceof JSDynamicObject);
+            return (JSObject.get(jsonObj, IMPORTS_PROPERTY_NAME) instanceof JSObject);
         }
 
-        public JSDynamicObject getImportsProperty() {
+        public JSObject getImportsProperty() {
             assert hasImportsProperty();
-            return (JSDynamicObject) JSObject.get(jsonObj, IMPORTS_PROPERTY_NAME);
+            return (JSObject) JSObject.get(jsonObj, IMPORTS_PROPERTY_NAME);
         }
 
         public boolean hasMainProperty() {
@@ -957,8 +955,8 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
         if (!fileExists(pjsonUrl, env)) {
             return null;
         }
-        JSDynamicObject jsonObj = loadJsonObject(env.getPublicTruffleFile(pjsonUrl), realm);
-        if (!JSDynamicObject.isJSDynamicObject(jsonObj)) {
+        JSObject jsonObj = loadJsonObject(env.getPublicTruffleFile(pjsonUrl), realm);
+        if (jsonObj == null) {
             throw failMessage(INVALID_PACKAGE_CONFIGURATION);
         }
         return new PackageJson(jsonObj);
