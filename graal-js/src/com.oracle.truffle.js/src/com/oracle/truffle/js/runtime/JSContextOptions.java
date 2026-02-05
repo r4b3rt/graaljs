@@ -1081,17 +1081,17 @@ public final class JSContextOptions {
     }
 
     public Map<String, String> getCommonJSRequireBuiltins() {
-        CompilerAsserts.neverPartOfCompilation("Context patchable option load was assumed not to be accessed in compiled code.");
+        CompilerAsserts.neverPartOfCompilation("Context patchable option commonjs-core-modules-replacements was assumed not to be accessed in compiled code.");
         return COMMONJS_CORE_MODULES_REPLACEMENTS.getValue(optionValues);
     }
 
     public String getRequireCwd() {
-        CompilerAsserts.neverPartOfCompilation("Context patchable option load was assumed not to be accessed in compiled code.");
+        CompilerAsserts.neverPartOfCompilation("Context patchable option commonjs-require-cwd was assumed not to be accessed in compiled code.");
         return COMMONJS_REQUIRE_CWD.getValue(optionValues);
     }
 
     public List<String> getUserConditions() {
-        CompilerAsserts.neverPartOfCompilation("Context patchable option load was assumed not to be accessed in compiled code.");
+        CompilerAsserts.neverPartOfCompilation("Context patchable option commonjs-require-user-conditions was assumed not to be accessed in compiled code.");
         return COMMONJS_REQUIRE_USER_CONDITIONS.getValue(optionValues);
     }
 
