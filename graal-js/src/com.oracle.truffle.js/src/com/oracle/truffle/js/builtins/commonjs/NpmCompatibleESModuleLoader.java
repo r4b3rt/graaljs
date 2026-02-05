@@ -175,7 +175,12 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
             } else if (isFileURI(resolution) && format == Format.CommonJS) {
                 // If esmResolve returns a valid file url and the format is CommonJS,
                 // we will use this path to load the CJS module.
-                return tryLoadingAsCommonjsModule(resolution.getRawPath());
+                String path = resolution.getRawPath();
+                if (env.getFileNameSeparator().equals("\\") && path.startsWith("/")) {
+                    // on Windows, remove first "/" from /c:/dir/ style paths
+                    path = path.substring(1);
+                }
+                return tryLoadingAsCommonjsModule(path);
             } else if (resolution == TryCommonJS || format == Format.CommonJS) {
                 // Compatibility mode: try loading as a CommonJS module.
                 return tryLoadingAsCommonjsModule(specifier);

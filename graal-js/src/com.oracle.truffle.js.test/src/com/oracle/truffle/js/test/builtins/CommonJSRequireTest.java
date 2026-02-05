@@ -269,8 +269,9 @@ public class CommonJSRequireTest {
 
     @Test
     public void cyclicRequireFromMain() throws IOException {
-        Path root = getTestRootFolder();
-        Path testCase = Paths.get(root.normalize().toString(), "cycle_main.js");
+        Path root = getTestRootFolder().toRealPath();
+        String rootStr = root.toString();
+        Path testCase = Paths.get(rootStr, "cycle_main.js");
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final ByteArrayOutputStream err = new ByteArrayOutputStream();
         try (Context cx = testContext(root, out, err)) {
@@ -281,7 +282,7 @@ public class CommonJSRequireTest {
             String outPrint = new String(out.toByteArray());
             String errPrint = new String(err.toByteArray());
 
-            String dirName = getTestRootFolder().toString() + testCase.getFileSystem().getSeparator();
+            String dirName = rootStr + testCase.getFileSystem().getSeparator();
 
             Assert.assertEquals("main starting at " + dirName + "cycle_main.js\n" +
                             "other starting at " + dirName + "cycle_other.js\n" +
@@ -394,10 +395,11 @@ public class CommonJSRequireTest {
 
     @Test
     public void testGlobalDirnameFilename() throws IOException {
-        Path root = getTestRootFolder();
-        Path dirFile = Paths.get(root.toAbsolutePath().toString(), "foo", "bar", "dirName.js");
-        Path dirName = Paths.get(root.toAbsolutePath().toString(), "foo", "bar");
-        Path fileName = Paths.get(root.toAbsolutePath().toString(), "foo", "bar", "fileName.js");
+        Path root = getTestRootFolder().toRealPath();
+        String rootStr = root.toString();
+        Path dirFile = Paths.get(rootStr, "foo", "bar", "dirName.js");
+        Path dirName = Paths.get(rootStr, "foo", "bar");
+        Path fileName = Paths.get(rootStr, "foo", "bar", "fileName.js");
         try (Context cx = testContext(root)) {
             Value dir = cx.eval(getSourceFor(dirFile));
             Assert.assertEquals(dirName.toAbsolutePath().toString(), dir.asString());
@@ -444,9 +446,10 @@ public class CommonJSRequireTest {
 
     @Test
     public void testResolve() throws IOException {
-        Path root = getTestRootFolder();
-        Path testCase = Paths.get(root.normalize().toString(), "foo", "bar", "foo.js");
-        Path expected = Paths.get(root.normalize().toString(), "index.js");
+        Path root = getTestRootFolder().toRealPath();
+        String rootStr = root.toString();
+        Path testCase = Paths.get(rootStr, "foo", "bar", "foo.js");
+        Path expected = Paths.get(rootStr, "index.js");
         try (Context cx = testContext(root)) {
             Value js = cx.eval(getSourceFor(testCase));
             Assert.assertEquals(expected.toAbsolutePath().toString(), js.asString());
