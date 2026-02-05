@@ -57,12 +57,13 @@ import static com.oracle.truffle.js.runtime.Strings.IMPORTS_PROPERTY_NAME;
 import static com.oracle.truffle.js.runtime.Strings.NAME;
 import static com.oracle.truffle.js.runtime.Strings.PACKAGE_JSON_MAIN_PROPERTY_NAME;
 import static com.oracle.truffle.js.runtime.Strings.TYPE;
-import static com.oracle.truffle.js.runtime.Strings.constant;
+import static com.oracle.truffle.js.runtime.Strings.fromJavaString;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -80,7 +81,8 @@ import com.oracle.truffle.js.runtime.JSException;
 import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.Strings;
-import com.oracle.truffle.js.runtime.array.ScriptArray;
+import com.oracle.truffle.js.runtime.builtins.JSArray;
+import com.oracle.truffle.js.runtime.builtins.JSArrayObject;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.builtins.JSFunctionObject;
 import com.oracle.truffle.js.runtime.objects.AbstractModuleRecord;
@@ -317,7 +319,8 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
         if (isFileURI(resolved)) {
             // 7.1 If resolvedURL contains any percent encodings of "/" or "\" ("%2f" and "%5C"
             // respectively), then
-            if (resolved.toString().toUpperCase().contains("%2F") || resolved.toString().toUpperCase().contains("%5C")) {
+            String resolvedUpperCase = resolved.toString().toUpperCase(Locale.ROOT);
+            if (resolvedUpperCase.contains("%2F") || resolvedUpperCase.contains("%5C")) {
                 // 7.1.1 Throw an Invalid Module Specifier error.
                 throw fail(INVALID_MODULE_SPECIFIER, specifier);
             }
@@ -358,15 +361,13 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
             // 4.2 If pjson.imports is a non-null Object, then
             if (pjson != null && pjson.hasImportsProperty()) {
                 JSDynamicObject imports = pjson.getImportsProperty();
-                if (imports != null) {
-                    // 4.2.1 Let resolved be the result of
-                    // PACKAGE_IMPORTS_EXPORTS_RESOLVE(specifier, pjson.imports, packageURL, true,
-                    // conditions).
-                    URI resolved = packageImportsExportsResolve(specifier, imports, packageURL, true, conditions, env);
-                    // 4.2.2 If resolved is not null or undefined, return resolved.
-                    if (resolved != null) {
-                        return resolved;
-                    }
+                // 4.2.1 Let resolved be the result of
+                // PACKAGE_IMPORTS_EXPORTS_RESOLVE(specifier, pjson.imports, packageURL, true,
+                // conditions).
+                URI resolved = packageImportsExportsResolve(specifier, imports, packageURL, true, conditions, env);
+                // 4.2.2 If resolved is not null or undefined, return resolved.
+                if (resolved != null) {
+                    return resolved;
                 }
             }
         }
@@ -547,9 +548,9 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
             throw fail(INVALID_MODULE_SPECIFIER, matchKey);
         }
         // 2.If matchKey is a key of matchObj and does not contain "*", then
-        if (!matchKey.contains("*") && matchObj.hasOwnProperty(constant(matchKey))) {
+        if (!matchKey.contains("*") && matchObj.hasOwnProperty(fromJavaString(matchKey))) {
             // 2.1 Let target be the value of matchObj[matchKey].
-            var target = JSObject.get(matchObj, constant(matchKey));
+            var target = JSObject.get(matchObj, fromJavaString(matchKey));
             // 2.2 Return the result of PACKAGE_TARGET_RESOLVE(packageURL, target, null, isImports,
             // conditions).
             return packageTargetResolve(packageURL, target, null, isImports, conditions, env);
@@ -557,7 +558,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
         // 3. Let expansionKeys be the list of keys of matchObj containing only a
         // single "*", sorted by the sorting function PATTERN_KEY_COMPARE which orders in
         // descending order of specificity
-        var expansionKeys = JSObject.enumerableOwnNames(matchObj).stream().map(key -> key.toString()).//
+        var expansionKeys = JSObject.ownPropertyKeys(matchObj).stream().map(key -> key.toString()).//
                         filter(key -> containsOnlyOne(key, PACKAGE_EXPORT_WILDCARD)).//
                         sorted((keyA, keyB) -> patternKeyCompare(keyA, keyB, packageURL)).toList();
         for (var expansionKey : expansionKeys) {
@@ -575,7 +576,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
                 // expansionKey, then
                 if (patternTrailer.isEmpty() || (matchKey.endsWith(patternTrailer) && matchKey.length() >= expansionKey.length())) {
                     // 4.2.2.1 Let target be the value of matchObj[expansionKey].
-                    var target = JSObject.get(matchObj, constant(expansionKey));
+                    var target = JSObject.get(matchObj, fromJavaString(expansionKey));
                     // 4.2.2.2 Let patternMatch be the substring of matchKey
                     // starting at the index of the length of patternBase up to
                     // the length of matchKey minus the length of patternTrailer.
@@ -650,7 +651,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
                 // replaced with patternMatch.
                 return asURI(resolvedTarget.toString().replaceAll(Pattern.quote(String.valueOf(PACKAGE_EXPORT_WILDCARD)), patternMatch));
             }
-        } else if (target instanceof JSDynamicObject targetObj && !JSObject.hasArray(targetObj)) {
+        } else if (target instanceof JSDynamicObject targetObj && !JSArray.isJSArray(targetObj)) {
             // 2 Otherwise, if target is a non-null Object, then
 
             // 2.1 If target contains any index property keys, as defined in ECMA-262 6.1.7 Array
@@ -662,7 +663,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
             }
 
             // 2.2 For each property p of target, in object insertion order as
-            for (var keyTStr : JSObject.enumerableOwnNames(targetObj)) {
+            for (var keyTStr : JSObject.ownPropertyKeys(targetObj)) {
                 var p = keyTStr.toString();
                 // 2.2.1 If p equals "default" or conditions contains an entry for p, then
                 if (p.equals("default") || conditions.contains(p)) {
@@ -681,16 +682,16 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
             }
             // 2.3 Return undefined.
             return null;
-        } else if (target instanceof JSDynamicObject targetObj && JSObject.hasArray(targetObj)) {
+        } else if (target instanceof JSArrayObject targetObj) {
             // 3. Otherwise, if target is an Array, then
-            ScriptArray targetArray = JSObject.getArray(targetObj);
             // 3.1 If _target.length is zero, return null.
-            if (targetArray.length(targetObj) == 0) {
+            long length = JSArray.arrayGetLength(targetObj);
+            if (length == 0) {
                 return null;
             }
             // 3.2 For each item targetValue in target, do
-            for (int i = 0; i < targetArray.length(targetObj); i++) {
-                var targetValue = targetArray.getElement(targetObj, i);
+            for (int i = 0; i < length; i++) {
+                var targetValue = JSObject.get(targetObj, i);
                 // 3.2.1 Let resolved be the result of PACKAGE_TARGET_RESOLVE( packageURL,
                 // targetValue, patternMatch, isImports, conditions), continuing the loop on any
                 // Invalid Package Target error.
@@ -889,13 +890,11 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
         }
 
         boolean hasTypeProperty() {
-            if (hasNonNullProperty(jsonObj, TYPE)) {
-                Object nameValue = JSObject.get(jsonObj, TYPE);
-                if (nameValue instanceof TruffleString nameStr) {
-                    String type = nameStr.toString();
-                    if (type.equals(TYPE_MODULE) || type.equals(TYPE_COMMONS_JS)) {
-                        return true;
-                    }
+            Object nameValue = JSObject.get(jsonObj, TYPE);
+            if (nameValue instanceof TruffleString nameStr) {
+                String type = nameStr.toString();
+                if (type.equals(TYPE_MODULE) || type.equals(TYPE_COMMONS_JS)) {
+                    return true;
                 }
             }
             return false;
@@ -928,7 +927,7 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
         }
 
         public boolean hasImportsProperty() {
-            return hasNonNullProperty(jsonObj, IMPORTS_PROPERTY_NAME) && (JSObject.get(jsonObj, IMPORTS_PROPERTY_NAME) instanceof JSDynamicObject);
+            return (JSObject.get(jsonObj, IMPORTS_PROPERTY_NAME) instanceof JSDynamicObject);
         }
 
         public JSDynamicObject getImportsProperty() {
@@ -937,11 +936,8 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
         }
 
         public boolean hasMainProperty() {
-            if (JSObject.hasProperty(jsonObj, PACKAGE_JSON_MAIN_PROPERTY_NAME)) {
-                Object value = JSObject.get(jsonObj, PACKAGE_JSON_MAIN_PROPERTY_NAME);
-                return Strings.isTString(value);
-            }
-            return false;
+            Object value = JSObject.get(jsonObj, PACKAGE_JSON_MAIN_PROPERTY_NAME);
+            return Strings.isTString(value);
         }
 
         public TruffleString getMainProperty() {
@@ -951,14 +947,8 @@ public final class NpmCompatibleESModuleLoader extends DefaultESModuleLoader {
         }
 
         public boolean namePropertyEquals(String name) {
-            TruffleString packageName = Strings.fromJavaString(name);
-            if (hasNonNullProperty(jsonObj, NAME)) {
-                Object nameValue = JSObject.get(jsonObj, NAME);
-                if (nameValue instanceof TruffleString nameStr) {
-                    return Strings.equals(packageName, nameStr);
-                }
-            }
-            return false;
+            Object nameValue = JSObject.get(jsonObj, NAME);
+            return (nameValue instanceof TruffleString nameStr) && name.equals(nameStr.toString());
         }
     }
 

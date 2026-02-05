@@ -335,7 +335,7 @@ public final class JSContextOptions {
                             }
                             List<String> conditions = new ArrayList<>();
                             for (String condition : value.split(",")) {
-                                if (condition.isEmpty() || condition.startsWith(".") || condition.contains(",") || condition.matches("\\d+")) {
+                                if (condition.isEmpty() || condition.startsWith(".") || condition.matches("\\d+")) {
                                     throw new IllegalArgumentException("Unexpected condition: " + condition);
                                 }
                                 conditions.add(condition);

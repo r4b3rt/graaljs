@@ -168,8 +168,8 @@ public class CommonJSRequireTest {
             cx.eval(src);
             out.flush();
             err.flush();
-            String outPrint = new String(out.toByteArray());
-            String errPrint = new String(err.toByteArray());
+            String outPrint = out.toString();
+            String errPrint = err.toString();
             Assert.assertEquals(expectedOutput, outPrint);
             Assert.assertEquals(expectedErr, errPrint);
         }
@@ -194,7 +194,7 @@ public class CommonJSRequireTest {
             // On Windows we support logical Unix-like paths
             Path root = path.getRoot();
             if (root != null) {
-                pathStr = pathStr.replaceFirst(root.toString() + "\\", "/");
+                pathStr = pathStr.replaceFirst(root + "\\", "/");
             }
             pathStr = pathStr.replace("\\", "/");
         }
@@ -279,8 +279,8 @@ public class CommonJSRequireTest {
 
             out.flush();
             err.flush();
-            String outPrint = new String(out.toByteArray());
-            String errPrint = new String(err.toByteArray());
+            String outPrint = out.toString();
+            String errPrint = err.toString();
 
             String dirName = rootStr + testCase.getFileSystem().getSeparator();
 
@@ -308,8 +308,8 @@ public class CommonJSRequireTest {
                             "42;");
             out.flush();
             err.flush();
-            String outPrint = new String(out.toByteArray());
-            String errPrint = new String(err.toByteArray());
+            String outPrint = out.toString();
+            String errPrint = err.toString();
 
             Assert.assertEquals("main starting\n" +
                             "a starting\n" +
@@ -762,7 +762,7 @@ public class CommonJSRequireTest {
         final String src = "import assert from 'assert'; assert.equal(42, 42); console.log('OK!');";
         Map<String, String> options = getDefaultOptions();
         Path path = getTestRootFolder().resolve("builtin-assert-mockup.mjs");
-        options.put(COMMONJS_CORE_MODULES_REPLACEMENTS_NAME, "assert:" + path.toUri().toString());
+        options.put(COMMONJS_CORE_MODULES_REPLACEMENTS_NAME, "assert:" + path.toUri());
         runAndExpectOutput(Source.newBuilder(ID, src, "test.mjs").build(), "OK!\n", options);
     }
 
