@@ -1217,18 +1217,13 @@ public final class IntlUtil {
         return calendarSupportsEra(cal) ? getEraAsString(cal) : Undefined.instance;
     }
 
-    // Chinese calendar can use various epochs. ChineseCalendar in ICU4J
-    // uses the traditional epoch based on the reign of Huang Di. Modern
-    // Chinese standard calendar uses the epoch of the Gregorian calendar.
-    // This constant is the offset between them.
-    private static final int CHINESE_EPOCH_OFFSET = 2637;
+    // Differences between epochs used by ICU4J internally and by the ones
+    // expected by ECMAScript
     private static final int TAIWAN_EPOCH_OFFSET = 1911;
     private static final int BUDDHIST_EPOCH_OFFSET = -543;
 
     private static int getEpochOffset(Calendar cal) {
-        if (cal instanceof ChineseCalendar) {
-            return CHINESE_EPOCH_OFFSET;
-        } else if (cal instanceof TaiwanCalendar) {
+        if (cal instanceof TaiwanCalendar) {
             return TAIWAN_EPOCH_OFFSET;
         } else if (cal instanceof BuddhistCalendar) {
             return BUDDHIST_EPOCH_OFFSET;
