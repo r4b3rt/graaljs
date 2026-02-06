@@ -849,6 +849,7 @@ public final class JSDateTimeFormat extends JSNonProxy implements JSConstructorF
             map.put(IntlUtil.toUpperCase(available), new Pair<>(available, canonical));
         }
         map.put(IntlUtil.toUpperCase("Antarctica/McMurdo"), new Pair<>("Antarctica/McMurdo", "Pacific/Auckland"));
+        map.put(IntlUtil.toUpperCase("Antarctica/South_Pole"), new Pair<>("Antarctica/South_Pole", "Pacific/Auckland"));
         return map;
     }
 
