@@ -674,10 +674,6 @@
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
   }, {
-    "filePath" : "built-ins/RegExp/property-escapes/generated/Script_-_Beria_Erfe.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "built-ins/RegExp/property-escapes/generated/Script_-_Bhaiksuki.js",
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
@@ -1174,10 +1170,6 @@
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
   }, {
-    "filePath" : "built-ins/RegExp/property-escapes/generated/Script_-_Sidetic.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "built-ins/RegExp/property-escapes/generated/Script_-_SignWriting.js",
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
@@ -1234,10 +1226,6 @@
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
   }, {
-    "filePath" : "built-ins/RegExp/property-escapes/generated/Script_-_Tai_Yo.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "built-ins/RegExp/property-escapes/generated/Script_-_Takri.js",
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
@@ -1282,10 +1270,6 @@
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
   }, {
-    "filePath" : "built-ins/RegExp/property-escapes/generated/Script_-_Tolong_Siki.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "built-ins/RegExp/property-escapes/generated/Script_-_Toto.js",
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
@@ -1297,10 +1281,6 @@
     "filePath" : "built-ins/RegExp/property-escapes/generated/Script_-_Ugaritic.js",
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
-  }, {
-    "filePath" : "built-ins/RegExp/property-escapes/generated/Script_-_Unknown.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
   }, {
     "filePath" : "built-ins/RegExp/property-escapes/generated/Script_-_Vai.js",
     "status" : "SKIP",
@@ -1373,10 +1353,6 @@
     "filePath" : "built-ins/RegExp/property-escapes/generated/Script_Extensions_-_Bengali.js",
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
-  }, {
-    "filePath" : "built-ins/RegExp/property-escapes/generated/Script_Extensions_-_Beria_Erfe.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
   }, {
     "filePath" : "built-ins/RegExp/property-escapes/generated/Script_Extensions_-_Bhaiksuki.js",
     "status" : "SKIP",
@@ -1874,10 +1850,6 @@
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
   }, {
-    "filePath" : "built-ins/RegExp/property-escapes/generated/Script_Extensions_-_Sidetic.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "built-ins/RegExp/property-escapes/generated/Script_Extensions_-_SignWriting.js",
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
@@ -1934,10 +1906,6 @@
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
   }, {
-    "filePath" : "built-ins/RegExp/property-escapes/generated/Script_Extensions_-_Tai_Yo.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "built-ins/RegExp/property-escapes/generated/Script_Extensions_-_Takri.js",
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
@@ -1982,10 +1950,6 @@
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
   }, {
-    "filePath" : "built-ins/RegExp/property-escapes/generated/Script_Extensions_-_Tolong_Siki.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "built-ins/RegExp/property-escapes/generated/Script_Extensions_-_Toto.js",
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
@@ -1997,10 +1961,6 @@
     "filePath" : "built-ins/RegExp/property-escapes/generated/Script_Extensions_-_Ugaritic.js",
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
-  }, {
-    "filePath" : "built-ins/RegExp/property-escapes/generated/Script_Extensions_-_Unknown.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
   }, {
     "filePath" : "built-ins/RegExp/property-escapes/generated/Script_Extensions_-_Vai.js",
     "status" : "SKIP",
@@ -2038,21 +1998,9 @@
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
   }, {
-    "filePath" : "built-ins/RegExp/property-escapes/generated/strings/Basic_Emoji.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "built-ins/RegExp/property-escapes/generated/strings/RGI_Emoji.js",
     "status" : "SKIP",
     "comment" : "Infinite/long-running test"
-  }, {
-    "filePath" : "built-ins/RegExp/property-escapes/generated/strings/RGI_Emoji_Modifier_Sequence.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
-    "filePath" : "built-ins/RegExp/property-escapes/generated/strings/RGI_Emoji_ZWJ_Sequence.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
   }, {
     "filePath" : "built-ins/RegExp/property-escapes/generated/Terminal_Punctuation.js",
     "status" : "SKIP",
@@ -2081,10 +2029,6 @@
     "filePath" : "built-ins/RegExp/property-escapes/generated/XID_Start.js",
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
-  }, {
-    "filePath" : "built-ins/RegExp/unicodeSets/generated/rgi-emoji-17.0.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
   }, {
     "filePath" : "built-ins/String/prototype/toLowerCase/special_casing_conditional.js",
     "status" : "FAIL"
@@ -2202,10 +2146,6 @@
     },
     "comment" : "Long-running in compile mode"
   }, {
-    "filePath" : "intl402/Intl/supportedValuesOf/currencies-accepted-by-DisplayNames.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
     "filePath" : "intl402/Intl/supportedValuesOf/timeZones-include-non-continental.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-05-08"
@@ -2236,47 +2176,11 @@
     "status" : "FAIL",
     "comment" : "new failures 2026-01-09"
   }, {
-    "filePath" : "intl402/Temporal/PlainDate/prototype/inLeapYear/chinese-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainDate/prototype/inLeapYear/dangi-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "intl402/Temporal/PlainDate/prototype/monthCode/chinese-calendar-dates.js",
     "status" : "FAIL",
     "comment" : "new failures 2026-01-09"
   }, {
-    "filePath" : "intl402/Temporal/PlainDate/prototype/monthCode/dangi-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
-    "filePath" : "intl402/Temporal/PlainDate/prototype/monthsInYear/chinese-calendar-leap-days.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainDate/prototype/monthsInYear/dangi-calendar-leap-days.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "intl402/Temporal/PlainDate/prototype/since/leap-year-since.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
-    "filePath" : "intl402/Temporal/PlainDate/prototype/subtract/chinese-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainDate/prototype/subtract/dangi-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainDate/prototype/with/chinese-calendar-leap-dates.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainDate/prototype/with/dangi-calendar-leap-dates.js",
     "status" : "FAIL",
     "comment" : "new failures 2026-01-09"
   }, {
@@ -2288,27 +2192,7 @@
     "status" : "FAIL",
     "comment" : "new failures 2026-01-09"
   }, {
-    "filePath" : "intl402/Temporal/PlainDateTime/prototype/inLeapYear/chinese-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainDateTime/prototype/inLeapYear/dangi-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "intl402/Temporal/PlainDateTime/prototype/monthCode/chinese-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
-    "filePath" : "intl402/Temporal/PlainDateTime/prototype/monthCode/dangi-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
-    "filePath" : "intl402/Temporal/PlainDateTime/prototype/monthsInYear/chinese-calendar-leap-days.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainDateTime/prototype/monthsInYear/dangi-calendar-leap-days.js",
     "status" : "FAIL",
     "comment" : "new failures 2026-01-09"
   }, {
@@ -2320,27 +2204,7 @@
     "status" : "FAIL",
     "comment" : "new failures 2026-01-09"
   }, {
-    "filePath" : "intl402/Temporal/PlainDateTime/prototype/with/chinese-calendar-leap-dates.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainDateTime/prototype/with/dangi-calendar-leap-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
-    "filePath" : "intl402/Temporal/PlainMonthDay/from/chinese-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainMonthDay/from/dangi-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "intl402/Temporal/PlainMonthDay/prototype/monthCode/chinese-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
-    "filePath" : "intl402/Temporal/PlainMonthDay/prototype/monthCode/dangi-calendar-dates.js",
     "status" : "FAIL",
     "comment" : "new failures 2026-01-09"
   }, {
@@ -2352,43 +2216,7 @@
     "status" : "FAIL",
     "comment" : "new failures 2026-01-09"
   }, {
-    "filePath" : "intl402/Temporal/PlainYearMonth/from/calendar-not-supporting-eras.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainYearMonth/from/reference-day-chinese.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainYearMonth/prototype/inLeapYear/chinese-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainYearMonth/prototype/inLeapYear/dangi-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "intl402/Temporal/PlainYearMonth/prototype/monthCode/chinese-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
-    "filePath" : "intl402/Temporal/PlainYearMonth/prototype/monthCode/dangi-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
-    "filePath" : "intl402/Temporal/PlainYearMonth/prototype/monthsInYear/chinese-calendar-leap-days.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainYearMonth/prototype/monthsInYear/dangi-calendar-leap-days.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
-    "filePath" : "intl402/Temporal/PlainYearMonth/prototype/with/chinese-calendar-leap-dates.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/PlainYearMonth/prototype/with/dangi-calendar-leap-dates.js",
     "status" : "FAIL",
     "comment" : "new failures 2026-01-09"
   }, {
@@ -2400,35 +2228,7 @@
     "status" : "FAIL",
     "comment" : "new failures 2026-01-09"
   }, {
-    "filePath" : "intl402/Temporal/ZonedDateTime/from/calendar-not-supporting-eras.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/ZonedDateTime/links.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/ZonedDateTime/prototype/inLeapYear/chinese-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/ZonedDateTime/prototype/inLeapYear/dangi-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
     "filePath" : "intl402/Temporal/ZonedDateTime/prototype/monthCode/chinese-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
-    "filePath" : "intl402/Temporal/ZonedDateTime/prototype/monthCode/dangi-calendar-dates.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
-    "filePath" : "intl402/Temporal/ZonedDateTime/prototype/monthsInYear/chinese-calendar-leap-days.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/ZonedDateTime/prototype/monthsInYear/dangi-calendar-leap-days.js",
     "status" : "FAIL",
     "comment" : "new failures 2026-01-09"
   }, {
@@ -2437,14 +2237,6 @@
     "comment" : "new failures 2026-01-09"
   }, {
     "filePath" : "intl402/Temporal/ZonedDateTime/prototype/toLocaleString/hourcycle.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2026-01-09"
-  }, {
-    "filePath" : "intl402/Temporal/ZonedDateTime/prototype/with/chinese-calendar-leap-dates.js",
-    "status" : "FAIL",
-    "comment" : "ICU4J 78.2 update"
-  }, {
-    "filePath" : "intl402/Temporal/ZonedDateTime/prototype/with/dangi-calendar-leap-dates.js",
     "status" : "FAIL",
     "comment" : "new failures 2026-01-09"
   }, {
