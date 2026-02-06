@@ -1064,8 +1064,8 @@ public final class IntlUtil {
     @TruffleBoundary
     public static String[] availableCurrencies() {
         List<String> list = CurrencyMetaInfo.getInstance().currencies(CurrencyMetaInfo.CurrencyFilter.all());
-        String[] currencies = list.toArray(new String[list.size()]);
-        Arrays.sort(currencies);
+        // ICU4J claims XAD to be supported but it fails to provide its localized display name
+        String[] currencies = list.stream().filter(code -> !"XAD".equals(code)).sorted().toArray(String[]::new);
         return currencies;
     }
 
