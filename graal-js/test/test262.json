@@ -2030,9 +2030,6 @@
     "status" : "SKIP",
     "comment" : "Long-running generated Unicode tests."
   }, {
-    "filePath" : "built-ins/String/prototype/toLowerCase/special_casing_conditional.js",
-    "status" : "FAIL"
-  }, {
     "filePath" : "built-ins/Temporal/Duration/compare/relativeto-propertybag-invalid-offset-string.js",
     "status" : "FAIL",
     "comment" : "new failures 2026-01-09"
@@ -2485,7 +2482,8 @@
     "javaVersion" : {
       "minVersion" : 24
     },
-    "comment" : "requires Unicode 16.0"
+    "status" : "FAIL",
+    "comment" : "Obsolete test: based on Unicode 16."
   }, {
     "filePath" : "staging/sm/TypedArray/prototype-constructor-identity.js",
     "ecmaVersion" : {
