@@ -51,6 +51,8 @@ import com.oracle.truffle.api.strings.TruffleString;
 import com.oracle.truffle.api.strings.TruffleStringBuilder;
 import com.oracle.truffle.api.strings.TruffleStringBuilderUTF16;
 
+import org.graalvm.shadowed.com.ibm.icu.text.CaseMap;
+
 public final class Strings {
 
     private Strings() {
@@ -800,12 +802,12 @@ public final class Strings {
 
     @TruffleBoundary
     public static String javaStringToLowerCase(String s, Locale locale) {
-        return s.toLowerCase(locale);
+        return CaseMap.toLower().apply(locale, s);
     }
 
     @TruffleBoundary
     public static String javaStringToUpperCase(String s, Locale locale) {
-        return s.toUpperCase(locale);
+        return CaseMap.toUpper().apply(locale, s);
     }
 
     public static TruffleString lazyTrim(TruffleString s) {
