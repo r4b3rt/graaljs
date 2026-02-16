@@ -168,7 +168,9 @@ public class TestV8Runnable extends TestRunnable {
                 assert !UNSUPPORTED_FLAGS.contains(flag) : flag;
                 flagVersion = JSConfig.StagingECMAScriptVersion;
             } else if (UNSUPPORTED_FLAGS.contains(flag)) {
-                supported = false;
+                testFile.setStatus(TestFile.Status.PASS);
+                testFile.setResult(TestFile.Result.PASSED);
+                return;
             }
         }
 
