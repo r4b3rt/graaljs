@@ -191,6 +191,12 @@ public class TestV8Runnable extends TestRunnable {
         if (flags.contains(HARMONY_SHADOW_REALM)) {
             extraOptions.put(JSContextOptions.SHADOW_REALM_NAME, "true");
         }
+        if (flags.contains("--icu-datetime-compat-lang=\"\"")) {
+            extraOptions.put(JSContextOptions.ALLOW_NARROW_SPACES_IN_DATE_FORMAT_NAME, "true");
+        }
+        if (flags.contains("--icu-datetime-compat-lang=\"*\"")) {
+            extraOptions.put(JSContextOptions.ALLOW_NARROW_SPACES_IN_DATE_FORMAT_NAME, "false");
+        }
 
         if (supported) {
             suite.logVerbose("Starting: " + getName());
