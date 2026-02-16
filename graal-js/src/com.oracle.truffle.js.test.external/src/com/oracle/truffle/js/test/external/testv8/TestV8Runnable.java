@@ -79,12 +79,16 @@ public class TestV8Runnable extends TestRunnable {
 
     private static final Set<String> UNSUPPORTED_FLAGS = featureSet(new String[]{
                     "--experimental-wasm-compilation-hints",
+                    "--experimental-wasm-custom-descriptors",
                     "--experimental-wasm-exnref",
+                    "--experimental-wasm-jspi",
+                    "--experimental-wasm-rab-integration",
                     "--experimental-wasm-stringref",
                     "--experimental-wasm-type-reflection",
                     "--expose-fast-api",
                     "--expose-memory-corruption-api",
                     "--harmony-struct",
+                    "--memory-corruption-via-watchpoints",
                     "--sandbox-fuzzing",
                     "--sandbox-testing",
                     "--wasm-test-streaming"
@@ -96,8 +100,13 @@ public class TestV8Runnable extends TestRunnable {
                     "--harmony-json-parse-with-source",
                     "--harmony-shadow-realm",
                     "--harmony-weak-refs-with-cleanup-some",
+                    "--js-base-64",
                     "--js-decorators",
+                    "--js-defer-import-eval",
+                    "--js-immutable-arraybuffer",
+                    "--js-iterator-sequencing",
                     "--js-staging",
+                    "--js-sum-precise",
     });
 
     private static final String FLAGS_PREFIX = "// Flags: ";
