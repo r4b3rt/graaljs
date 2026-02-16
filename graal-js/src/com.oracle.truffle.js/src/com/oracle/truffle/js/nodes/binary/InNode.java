@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2023, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -105,33 +105,33 @@ public abstract class InNode extends JSBinaryNode {
     }
 
     @Specialization(guards = "isNullOrUndefined(haystack)")
-    protected static Object doNullOrUndefined(@SuppressWarnings("unused") Object needle, Object haystack) {
-        throw Errors.createTypeErrorNotAnObject(haystack);
+    protected Object doNullOrUndefined(@SuppressWarnings("unused") Object needle, Object haystack) {
+        throw Errors.createTypeErrorNotAnObject(haystack, this);
     }
 
     @Specialization
-    protected static Object doSymbol(@SuppressWarnings("unused") Object needle, Symbol haystack) {
-        throw Errors.createTypeErrorNotAnObject(haystack);
+    protected Object doSymbol(@SuppressWarnings("unused") Object needle, Symbol haystack) {
+        throw Errors.createTypeErrorNotAnObject(haystack, this);
     }
 
     @Specialization
-    protected static Object doTString(@SuppressWarnings("unused") Object needle, TruffleString haystack) {
-        throw Errors.createTypeErrorNotAnObject(haystack);
+    protected Object doTString(@SuppressWarnings("unused") Object needle, TruffleString haystack) {
+        throw Errors.createTypeErrorNotAnObject(haystack, this);
     }
 
     @Specialization
-    protected static Object doSafeInteger(@SuppressWarnings("unused") Object needle, SafeInteger haystack) {
-        throw Errors.createTypeErrorNotAnObject(haystack);
+    protected Object doSafeInteger(@SuppressWarnings("unused") Object needle, SafeInteger haystack) {
+        throw Errors.createTypeErrorNotAnObject(haystack, this);
     }
 
     @Specialization
-    protected static Object doBigInt(@SuppressWarnings("unused") Object needle, BigInt haystack) {
-        throw Errors.createTypeErrorNotAnObject(haystack);
+    protected Object doBigInt(@SuppressWarnings("unused") Object needle, BigInt haystack) {
+        throw Errors.createTypeErrorNotAnObject(haystack, this);
     }
 
     @Specialization(guards = "!isTruffleObject(haystack)")
-    protected static Object doNotTruffleObject(@SuppressWarnings("unused") Object needle, Object haystack) {
-        throw Errors.createTypeErrorNotAnObject(haystack);
+    protected Object doNotTruffleObject(@SuppressWarnings("unused") Object needle, Object haystack) {
+        throw Errors.createTypeErrorNotAnObject(haystack, this);
     }
 
     private JSHasPropertyNode getHasPropertyNode() {
