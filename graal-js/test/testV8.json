@@ -34,9 +34,17 @@
     },
     "comment" : "Expects islamic and islamic-rgsa calendars to be supported"
   }, {
+    "filePath" : "intl/date-format/en-format-range-to-parts.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
     "filePath" : "intl/date-format/timezone.js",
     "status" : "FAIL",
     "comment" : "Obsolete test, expects time-zone canonicalization."
+  }, {
+    "filePath" : "intl/datetime-compat-en.js",
+    "status" : "FAIL",
+    "comment" : "Uses unsupported --icu-datetime-compat-lang=\"en\" flag"
   }, {
     "filePath" : "intl/default_locale.js",
     "status" : "FAIL",
@@ -62,13 +70,17 @@
     "filePath" : "intl/general/supported-locales-of.js",
     "status" : "FAIL"
   }, {
-    "filePath" : "intl/locale/locale-info-check-return-types.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete test: expects minimalDays in getWeekInfo()"
-  }, {
     "filePath" : "intl/localematcher/bestfit-supplemental-files.js",
     "status" : "FAIL",
     "comment" : "localeMatcher best fit"
+  }, {
+    "filePath" : "intl/number-format/comma-compat-on.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "intl/number-format/italian-compat-on.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "intl/overrides/caching.js",
     "status" : "SKIP",
@@ -105,9 +117,9 @@
     "status" : "FAIL",
     "comment" : "new failures 2023-10-09"
   }, {
-    "filePath" : "intl/regress-1451943.js",
+    "filePath" : "intl/regress-412149700.js",
     "status" : "FAIL",
-    "comment" : "new failures 2023-10-09"
+    "comment" : "Suspicious test: expects Icu error."
   }, {
     "filePath" : "intl/regress-7770.js",
     "status" : "FAIL",
@@ -129,10 +141,6 @@
     "status" : "FAIL",
     "comment" : "V8 test update 2022-08-10"
   }, {
-    "filePath" : "intl/temporal/calendar/fields.js",
-    "status" : "FAIL",
-    "comment" : "V8 test update 2022-08-10"
-  }, {
     "filePath" : "mjsunit/allocation-site-info.js",
     "status" : "SKIP",
     "comment" : "passing this test, except V8HasFast..., V8HaveSameMap, V8GetOptimizationCount, V8GetOptimizationStatus, etc."
@@ -144,6 +152,10 @@
     "filePath" : "mjsunit/array-buffer-limit.js",
     "status" : "FAIL",
     "comment" : "Test of V8-specific functionality (--mock-arraybuffer-allocator-limit option)"
+  }, {
+    "filePath" : "mjsunit/array-buffer-transfer-detach-key.js",
+    "status" : "FAIL",
+    "comment" : "Uses %ArrayBufferSetDetachKey()"
   }, {
     "filePath" : "mjsunit/array-constructor-feedback.js",
     "status" : "SKIP",
@@ -272,6 +284,10 @@
     "status" : "FAIL",
     "comment" : "new test failures (update 2020-07-22)"
   }, {
+    "filePath" : "mjsunit/async-stack-traces.js",
+    "status" : "FAIL",
+    "comment" : "Different stack traces"
+  }, {
     "filePath" : "mjsunit/baseline/verify-bytecode-offsets.js",
     "status" : "FAIL",
     "comment" : "test for fuzzer"
@@ -364,6 +380,10 @@
     "runInIsolation" : true,
     "comment" : "Takes too long (several minutes) in shareengine mode (where arrayPrototypeNoElementsAssumption is invalid)."
   }, {
+    "filePath" : "mjsunit/compiler/regress-461531853.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
     "filePath" : "mjsunit/compiler/regress-801097.js",
     "status" : "FAIL",
     "comment" : "needs larger stack, at least 21m is needed"
@@ -400,14 +420,6 @@
     "filePath" : "mjsunit/compiler/string-concat-try-catch.js",
     "runInIsolation" : true,
     "comment" : "memory intensive test"
-  }, {
-    "filePath" : "mjsunit/compiler/typed-array-length-as-number.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/compiler/typed-array-length-iteration.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
   }, {
     "filePath" : "mjsunit/console.js",
     "status" : "FAIL",
@@ -481,13 +493,6 @@
     "status" : "FAIL",
     "comment" : "needs larger stack, at least 3m is needed"
   }, {
-    "filePath" : "mjsunit/dump-counters-quit.js",
-    "status" : "SKIP",
-    "statusOverrides" : {
-      "POLYGLOT" : "PASS"
-    },
-    "comment" : "V8 test update 2022-08-10"
-  }, {
     "filePath" : "mjsunit/duplicate-parameters.js",
     "status" : "FAIL",
     "comment" : "TODO: evaluate (V8 tests update 2017-07-07)"
@@ -495,6 +500,10 @@
     "filePath" : "mjsunit/elements-kind.js",
     "status" : "SKIP",
     "comment" : "passing this test, except V8HasFast..., V8HaveSameMap, V8GetOptimizationCount, V8GetOptimizationStatus, etc."
+  }, {
+    "filePath" : "mjsunit/equals-feedback.js",
+    "status" : "FAIL",
+    "comment" : "Tests properties of %GetUndetectable()"
   }, {
     "filePath" : "mjsunit/error-stack.js",
     "status" : "FAIL",
@@ -527,6 +536,10 @@
   }, {
     "filePath" : "mjsunit/es6/generator-destructuring.js",
     "status" : "FAIL"
+  }, {
+    "filePath" : "mjsunit/es6/iterator-prototype.js",
+    "status" : "FAIL",
+    "comment" : "Expects Symbol.dispose on iterator prototype"
   }, {
     "filePath" : "mjsunit/es6/math-log2-log10.js",
     "status" : "PASS",
@@ -595,13 +608,6 @@
     "filePath" : "mjsunit/es6/typedarray-of.js",
     "runInIsolation" : true,
     "comment" : "Triggers 576 GCs."
-  }, {
-    "filePath" : "mjsunit/es6/typedarray-proto.js",
-    "status" : "PASS",
-    "statusOverrides" : {
-      "STAGING" : "FAIL"
-    },
-    "comment" : "Fails due to additional to/from base64 and hex methods on Uint8Array.prototype"
   }, {
     "filePath" : "mjsunit/es6/typedarray-set-bytelength-not-smi.js",
     "status" : "FAIL",
@@ -684,7 +690,27 @@
     "status" : "FAIL",
     "comment" : "TODO: evaluate"
   }, {
+    "filePath" : "mjsunit/harmony/await-using-assignment-in-for-loop.js",
+    "status" : "FAIL",
+    "comment" : "Test of Explicit Resource Management proposal"
+  }, {
+    "filePath" : "mjsunit/harmony/await-using-get-symbol.dispose-after-symbol.asyncDispose.is-null.js",
+    "status" : "FAIL",
+    "comment" : "Test of Explicit Resource Management proposal"
+  }, {
+    "filePath" : "mjsunit/harmony/await-using-null.js",
+    "status" : "FAIL",
+    "comment" : "Test of Explicit Resource Management proposal"
+  }, {
+    "filePath" : "mjsunit/harmony/await-using-throws-suppressed-error.js",
+    "status" : "FAIL",
+    "comment" : "Test of Explicit Resource Management proposal"
+  }, {
     "filePath" : "mjsunit/harmony/await-using-tick-count.js",
+    "status" : "FAIL",
+    "comment" : "Test of Explicit Resource Management proposal"
+  }, {
+    "filePath" : "mjsunit/harmony/await-using-valid-assignments-in-for-loop.js",
     "status" : "FAIL",
     "comment" : "Test of Explicit Resource Management proposal"
   }, {
@@ -704,6 +730,18 @@
     "status" : "SKIP",
     "comment" : "Tests for V8's limits on BigInts."
   }, {
+    "filePath" : "mjsunit/harmony/disposable-stack-use-throws-if-disposed.js",
+    "status" : "FAIL",
+    "comment" : "Test of Explicit Resource Management proposal"
+  }, {
+    "filePath" : "mjsunit/harmony/explicit-resource-management-call-sync-from-async-receiver.js",
+    "status" : "FAIL",
+    "comment" : "Test of Explicit Resource Management proposal"
+  }, {
+    "filePath" : "mjsunit/harmony/for-using-of-await-using-of.js",
+    "status" : "FAIL",
+    "comment" : "Test of Explicit Resource Management proposal"
+  }, {
     "filePath" : "mjsunit/harmony/function-tostring.js",
     "status" : "FAIL",
     "comment" : "TODO: evaluate (V8 tests update 2018-10-29)"
@@ -715,6 +753,10 @@
     "filePath" : "mjsunit/harmony/import-from-compilation-errored.js",
     "status" : "FAIL",
     "comment" : "only fails because of different line number in error stack"
+  }, {
+    "filePath" : "mjsunit/harmony/iterator-concat.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/harmony/json-parse-with-source-snapshot.js",
     "ecmaVersion" : {
@@ -729,6 +771,18 @@
     },
     "status" : "PASS",
     "comment" : "Unflagged usage of JSON parse with source"
+  }, {
+    "filePath" : "mjsunit/harmony/modules-import-defer-define-class-field.mjs",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/harmony/modules-import-defer-no-trigger.mjs",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/harmony/modules-import-disallow-absolute-url.mjs",
+    "status" : "FAIL",
+    "comment" : "Different error message"
   }, {
     "filePath" : "mjsunit/harmony/private-fields-nonextensible-global-proxy-no-lazy-feedback.js",
     "status" : "PASS",
@@ -797,6 +851,32 @@
     "status" : "FAIL",
     "comment" : "Test of Explicit Resource Management proposal"
   }, {
+    "filePath" : "mjsunit/harmony/regress/regress-409478039.js",
+    "status" : "FAIL",
+    "comment" : "Test of Explicit Resource Management proposal"
+  }, {
+    "filePath" : "mjsunit/harmony/regress/regress-418103036.js",
+    "status" : "FAIL",
+    "comment" : "Test of Explicit Resource Management proposal"
+  }, {
+    "filePath" : "mjsunit/harmony/regress/regress-436181695.js",
+    "status" : "FAIL",
+    "comment" : "Test of Explicit Resource Management proposal"
+  }, {
+    "filePath" : "mjsunit/harmony/regress/regress-437612640.js",
+    "status" : "FAIL",
+    "comment" : "Test of Explicit Resource Management proposal"
+  }, {
+    "filePath" : "mjsunit/harmony/regress/regress-440585463.js",
+    "status" : "FAIL",
+    "comment" : "Test of Explicit Resource Management proposal"
+  }, {
+    "filePath" : "mjsunit/harmony/regress/regress-454630441.js",
+    "ecmaVersion" : {
+      "minVersion" : 17
+    },
+    "comment" : "Test of Uint8Array to/from base64 and hex proposal"
+  }, {
     "filePath" : "mjsunit/harmony/regress/regress-crbug-1422812.js",
     "ecmaVersion" : {
       "minVersion" : 17
@@ -834,42 +914,6 @@
     "filePath" : "mjsunit/harmony/suppressed-error.js",
     "status" : "FAIL",
     "comment" : "new failures 2024-01-19"
-  }, {
-    "filePath" : "mjsunit/harmony/weakrefs/cleanup-on-detached-realm.js",
-    "status" : "FAIL",
-    "comment" : "Uses Realm.detachGlobal()"
-  }, {
-    "filePath" : "mjsunit/harmony/weakrefs/cleanup.js",
-    "status" : "SKIP",
-    "comment" : "Unstable on native-image / when compiled (GR-23663)"
-  }, {
-    "filePath" : "mjsunit/harmony/weakrefs/finalizationregistry-independent-lifetime-multiple.js",
-    "status" : "FAIL",
-    "comment" : "V8 test update 2022-08-10"
-  }, {
-    "filePath" : "mjsunit/harmony/weakrefs/finalizationregistry-independent-lifetime.js",
-    "status" : "FAIL",
-    "comment" : "Expects GC of a registry but the registry is kept alive by a closure (passes when rewritten slightly to avoid the problem with the closure)."
-  }, {
-    "filePath" : "mjsunit/harmony/weakrefs/finalizationregistry-keeps-holdings-alive.js",
-    "status" : "SKIP",
-    "comment" : "Unstable on native-image / when compiled (GR-23663)"
-  }, {
-    "filePath" : "mjsunit/harmony/weakrefs/two-weakrefs.js",
-    "status" : "SKIP",
-    "comment" : "Unstable on native-image / when compiled (GR-23663)"
-  }, {
-    "filePath" : "mjsunit/harmony/weakrefs/unregister-after-cleanup.js",
-    "status" : "SKIP",
-    "comment" : "Unstable GC-based test."
-  }, {
-    "filePath" : "mjsunit/harmony/weakrefs/unregister-inside-cleanup.js",
-    "status" : "SKIP",
-    "comment" : "Unstable GC-based test."
-  }, {
-    "filePath" : "mjsunit/harmony/weakrefs/weak-cell-basics.js",
-    "status" : "SKIP",
-    "comment" : "Unstable on native-image / when compiled (GR-23663)"
   }, {
     "filePath" : "mjsunit/huge-typedarrays.js",
     "status" : "FAIL",
@@ -937,9 +981,25 @@
     "filePath" : "mjsunit/lookup-behind-property.js",
     "status" : "FAIL"
   }, {
+    "filePath" : "mjsunit/lower_limits_mode/regress/regress-crbug-400504688.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/lower_limits_mode/regress/regress-crbug-405910175-map.js",
+    "status" : "SKIP",
+    "comment" : "Long running test"
+  }, {
+    "filePath" : "mjsunit/lower_limits_mode/regress/regress-crbug-405910175-set.js",
+    "status" : "SKIP",
+    "comment" : "Long running test"
+  }, {
     "filePath" : "mjsunit/maglev/extras-cped.js",
     "status" : "FAIL",
     "comment" : "Test of V8-specific functionality (d8.getExtrasBindingObject)"
+  }, {
+    "filePath" : "mjsunit/maglev/regress-1407606.js",
+    "status" : "SKIP",
+    "comment" : "Long running test"
   }, {
     "filePath" : "mjsunit/maglev/regress-324459570.js",
     "status" : "FAIL",
@@ -949,101 +1009,9 @@
     "status" : "FAIL",
     "comment" : "Uses d8.dom.Div"
   }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-abs.js",
+    "filePath" : "mjsunit/maglev/strict-equals-receiver-or-null-or-undefined.js",
     "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-as-number-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-as-number.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-bitwise.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-branch-if-root.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-branch-if-to-boolean-true.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-deopt-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-exception-phi.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-index-into-array-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-index-into-array.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-index-into-typed-array-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-index-into-typed-array.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-iteration-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-iteration.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-parseint.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-phi.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-store-as-uint8clamped.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-store-into-global-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-store-into-global.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-store-script-context-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-store-script-context.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-to-boolean.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-to-number-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/maglev/typed-array-length-to-number.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
+    "comment" : "Uses %GetUndetectable"
   }, {
     "filePath" : "mjsunit/messages.js",
     "status" : "FAIL"
@@ -1058,6 +1026,10 @@
     "filePath" : "mjsunit/modules-init3.mjs",
     "status" : "FAIL",
     "comment" : "we throw a ReferenceError instead of the expected TypeError"
+  }, {
+    "filePath" : "mjsunit/modules-namespace1.mjs",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/number-tostring-big-integer.js",
     "status" : "FAIL"
@@ -1079,7 +1051,11 @@
   }, {
     "filePath" : "mjsunit/regexp-14098.js",
     "status" : "FAIL",
-    "comment" : "new failures 2023-10-09"
+    "comment" : "Uses --enable-experimental-regexp-engine"
+  }, {
+    "filePath" : "mjsunit/regexp-444637793.js",
+    "status" : "FAIL",
+    "comment" : "Uses --enable-experimental-regexp-engine"
   }, {
     "filePath" : "mjsunit/regexp-backtrack-limit.js",
     "status" : "FAIL",
@@ -1087,11 +1063,11 @@
   }, {
     "filePath" : "mjsunit/regexp-fallback.js",
     "status" : "FAIL",
-    "comment" : "new failures 2021-02-16"
+    "comment" : "Uses --enable-experimental-regexp-engine"
   }, {
     "filePath" : "mjsunit/regexp-linear-flag.js",
     "status" : "FAIL",
-    "comment" : "new failures 2021-02-16"
+    "comment" : "Uses --enable-experimental-regexp-engine"
   }, {
     "filePath" : "mjsunit/regexp-stack-overflow.js",
     "runInIsolation" : true,
@@ -1121,6 +1097,10 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
+    "filePath" : "mjsunit/regress-41882029.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
     "filePath" : "mjsunit/regress/asm/regress-1402270.js",
     "status" : "FAIL",
     "comment" : "new failures 2023-10-09"
@@ -1134,10 +1114,6 @@
   }, {
     "filePath" : "mjsunit/regress/redeclaration-error-types.js",
     "status" : "FAIL"
-  }, {
-    "filePath" : "mjsunit/regress/regress-1002827.js",
-    "status" : "FAIL",
-    "comment" : "TODO: evaluate (V8 tests update 2019-10-15)"
   }, {
     "filePath" : "mjsunit/regress/regress-1006640.js",
     "status" : "FAIL",
@@ -1167,10 +1143,6 @@
     "status" : "FAIL",
     "comment" : "new test failures (update 2020-07-22)"
   }, {
-    "filePath" : "mjsunit/regress/regress-1092896.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete test, does not reflect normative change https://github.com/tc39/ecma262/pull/3009"
-  }, {
     "filePath" : "mjsunit/regress/regress-10931.js",
     "status" : "SKIP",
     "comment" : "takes too long on Graal.js"
@@ -1186,10 +1158,6 @@
     "filePath" : "mjsunit/regress/regress-1115354.js",
     "status" : "FAIL",
     "comment" : "Uses async_hooks"
-  }, {
-    "filePath" : "mjsunit/regress/regress-1129.js",
-    "status" : "SKIP",
-    "comment" : "This test checks, among other things, that the implementation compiles regular expressions lazily, which is not mandated by the spec. It also checks whether a specific regular expression triggers a stack overflow during its compilation, which is heavily dependent on the implementation (e.g. TRegex's parser has its own stack). It also calls gc after the test, which is V8-specific."
   }, {
     "filePath" : "mjsunit/regress/regress-1132.js",
     "status" : "SKIP",
@@ -1238,29 +1206,9 @@
     "status" : "FAIL",
     "comment" : "new failures 2023-10-09"
   }, {
-    "filePath" : "mjsunit/regress/regress-1359230.js",
-    "status" : "FAIL",
-    "comment" : "Uses d8.serializer.[de]serialize"
-  }, {
-    "filePath" : "mjsunit/regress/regress-1385368.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
     "filePath" : "mjsunit/regress/regress-1394663.js",
     "status" : "FAIL",
     "comment" : "Uses console.profile(), console.profileEnd(), and d8.profiler.setOnProfileEndListener()"
-  }, {
-    "filePath" : "mjsunit/regress/regress-1415210.js",
-    "status" : "FAIL",
-    "comment" : "Uses d8.terminate()"
-  }, {
-    "filePath" : "mjsunit/regress/regress-14433.js",
-    "status" : "FAIL",
-    "comment" : "Uses d8.serializer"
-  }, {
-    "filePath" : "mjsunit/regress/regress-1447326.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2023-10-09"
   }, {
     "filePath" : "mjsunit/regress/regress-148378.js",
     "status" : "SKIP",
@@ -1290,10 +1238,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/regress-333926321.js",
-    "status" : "FAIL",
-    "comment" : "Uses d8.test.enableJSPI()"
-  }, {
     "filePath" : "mjsunit/regress/regress-336820.js",
     "runInIsolation" : true,
     "comment" : "memory intensive test"
@@ -1301,6 +1245,10 @@
     "filePath" : "mjsunit/regress/regress-3404.js",
     "runInIsolation" : true,
     "comment" : "test with (expected) stack overflows that might influence other tests"
+  }, {
+    "filePath" : "mjsunit/regress/regress-344664770.js",
+    "status" : "FAIL",
+    "comment" : "Tests V8-specific limit on the number of arguments in a function call"
   }, {
     "filePath" : "mjsunit/regress/regress-350865.js",
     "status" : "SKIP",
@@ -1354,21 +1302,45 @@
     "status" : "FAIL",
     "comment" : "Uses console.profile"
   }, {
-    "filePath" : "mjsunit/regress/regress-388905056.js",
+    "filePath" : "mjsunit/regress/regress-396460426.js",
     "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/regress-401111776.js",
+    "status" : "FAIL",
+    "comment" : "Test of externalizable strings"
   }, {
     "filePath" : "mjsunit/regress/regress-411210.js",
     "runInIsolation" : true,
     "comment" : "test with (expected) stack overflows that might influence other tests"
   }, {
+    "filePath" : "mjsunit/regress/regress-41433527.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
     "filePath" : "mjsunit/regress/regress-4266.js",
     "status" : "FAIL"
+  }, {
+    "filePath" : "mjsunit/regress/regress-437956096.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/regress-438523582.js",
+    "status" : "FAIL",
+    "comment" : "GR-73305"
   }, {
     "filePath" : "mjsunit/regress/regress-446389.js",
     "status" : "SKIP",
     "runInIsolation" : true,
     "comment" : "these tests expect the stack limit to be reached"
+  }, {
+    "filePath" : "mjsunit/regress/regress-451663011.js",
+    "status" : "FAIL",
+    "comment" : "GR-73305"
+  }, {
+    "filePath" : "mjsunit/regress/regress-454568212.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/regress/regress-4578-deopt.js",
     "status" : "PASS",
@@ -1381,6 +1353,14 @@
     "filePath" : "mjsunit/regress/regress-458987.js",
     "runInIsolation" : true,
     "comment" : "test with (expected) stack overflows that might influence other tests"
+  }, {
+    "filePath" : "mjsunit/regress/regress-463593768.js",
+    "status" : "FAIL",
+    "comment" : "Realm.navigateSameOrigin not implemented"
+  }, {
+    "filePath" : "mjsunit/regress/regress-464961493.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/regress/regress-475705.js",
     "status" : "PASS",
@@ -1513,10 +1493,6 @@
     "status" : "SKIP",
     "comment" : "spurious failures\njava.lang.IllegalStateException: This node cannot be replaced, because it does not yet have a parent. at com.oracle.truffle.api.nodes.Node.replaceHelper(Node.java:293), com.oracle.truffle.api.nodes.NodeUtil.nonAtomicReplace(NodeUtil.java:207), com.oracle.truffle.api.dsl.internal.SpecializationNode.insertAt(SpecializationNode.java:537), com.oracle.truffle.api.dsl.internal.SpecializationNode$InsertionEvent1.call(SpecializationNode.java:663), com.oracle.truffle.api.dsl.internal.SpecializationNode$InsertionEvent1.call(SpecializationNode.java:647)"
   }, {
-    "filePath" : "mjsunit/regress/regress-799813.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete test: regex flags are read from 'flags' property now"
-  }, {
     "filePath" : "mjsunit/regress/regress-8033.js",
     "status" : "FAIL",
     "comment" : "TODO: evaluate (V8 tests update 2018-10-29)"
@@ -1593,7 +1569,7 @@
   }, {
     "filePath" : "mjsunit/regress/regress-crbug-1057653.js",
     "status" : "SKIP",
-    "comment" : "failing because of infinite loop"
+    "comment" : "Tests d8.maxFixedArrayCapacity limit"
   }, {
     "filePath" : "mjsunit/regress/regress-crbug-109362.js",
     "status" : "FAIL"
@@ -1708,10 +1684,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2023-10-09"
   }, {
-    "filePath" : "mjsunit/regress/regress-crbug-1423650.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2023-10-09"
-  }, {
     "filePath" : "mjsunit/regress/regress-crbug-1440685.js",
     "status" : "FAIL",
     "comment" : "new failures 2023-10-09"
@@ -1731,13 +1703,6 @@
     "filePath" : "mjsunit/regress/regress-crbug-1509910.js",
     "status" : "FAIL",
     "comment" : "Uses d8.dom"
-  }, {
-    "filePath" : "mjsunit/regress/regress-crbug-335704358.js",
-    "status" : "FAIL",
-    "statusOverrides" : {
-      "POLYGLOT" : "PASS"
-    },
-    "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/regress-crbug-352586.js",
     "runInIsolation" : true,
@@ -1769,6 +1734,25 @@
     "filePath" : "mjsunit/regress/regress-crbug-397662.js",
     "status" : "SKIP",
     "comment" : "TODO: evaluate (V8 tests update 2019-10-15). Set to skip as the test doesn't terminate in due time."
+  }, {
+    "filePath" : "mjsunit/regress/regress-crbug-422638093.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/regress-crbug-422706696.js",
+    "status" : "FAIL",
+    "comment" : "Different error message"
+  }, {
+    "filePath" : "mjsunit/regress/regress-crbug-424617296-1.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/regress-crbug-424617296-2.js",
+    "status" : "PASS",
+    "statusOverrides" : {
+      "WINDOWS" : "FAIL"
+    },
+    "comment" : "Different error message"
   }, {
     "filePath" : "mjsunit/regress/regress-crbug-429159.js",
     "runInIsolation" : true,
@@ -1960,9 +1944,8 @@
     "comment" : "TODO: evaluate (V8 tests update 2019-10-15). Set to skip as the test doesn't terminate in due time."
   }, {
     "filePath" : "mjsunit/regress/regress-crbug-941743.js",
-    "status" : "SKIP",
     "runInIsolation" : true,
-    "comment" : "test with (expected) high memory usage that might influence other tests, Skipped now as it accounts for more than 1 minute when run in isolation"
+    "comment" : "test with (expected) high memory usage that might influence other tests"
   }, {
     "filePath" : "mjsunit/regress/regress-crbug-980529.js",
     "status" : "FAIL",
@@ -2002,10 +1985,6 @@
     "status" : "FAIL",
     "comment" : "V8 test update 2022-08-10"
   }, {
-    "filePath" : "mjsunit/regress/regress-v8-13906.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2023-10-09"
-  }, {
     "filePath" : "mjsunit/regress/regress-v8-5848.js",
     "status" : "FAIL",
     "comment" : "TODO: evaluate (V8 tests update 2019-05-21)"
@@ -2014,17 +1993,9 @@
     "status" : "SKIP",
     "comment" : "TODO: evaluate (V8 tests update 2019-10-15). Set to skip as the test doesn't terminate in due time."
   }, {
-    "filePath" : "mjsunit/regress/regress-v8-6716.js",
-    "status" : "FAIL",
-    "comment" : "Function calls that use spread operator do not have the number of arguments limited by a constant but by the stack-size."
-  }, {
     "filePath" : "mjsunit/regress/regress-v8-7848.js",
     "status" : "FAIL",
     "comment" : "TODO: evaluate (V8 tests update 2019-10-15)"
-  }, {
-    "filePath" : "mjsunit/regress/regress-v8-8357.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete test, does not reflect normative change https://github.com/tc39/ecma262/pull/3009"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1010272.js",
     "status" : "SKIP",
@@ -2086,13 +2057,6 @@
     "status" : "FAIL",
     "comment" : "Legacy exception handling proposal."
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-14356.js",
-    "status" : "SKIP",
-    "statusOverrides" : {
-      "POLYGLOT" : "PASS"
-    },
-    "comment" : "Relaxed SIMD proposal."
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-1447367.js",
     "status" : "FAIL",
     "comment" : "Uses legacy exception handling and tail call proposals."
@@ -2100,10 +2064,6 @@
     "filePath" : "mjsunit/regress/wasm/regress-1448663.js",
     "status" : "FAIL",
     "comment" : "Uses ref.as_non_null (opcode 0xd4) from the Function Type References proposal."
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-14695.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1478913.js",
     "status" : "FAIL",
@@ -2113,23 +2073,9 @@
     "status" : "FAIL",
     "comment" : "GC proposal and legacy exception handling proposal."
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-1480117.js",
-    "status" : "SKIP",
-    "statusOverrides" : {
-      "POLYGLOT" : "PASS"
-    },
-    "comment" : "Relaxed SIMD proposal."
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-1484393.js",
     "status" : "FAIL",
     "comment" : "Legacy exception handling proposal."
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-1484978.js",
-    "status" : "SKIP",
-    "statusOverrides" : {
-      "POLYGLOT" : "PASS"
-    },
-    "comment" : "Uses the i32x4.dot_i8x16_i7x16_add_s instruction (opcode 0xFD 0x113) from the Relaxed SIMD proposal."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1486237.js",
     "status" : "FAIL",
@@ -2154,10 +2100,6 @@
     "filePath" : "mjsunit/regress/wasm/regress-1511849.js",
     "status" : "FAIL",
     "comment" : "Legacy exception handling proposal."
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-1512426.js",
-    "status" : "FAIL",
-    "comment" : "Uses missing d8.terminate function."
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-1517559.js",
     "status" : "SKIP",
@@ -2227,10 +2169,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-329130358.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-329464129.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
@@ -2244,10 +2182,6 @@
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-330767273.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-331383939.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
@@ -2275,13 +2209,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-341947685.js",
-    "status" : "SKIP",
-    "statusOverrides" : {
-      "POLYGLOT" : "PASS"
-    },
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-342522151.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
@@ -2298,34 +2225,7 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-347914823.js",
-    "status" : "SKIP",
-    "statusOverrides" : {
-      "POLYGLOT" : "PASS"
-    },
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-347914831.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-348473836-global.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-348473836-memory.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-348473836-table.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-348473836-tag.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-348473836-webassembly.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
@@ -2346,10 +2246,6 @@
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-354324155.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-355493919.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
@@ -2378,10 +2274,6 @@
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-361717714.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-362539773.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
@@ -2429,10 +2321,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-373684419.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-375220562.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
@@ -2449,25 +2337,13 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-381458039.js",
+    "filePath" : "mjsunit/regress/wasm/regress-381917890.js",
     "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
+    "comment" : "new failures 2026-02-12"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-382547695.js",
+    "filePath" : "mjsunit/regress/wasm/regress-384565015.js",
     "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-382816108.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-384974501.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-385256127.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-388290793.js",
     "status" : "FAIL",
@@ -2477,17 +2353,113 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-390675703.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-392318896.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
+    "filePath" : "mjsunit/regress/wasm/regress-392928805.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-398439335.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-399497254.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
     "filePath" : "mjsunit/regress/wasm/regress-40258436.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-413633038.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-413963387.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-421055121.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-426164352.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-434008619.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-441221187.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-441844767.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-445870128.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-449010912.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-450694568.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-452079540.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-453769899.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-454276076.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-455832038.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-461547336.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-463089250.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-463546420.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-464606523.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-470127856.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-471380636.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-473272199.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-476461881.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-647649.js",
     "status" : "PASS",
@@ -2506,9 +2478,9 @@
     "status" : "FAIL",
     "comment" : "Uses %SerializeWasmModule and %DeserializeWasmModule."
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-8533.js",
-    "status" : "SKIP",
-    "comment" : "AssertionError during module instantiation."
+    "filePath" : "mjsunit/regress/wasm/regress-837417.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-8896.js",
     "status" : "FAIL",
@@ -2526,25 +2498,13 @@
     "status" : "FAIL",
     "comment" : "Legacy exception handling proposal."
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-crbug-1002388.js",
+    "filePath" : "mjsunit/regress/wasm/regress-985154.js",
     "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-crbug-1006631.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-crbug-1047368.js",
-    "status" : "FAIL",
-    "comment" : "Type Reflection proposal for WebAssembly JS API."
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-crbug-1339321.js",
     "status" : "FAIL",
     "comment" : "GC proposal."
-  }, {
-    "filePath" : "mjsunit/regress/wasm/regress-crbug-1463219.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-crbug-1465386.js",
     "status" : "FAIL",
@@ -2554,13 +2514,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/regress/wasm/regress-crbug-1491815.js",
-    "status" : "SKIP",
-    "statusOverrides" : {
-      "POLYGLOT" : "PASS"
-    },
-    "comment" : "Relaxed SIMD."
-  }, {
     "filePath" : "mjsunit/regress/wasm/regress-crbug-1502180.js",
     "status" : "FAIL",
     "comment" : "Missing console.profile."
@@ -2569,9 +2522,17 @@
     "status" : "FAIL",
     "comment" : "GC proposal."
   }, {
+    "filePath" : "mjsunit/regress/wasm/regress-crbug-408253898.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
     "filePath" : "mjsunit/regress/wasm/regress-crbug-816961.js",
     "status" : "SKIP",
     "comment" : "This v8 test seems to be wrong. It's motivated by an out-of-bounds memory access bug caused by TypedArray.of and TypedArray.from factory methods. In v8's implementation, these factory methods assumed that the newly constructed TypedArray was backed by a live ArrayBuffer. However, changing the constructor to a function that returns an existing TypedArray and then having one of the inputs detach the ArrayBuffer backing that TypedArray as a side-effect of its valueOf method, led v8 to write to invalid memory. As this was a security issue, this was promptly fixed by adding an isDetached check and throwing a TypeError if the ArrayBuffer backing the TypedArray is detached at the time of writing the value. This fixes the out-of-bounds memory access security issue, but it does not align with ECMAScript semantics, since the spec mandates that setting an element of a TypedArray that's backed by a detached ArrayBuffer is just a no-op (https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-typedarraysetelement)."
+  }, {
+    "filePath" : "mjsunit/regress/wasm/regress-simd-458024245.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/regress/wasm/regress-v8-14471.js",
     "status" : "FAIL",
@@ -2585,13 +2546,17 @@
     "status" : "FAIL",
     "comment" : "Legacy exception handling proposal."
   }, {
+    "filePath" : "mjsunit/sandbox/bytecode-verifier-testing-api.js",
+    "status" : "FAIL",
+    "comment" : "Test of %GetBytecode and %InstallBytecode"
+  }, {
+    "filePath" : "mjsunit/sandbox/wasm-jspi.js",
+    "status" : "FAIL",
+    "comment" : "Uses Sandbox"
+  }, {
     "filePath" : "mjsunit/serialize-deserialize-now.js",
     "status" : "FAIL",
     "comment" : "new test failures (update 2020-07-22)"
-  }, {
-    "filePath" : "mjsunit/shared-memory/regress-crbug-1487973.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2023-10-09"
   }, {
     "filePath" : "mjsunit/stack-overflow-arity-catch-noinline.js",
     "runInIsolation" : true,
@@ -2636,350 +2601,6 @@
     "runInIsolation" : true,
     "comment" : "Out of memory even when run together with other memory-intense tests"
   }, {
-    "filePath" : "mjsunit/temporal/calendar-constructor.js",
-    "status" : "FAIL",
-    "comment" : "V8 test update 2022-11-28"
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-date-add.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-date-from-fields.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-date-until.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-day-of-week.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-day-of-year.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-day.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-days-in-month.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-days-in-week.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-days-in-year.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-fields.js",
-    "status" : "FAIL",
-    "comment" : "Passes fields that are no longer valid to Calendar.prototype.fields()."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-from.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-in-leap-year.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-merge-fields.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-month-code.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-month-day-from-fields.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-month.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-months-in-year.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-week-of-year.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-year-month-from-fields.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/calendar-year.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
-    "filePath" : "mjsunit/temporal/duration-from.js",
-    "status" : "FAIL",
-    "comment" : "V8 test update 2022-08-10"
-  }, {
-    "filePath" : "mjsunit/temporal/function-exist-no-intl.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/function-exist.js",
-    "status" : "FAIL",
-    "comment" : "V8 test update 2022-08-10"
-  }, {
-    "filePath" : "mjsunit/temporal/instant-constructor.js",
-    "status" : "FAIL",
-    "comment" : "Uses built-ins that do not exist anymore"
-  }, {
-    "filePath" : "mjsunit/temporal/instant-from-epoch-microseconds.js",
-    "status" : "FAIL",
-    "comment" : "Uses built-ins that do not exist anymore"
-  }, {
-    "filePath" : "mjsunit/temporal/instant-from-epoch-seconds.js",
-    "status" : "FAIL",
-    "comment" : "Uses built-ins that do not exist anymore"
-  }, {
-    "filePath" : "mjsunit/temporal/instant-to-json.js",
-    "status" : "FAIL",
-    "comment" : "Uses built-ins that do not exist anymore"
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-add.js",
-    "status" : "FAIL",
-    "comment" : "Uses built-ins that do not exist anymore"
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-constructor.js",
-    "status" : "FAIL",
-    "comment" : "Uses built-ins that do not exist anymore"
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-from.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-calendar.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-day.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-dayOfWeek.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-dayOfYear.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-daysInMonth.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-daysInWeek.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-daysInYear.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-era.js",
-    "status" : "FAIL",
-    "comment" : "V8 test update 2022-08-10"
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-eraYear.js",
-    "status" : "FAIL",
-    "comment" : "V8 test update 2022-08-10"
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-inLeapYear.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-iso-fields.js",
-    "status" : "FAIL",
-    "comment" : "Uses built-ins that do not exist anymore"
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-month.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-monthCode.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-monthsInYear.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-weekOfYear.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-get-year.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-add.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-constructor.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-from.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-calendar.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-day.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-dayOfWeek.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-dayOfYear.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-daysInMonth.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-daysInWeek.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-daysInYear.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-era.js",
-    "status" : "FAIL",
-    "comment" : "V8 test update 2022-08-10"
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-eraYear.js",
-    "status" : "FAIL",
-    "comment" : "V8 test update 2022-08-10"
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-hour.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-inLeapYear.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-iso-fields.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-microsecond.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-millisecond.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-minute.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-month.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-monthCode.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-monthsInYear.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-nanosecond.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-second.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-weekOfYear.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-get-year.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-subtract.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-to-plain-date.js",
-    "status" : "FAIL",
-    "comment" : "Uses built-ins that do not exist anymore"
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-to-plain-month-day.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-to-plain-year-month.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-with-calendar.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-with-plain-date.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-with-plain-time.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-time-with.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-to-plain-date-time.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-to-plain-month-day.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-to-plain-year-month.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-with-calendar.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/plain-date-with.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete/off-spec test."
-  }, {
-    "filePath" : "mjsunit/temporal/time-zone-constructor.js",
-    "status" : "FAIL",
-    "comment" : "Obsolete Temporal test."
-  }, {
     "filePath" : "mjsunit/test-builtins-setup.js",
     "status" : "FAIL",
     "comment" : "TODO: evaluate (V8 tests update 2017-07-07)"
@@ -3007,6 +2628,10 @@
     "filePath" : "mjsunit/tools/foozzie_arch_specific.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
+  }, {
+    "filePath" : "mjsunit/tools/foozzie_printing.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/tools/foozzie_typed_arrays.js",
     "status" : "FAIL",
@@ -3052,85 +2677,21 @@
     "status" : "FAIL",
     "comment" : "new failures 2021-02-16"
   }, {
+    "filePath" : "mjsunit/turbolev/regress-443254910.js",
+    "status" : "SKIP",
+    "comment" : "Triggers stack overflow"
+  }, {
     "filePath" : "mjsunit/turboshaft/extras-cped.js",
     "status" : "FAIL",
     "comment" : "Test of V8-specific functionality (d8.getExtrasBindingObject)"
   }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-as-number-large.js",
+    "filePath" : "mjsunit/turboshaft/regress-452671631.js",
     "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
+    "comment" : "Test of Explicit Resource Management proposal"
   }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-as-number.js",
+    "filePath" : "mjsunit/turboshaft/strict-equals-receiver-or-null-or-undefined.js",
     "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-branch-if-to-boolean-true.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-deopt-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-exception-phi.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-index-into-array-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-index-into-array.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-index-into-typed-array-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-index-into-typed-array.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-iteration-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-iteration.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-phi.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-store-into-global-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-store-into-global.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-store-script-context-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-store-script-context.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-to-boolean.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-to-number-large.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
-  }, {
-    "filePath" : "mjsunit/turboshaft/maglev-frontend/typed-array-length-to-number.js",
-    "status" : "FAIL",
-    "comment" : "Allocates typed array of length 8589934592"
+    "comment" : "Tests properties of %GetUndetectable()"
   }, {
     "filePath" : "mjsunit/typedarray-growablesharedarraybuffer-array-methods.js",
     "status" : "SKIP",
@@ -3184,10 +2745,6 @@
     "status" : "SKIP",
     "comment" : "undetectable"
   }, {
-    "filePath" : "mjsunit/value-serializer.js",
-    "status" : "FAIL",
-    "comment" : "Uses d8.serializer.[de]serialize"
-  }, {
     "filePath" : "mjsunit/verify-assert-false.js",
     "status" : "SKIP",
     "comment" : "two tests using internal functions, just to ensure assertFalse etc. are working properly"
@@ -3224,13 +2781,6 @@
       "POLYGLOT" : "PASS"
     }
   }, {
-    "filePath" : "mjsunit/wasm/atomic-wait-multi-memory.js",
-    "status" : "SKIP",
-    "statusOverrides" : {
-      "POLYGLOT" : "PASS"
-    },
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/wasm/atomics-memory64.js",
     "status" : "SKIP",
     "comment" : "Memory instance size exceeded beyond 4GB. In the current spec, the JS WebAssembly API should not allow such large memory instances. Furthermore, GraalJS is limited to 2GB because of using signed 32-bit integers for indices."
@@ -3250,10 +2800,6 @@
     "filePath" : "mjsunit/wasm/bulk-memory.js",
     "status" : "FAIL",
     "comment" : "Fails with LinkError instead of RuntimeError. The failure occurs in module instantiation and the spec for the WebAssembly JS interface states that errors from instantiation are to be signalled using LinkError (except for when the error originates from the start function, which should use RuntimeError). In this case, the error does not originate from the start function, but from the memory initialization using an active data segment. Apart from this and one different error message, we pass all tests in the file."
-  }, {
-    "filePath" : "mjsunit/wasm/call-ref.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/wasm/call_indirect.js",
     "status" : "FAIL",
@@ -3278,6 +2824,10 @@
     "filePath" : "mjsunit/wasm/compiled-module-serialization.js",
     "status" : "FAIL",
     "comment" : "Tests %SerializeWasmModule and %DeserializeWasmModule."
+  }, {
+    "filePath" : "mjsunit/wasm/cont-bind.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/wasm/denormals.js",
     "status" : "FAIL",
@@ -3355,10 +2905,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/wasm/deopt/deopt-multi-instance.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/wasm/deopt/deopt-multiple.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
@@ -3384,10 +2930,6 @@
     "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/wasm/deopt/deopt-tail-call-parent-frame.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/deopt/deopt-too-many-inputs.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
@@ -3510,17 +3052,9 @@
     "status" : "FAIL",
     "comment" : "Legacy exception handling proposal."
   }, {
-    "filePath" : "mjsunit/wasm/exceptions-type-reflection.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/wasm/exceptions.js",
     "status" : "FAIL",
     "comment" : "Legacy exception handling proposal."
-  }, {
-    "filePath" : "mjsunit/wasm/externref-table.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/wasm/function-names.js",
     "status" : "FAIL",
@@ -3531,10 +3065,6 @@
     "comment" : "TODO: evaluate"
   }, {
     "filePath" : "mjsunit/wasm/gc-casts-from-any.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/gc-casts-subtypes.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
@@ -3582,13 +3112,6 @@
     "status" : "FAIL",
     "runInIsolation" : true,
     "comment" : "Memory instance size exceeded 2GB. GraalJS is limited to 2GB because of using signed 32-bit integers for indices."
-  }, {
-    "filePath" : "mjsunit/wasm/grow-shared-memory.js",
-    "status" : "SKIP",
-    "statusOverrides" : {
-      "POLYGLOT" : "PASS"
-    },
-    "comment" : "Expects byteLength of a buffer of a shared memory to change after grow(1)"
   }, {
     "filePath" : "mjsunit/wasm/growable-stacks.js",
     "status" : "FAIL",
@@ -3651,17 +3174,25 @@
     "filePath" : "mjsunit/wasm/js-api.js",
     "status" : "FAIL"
   }, {
-    "filePath" : "mjsunit/wasm/js-to-js.js",
+    "filePath" : "mjsunit/wasm/jspi-export.js",
     "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/jspi-generic-wrapper.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/jspi-no-stress.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/jspi-notraps.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/wasm/log-code-after-post-message.js",
     "status" : "SKIP",
     "comment" : "Uses d8.profiler"
-  }, {
-    "filePath" : "mjsunit/wasm/log-wasm-to-js-wrapper-callref.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
   }, {
     "filePath" : "mjsunit/wasm/log-wasm-to-js-wrapper-indirect.js",
     "status" : "FAIL",
@@ -3682,6 +3213,22 @@
     "filePath" : "mjsunit/wasm/memory-control.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
+  }, {
+    "filePath" : "mjsunit/wasm/memory-copy-inline.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/memory-copy-outline.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/memory-fill-inline.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/memory-fill-outline.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/wasm/memory-huge-constant-index.js",
     "status" : "FAIL",
@@ -3733,18 +3280,10 @@
     "status" : "SKIP",
     "comment" : "Based on v8WasmNumCodeSpaces(), a concept unknown to graal.js"
   }, {
-    "filePath" : "mjsunit/wasm/origin-trial-flags.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2023-10-09"
-  }, {
     "filePath" : "mjsunit/wasm/print-code.js",
     "status" : "FAIL"
   }, {
     "filePath" : "mjsunit/wasm/recognize-imports.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/ref-cast-js-function.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
@@ -3764,6 +3303,14 @@
     "status" : "FAIL",
     "comment" : "new failures 2024-01-19"
   }, {
+    "filePath" : "mjsunit/wasm/regress-455605199.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/resume-throw.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
     "filePath" : "mjsunit/wasm/return-calls-eh.js",
     "status" : "FAIL",
     "comment" : "new failures 2024-01-19"
@@ -3776,16 +3323,48 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/wasm/serialization-with-compilation-hints.js",
-    "status" : "FAIL",
-    "comment" : "V8 test update 2022-08-10"
-  }, {
     "filePath" : "mjsunit/wasm/serialize-lazy-module.js",
     "status" : "FAIL"
+  }, {
+    "filePath" : "mjsunit/wasm/shared-everything/array-atomic-rmw-load-elimination.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/shared-everything/array-new-elem.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/shared-everything/atomic-instructions.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/wasm/shared-everything/basic.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
+  }, {
+    "filePath" : "mjsunit/wasm/shared-everything/gc-casts-shared-to-unshared.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/shared-everything/heapnumber-conversion.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/shared-everything/post-message.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/shared-everything/shared-extended-instructions.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/shared-everything/spin-lock.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/wasm/shared-everything/test-acq-rel-instructions.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/wasm/shared-memory-gc-stress.js",
     "status" : "SKIP",
@@ -3815,44 +3394,13 @@
     "status" : "FAIL",
     "comment" : "Memory instance size exceeded beyond 4GB. In the current spec, the JS WebAssembly API should not allow such large memory instances. Furhtermore, GraalJS is limited to 2GB because of using signed 32-bit integers for indices."
   }, {
-    "filePath" : "mjsunit/wasm/simd-relaxed-lane-select.js",
-    "status" : "SKIP",
-    "statusOverrides" : {
-      "POLYGLOT" : "PASS"
-    },
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/wasm/simd-wasm-interpreter.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/wasm/speculative-inlining.js",
+    "filePath" : "mjsunit/wasm/stack-switching-params.js",
     "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/stack-switching-conditional.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/stack-switching-export.js",
-    "status" : "FAIL",
-    "comment" : "V8 test update 2022-11-28"
-  }, {
-    "filePath" : "mjsunit/wasm/stack-switching-generic-wrapper.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2024-01-19"
-  }, {
-    "filePath" : "mjsunit/wasm/stack-switching-init-safe.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/stack-switching-no-stress.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/stack-switching-notraps.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/wasm/stack-switching.js",
     "status" : "FAIL",
@@ -3899,6 +3447,10 @@
     "filePath" : "mjsunit/wasm/stringview-valuestack.js",
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
+  }, {
+    "filePath" : "mjsunit/wasm/subtyping-invalid.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
   }, {
     "filePath" : "mjsunit/wasm/table-limits.js",
     "status" : "FAIL"
@@ -3978,29 +3530,9 @@
     "status" : "FAIL",
     "comment" : "new failures 2024-01-19"
   }, {
-    "filePath" : "mjsunit/wasm/type-reflection-exnref.js",
+    "filePath" : "mjsunit/wasm/wasm-code-coverage.js",
     "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/type-reflection-other-callable.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/type-reflection-with-externref.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/type-reflection-with-mv.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/type-reflection-wrap-wasm-function.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/type-reflection.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
+    "comment" : "Test based on %DebugCollectWasmCoverage"
   }, {
     "filePath" : "mjsunit/wasm/wasm-dynamic-tiering.js",
     "status" : "SKIP",
@@ -4034,14 +3566,6 @@
     "status" : "FAIL",
     "comment" : "new failures 2025-02-10"
   }, {
-    "filePath" : "mjsunit/wasm/wasm-null-intrinsic.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
-    "filePath" : "mjsunit/wasm/wasm-to-js-tierup.js",
-    "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
-  }, {
     "filePath" : "mjsunit/wasm/worker-memory.js",
     "status" : "FAIL",
     "comment" : "V8 test update 2022-11-28"
@@ -4054,8 +3578,36 @@
     "status" : "FAIL",
     "comment" : "new failures 2024-01-19"
   }, {
-    "filePath" : "mjsunit/wasm/wrapper-inlining-lazy-deopt.js",
+    "filePath" : "mjsunit/weakrefs/cleanup-on-detached-realm.js",
     "status" : "FAIL",
-    "comment" : "new failures 2025-02-10"
+    "comment" : "Uses Realm.detachGlobal()"
+  }, {
+    "filePath" : "mjsunit/weakrefs/finalizationregistry-independent-lifetime-multiple.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/weakrefs/finalizationregistry-independent-lifetime.js",
+    "status" : "FAIL",
+    "comment" : "Expects GC of a registry but the registry is kept alive by a closure (passes when rewritten slightly to avoid the problem with the closure)."
+  }, {
+    "filePath" : "mjsunit/weakrefs/minor-gc-cleanup-on-detached-realm.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/weakrefs/minor-gc-finalizationregistry-independent-lifetime-multiple.js",
+    "status" : "SKIP",
+    "comment" : "GC-based test"
+  }, {
+    "filePath" : "mjsunit/weakrefs/minor-gc-finalizationregistry-independent-lifetime.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/weakrefs/minor-gc-reclaims-unreachable-weak-cell-target.js",
+    "status" : "FAIL",
+    "comment" : "new failures 2026-02-12"
+  }, {
+    "filePath" : "mjsunit/weakrefs/minor-gc-two-weakrefs.js",
+    "status" : "SKIP",
+    "comment" : "Unstable on native-image / when compiled (GR-23663)"
   } ]
 }

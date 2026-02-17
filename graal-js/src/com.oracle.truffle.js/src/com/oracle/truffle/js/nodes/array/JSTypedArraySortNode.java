@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2024, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -105,7 +105,7 @@ public abstract class JSTypedArraySortNode extends JavaScriptBaseNode {
                     @Bind("comparator == null") boolean comparatorIsNull,
                     @CachedLibrary(limit = "InteropLibraryLimit") @Shared InteropLibrary interop) {
         assert fromType.getFactory() == toType.getFactory() && fromArray.getArrayType() == fromType && toArray.getArrayType() == toType;
-        assert fromArray.getLength() == length && toArray.getLength() == length;
+        assert fromArray.getLength() >= length && toArray.getLength() >= length;
         Comparator<Object> useComparator = comparatorIsNull ? null : Objects.requireNonNull(comparator);
         if (fromType instanceof TypedIntArray) {
             sortIntArray(fromArray, toArray, length, useComparator, (TypedIntArray) fromType, (TypedIntArray) toType, interop);

@@ -115,6 +115,10 @@ Number.isInteger = (function() {
 let d8_file_execute_load = load;
 
 var d8 = {
+    constants: {
+        maxFastArrayLength: 32 * 1024 * 1024,
+        maxFixedArrayCapacity: 128 * 1024 * 1024
+    },
     file: {
         execute: function(path) {
             d8_file_execute_load(path);
@@ -125,13 +129,48 @@ var d8 = {
                 kTrapMsgs[kTrapDivByZero] = "integer divide by zero"; // used with assertEquals in mjsunit/wasm/exnref.js
             }
         }
-    }
+    },
+    serializer: {
+        serialize: function(o) {
+            function canBeSerialized(o, set) {
+                if (typeof o === 'function') {
+                    return false;
+                } else if (typeof o === 'object' && o !== null) {
+                    if (!set.has(o)) {
+                        set.add(o);
+                        for (var value of Object.values(o)) {
+                            if (!canBeSerialized(value, set)) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+            if (!canBeSerialized(o, new Set())) {
+                throw new Error("Could not be cloned.");
+            }
+            return { _serializationMockup: o };
+        },
+        deserialize: function(o) {
+            if (!Object.hasOwn(o, "_serializationMockup")) {
+                throw new Error("Could not be deserialized");
+            }
+            return o._serializationMockup;
+        }
+    },
+    terminate: function() {},
+    terminateNow: function() {}
 };
 
 // The following stuff should be enabled by --expose-externalize-string,
 // but it does not seem to hurt to have it enabled always
 
 var createExternalizableString = function(str) {
+    return str;
+};
+
+var createExternalizableTwoByteString = function(str) {
     return str;
 };
 
@@ -296,8 +335,11 @@ globalThis['%HasFixedUint8ClampedElements'] = function(ob) {
 };
 
 //watch out: this might be modified by TestV8Runnable, see GR-29754.
-function gc() {
+function gc(options) {
     TestV8.gc();
+    if (typeof options === 'object' && options.execution === 'async') {
+        return Promise.resolve();
+    }
 }
 
 globalThis['%IsMinusZero'] = function(a) {
@@ -771,7 +813,11 @@ globalThis['%SetWasmInstantiateControls'] = function() {
 };
 
 globalThis['%ConstructConsString'] = function(s1, s2) {
-    return s1 + s2;
+    if (typeof s1 === 'string' && typeof s2 === 'string' && s1.length + s2.length > 2) {
+        return s1 + s2;
+    } else {
+        return undefined;
+    }
 };
 
 globalThis['%IsJSReceiver'] = function() {
@@ -866,7 +912,11 @@ globalThis['%CreateIterResultObject'] = function(value, done) {
 };
 
 globalThis['%ConstructSlicedString'] = function(string, index) {
-    return string.substring(index);
+    if (typeof string === 'string' && typeof index === 'number' && index !== 0 && string.length > index + 5) {
+        return string.substring(index);
+    } else {
+        return undefined;
+    }
 };
 
 globalThis['%StrictEqual'] = function(x, y) {
@@ -1143,7 +1193,7 @@ globalThis['%InLargeObjectSpace'] = function() {
 };
 
 globalThis['%Is64Bit'] = function() {
-    return v8IgnoreResult;
+    return false;
 };
 
 globalThis['%IsAtomicsWaitAllowed'] = function() {
@@ -1171,7 +1221,7 @@ globalThis['%CreatePrivateNameSymbol'] = function(name) {
 };
 
 globalThis['%ConstructInternalizedString'] = function(string) {
-    return string;
+    return (typeof string === 'string') ? string : undefined;
 };
 
 globalThis['%ActiveTierIsMaglev'] = function(fun) {
@@ -1232,7 +1282,7 @@ globalThis['%CurrentFrameIsTurbofan'] = function() {
 };
 
 globalThis['%ConstructThinString'] = function(str) {
-    return str;
+    return (typeof str === 'string' && str.length > 5) ? str : undefined;
 };
 
 globalThis['%IsSparkplugEnabled'] = function() {
@@ -1330,4 +1380,79 @@ globalThis['%DefineObjectOwnProperty'] = function(o, key, value) {
 };
 
 globalThis['%GetFeedback'] = function() {
+};
+
+globalThis['%IsUndefinedDoubleEnabled'] = function() {
+    return false;
+};
+
+globalThis['%MajorGCForCompilerTesting'] = function() {
+    TestV8.gc();
+};
+
+globalThis['%DebugTraceMinimal'] = function() {
+};
+
+globalThis['%VerifyGetJSBuiltinState'] = function() {
+};
+
+globalThis['%IterableForEach'] = function(iterable, callback) {
+    for (var item of iterable) {
+        callback(item);
+    }
+};
+
+globalThis['%GetUndefinedNaN'] = function() {
+    return NaN;
+};
+
+globalThis['%GetHoleNaN'] = function() {
+    return NaN;
+};
+
+globalThis['%GetHoleNaNLower'] = function() {
+    return 2146959360;
+};
+
+globalThis['%GetHoleNaNUpper'] = function() {
+    return 0;
+};
+
+globalThis['%AtomicsSynchronizationPrimitiveNumWaitersForTesting'] = function() {
+};
+
+globalThis['%ShareObject'] = function(o) {
+    if (o === undefined || o === null || typeof o === 'boolean' || typeof o === 'number' || typeof o === 'string') {
+        return o;
+    } else {
+        return undefined;
+    }
+};
+
+globalThis['%IsInWritableSharedSpace'] = function() {
+    return v8IgnoreResult;
+};
+
+globalThis['%WasmGenerateRandomModule'] = function() {
+};
+
+globalThis['%WasmStruct'] = function() {
+    return {};
+};
+
+globalThis['%WasmArray'] = function() {
+    return [];
+};
+
+globalThis['%BuildRefTypeBitfield'] = function() {
+};
+
+globalThis['%GetBytecode'] = function(fn) {
+    return { bytecode: fn };
+};
+
+globalThis['%InstallBytecode'] = function(fn, bytecode) {
+    if (bytecode.bytecode !== fn) {
+        quit(0);
+    }
 };
