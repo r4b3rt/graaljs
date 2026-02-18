@@ -504,27 +504,6 @@ def deploy_binary_if_master(args):
 def mx_post_parse_cmd_line(args):
     mx_graal_js_benchmark.register_js_vms()
 
-def run_javascript_basictests(js_binary):
-    tests_folder = os.path.join(_suite.dir, "test", "smoketest")
-
-    def is_included(path):
-        if path.endswith(".js"):
-            return True
-        return False
-
-    testfiles = []
-    paths = [tests_folder]
-    for path in paths:
-        if is_included(path):
-            testfiles.append(path)
-        else:
-            paths += [os.path.join(path, f) for f in os.listdir(path)]
-
-    if len(testfiles) <= 0:
-        raise ValueError("Did not find any smoketests for JavaScript")
-
-    return mx.run([js_binary, '--js.intl-402'] + testfiles, nonZeroIsFatal=True)
-
 
 def mx_register_dynamic_suite_constituents(register_project, register_distribution):
     if register_project and register_distribution:
